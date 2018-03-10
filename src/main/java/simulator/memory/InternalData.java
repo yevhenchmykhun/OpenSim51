@@ -43,69 +43,7 @@ public class InternalData extends Memory {
     public final BitAddressableCell IP = new BitAddressableCell(0xb8);
     public final BitAddressableCell PSW = new BitAddressableCell(0xd0);
 
-    // Power Control bits
-    public final Bit IDL = new NamedBit(PCON, 0);
-    public final Bit PD = new NamedBit(PCON, 1);
-    public final Bit GF0 = new NamedBit(PCON, 2);
-    public final Bit GF1 = new NamedBit(PCON, 3);
-    public final Bit SMOD = new NamedBit(PCON, 7);
-
-    // Timer Control bits
-    public final Bit IT0 = new NamedBit(TCON, 0);
-    public final Bit IE0 = new NamedBit(TCON, 1);
-    public final Bit IT1 = new NamedBit(TCON, 2);
-    public final Bit IE1 = new NamedBit(TCON, 3);
-    public final Bit TR0 = new NamedBit(TCON, 4);
-    public final Bit TF0 = new NamedBit(TCON, 5);
-    public final Bit TR1 = new NamedBit(TCON, 6);
-    public final Bit TF1 = new NamedBit(TCON, 7);
-
-    // Timer Mode bits
-    public final Bit T0M0 = new NamedBit(TMOD, 0);
-    public final Bit T0M1 = new NamedBit(TMOD, 1);
-    public final Bit C_T0 = new NamedBit(TMOD, 2);
-    public final Bit GATE0 = new NamedBit(TMOD, 3);
-    public final Bit T1M0 = new NamedBit(TMOD, 4);
-    public final Bit T1M1 = new NamedBit(TMOD, 5);
-    public final Bit C_T1 = new NamedBit(TMOD, 6);
-    public final Bit GATE1 = new NamedBit(TMOD, 7);
-
-    // Serial Control bits
-    public final Bit R1_bit = new NamedBit(SCON, 0);
-    public final Bit T1 = new NamedBit(SCON, 1);
-    public final Bit RB8 = new NamedBit(SCON, 2);
-    public final Bit TB8 = new NamedBit(SCON, 3);
-    public final Bit REN = new NamedBit(SCON, 4);
-    public final Bit SM2 = new NamedBit(SCON, 5);
-    public final Bit SM1 = new NamedBit(SCON, 6);
-    public final Bit SM0 = new NamedBit(SCON, 7);
-
-    // Interrupt Enable bits
-    public final Bit EX0 = new NamedBit(IE, 0);
-    public final Bit ET0 = new NamedBit(IE, 1);
-    public final Bit EX1 = new NamedBit(IE, 2);
-    public final Bit ET1 = new NamedBit(IE, 3);
-    public final Bit ES = new NamedBit(IE, 4);
-    public final Bit ET2 = new NamedBit(IE, 5);
-    public final Bit EA = new NamedBit(IE, 7);
-
-    // Interrupt Priority bits
-    public final Bit PX0 = new NamedBit(IP, 0);
-    public final Bit PT0 = new NamedBit(IP, 1);
-    public final Bit PX1 = new NamedBit(IP, 2);
-    public final Bit PT1 = new NamedBit(IP, 3);
-    public final Bit PS = new NamedBit(IP, 4);
-    public final Bit PT2 = new NamedBit(IP, 5);
-
-    // PSW bits
-    public final Bit P = new NamedBit(PSW, 0);
-    public final Bit UD = new NamedBit(PSW, 1);
-    public final Bit OV = new NamedBit(PSW, 2);
-    public final Bit RS0 = new NamedBit(PSW, 3);
-    public final Bit RS1 = new NamedBit(PSW, 4);
-    public final Bit FO = new NamedBit(PSW, 5);
-    public final Bit AC = new NamedBit(PSW, 6);
-    public final Bit CY = new NamedBit(PSW, 7);
+    public final BitMap bitMap = new BitMap();
 
     public InternalData() {
         super(MEMORY_SIZE);
@@ -119,6 +57,75 @@ public class InternalData extends Memory {
         setCellValue(address.toInt(), value);
     }
 
+    public class BitMap {
+
+        // Power Control bits
+        public final Bit IDL = new NamedBit(PCON, 0);
+        public final Bit PD = new NamedBit(PCON, 1);
+        public final Bit GF0 = new NamedBit(PCON, 2);
+        public final Bit GF1 = new NamedBit(PCON, 3);
+        public final Bit SMOD = new NamedBit(PCON, 7);
+        // Timer Control bits
+        public final Bit IT0 = new NamedBit(TCON, 0);
+        public final Bit IE0 = new NamedBit(TCON, 1);
+        public final Bit IT1 = new NamedBit(TCON, 2);
+        public final Bit IE1 = new NamedBit(TCON, 3);
+        public final Bit TR0 = new NamedBit(TCON, 4);
+        public final Bit TF0 = new NamedBit(TCON, 5);
+        public final Bit TR1 = new NamedBit(TCON, 6);
+        public final Bit TF1 = new NamedBit(TCON, 7);
+        // Timer Mode bits
+        public final Bit T0M0 = new NamedBit(TMOD, 0);
+        public final Bit T0M1 = new NamedBit(TMOD, 1);
+        public final Bit C_T0 = new NamedBit(TMOD, 2);
+        public final Bit GATE0 = new NamedBit(TMOD, 3);
+        public final Bit T1M0 = new NamedBit(TMOD, 4);
+        public final Bit T1M1 = new NamedBit(TMOD, 5);
+        public final Bit C_T1 = new NamedBit(TMOD, 6);
+        public final Bit GATE1 = new NamedBit(TMOD, 7);
+        // Serial Control bits
+        public final Bit R1 = new NamedBit(SCON, 0);
+        public final Bit T1 = new NamedBit(SCON, 1);
+        public final Bit RB8 = new NamedBit(SCON, 2);
+        public final Bit TB8 = new NamedBit(SCON, 3);
+        public final Bit REN = new NamedBit(SCON, 4);
+        public final Bit SM2 = new NamedBit(SCON, 5);
+        public final Bit SM1 = new NamedBit(SCON, 6);
+        public final Bit SM0 = new NamedBit(SCON, 7);
+        // Interrupt Enable bits
+        public final Bit EX0 = new NamedBit(IE, 0);
+        public final Bit ET0 = new NamedBit(IE, 1);
+        public final Bit EX1 = new NamedBit(IE, 2);
+        public final Bit ET1 = new NamedBit(IE, 3);
+        public final Bit ES = new NamedBit(IE, 4);
+        public final Bit ET2 = new NamedBit(IE, 5);
+        public final Bit EA = new NamedBit(IE, 7);
+        // Interrupt Priority bits
+        public final Bit PX0 = new NamedBit(IP, 0);
+        public final Bit PT0 = new NamedBit(IP, 1);
+        public final Bit PX1 = new NamedBit(IP, 2);
+        public final Bit PT1 = new NamedBit(IP, 3);
+        public final Bit PS = new NamedBit(IP, 4);
+        public final Bit PT2 = new NamedBit(IP, 5);
+        // PSW bits
+        public final Bit P = new NamedBit(PSW, 0);
+        public final Bit UD = new NamedBit(PSW, 1);
+        public final Bit OV = new NamedBit(PSW, 2);
+        public final Bit RS0 = new NamedBit(PSW, 3);
+        public final Bit RS1 = new NamedBit(PSW, 4);
+        public final Bit FO = new NamedBit(PSW, 5);
+        public final Bit AC = new NamedBit(PSW, 6);
+        public final Bit CY = new NamedBit(PSW, 7);
+
+        public void setBitValue(int bitAddress, boolean value) {
+            new UnnamedBit(bitAddress).setValue(value);
+        }
+
+        public boolean getBitValue(int address) {
+            return new UnnamedBit(address).getValue();
+        }
+
+    }
 
     private class RegisterCell extends Cell {
 
@@ -139,13 +146,13 @@ public class InternalData extends Memory {
         }
 
         private void determineRegisterBank() {
-            if (!RS1.getValue() && !RS0.getValue()) {
+            if (!bitMap.RS1.getValue() && !bitMap.RS0.getValue()) {
                 address = scale(address, 0x0);
-            } else if (!RS1.getValue() && RS0.getValue()) {
+            } else if (!bitMap.RS1.getValue() && bitMap.RS0.getValue()) {
                 address = scale(address, 0x8);
-            } else if (RS1.getValue() && !RS0.getValue()) {
+            } else if (bitMap.RS1.getValue() && !bitMap.RS0.getValue()) {
                 address = scale(address, 0x10);
-            } else if (RS1.getValue() && RS0.getValue()) {
+            } else if (bitMap.RS1.getValue() && bitMap.RS0.getValue()) {
                 address = scale(address, 0x18);
             }
         }
@@ -183,20 +190,36 @@ public class InternalData extends Memory {
         private final int bitAddress;
 
         protected UnnamedBit(int address) {
-            checkRange(0, 0x7f, address);
+            if (!isBitAddress(address)) {
+                throw new IllegalArgumentException("Value is out of range");
+            }
 
             this.bitAddress = address;
         }
 
         @Override
         public boolean getValue() {
-            // TODO: impl
-            return false;
+            int cellAddress = determineCellAddress();
+
+            BitAddressableCell cell = new BitAddressableCell(cellAddress);
+            return cell.getBitValue(bitAddress % 0x8);
         }
 
         @Override
         public void setValue(boolean value) {
-            // TODO: impl
+            int cellAddress = determineCellAddress();
+
+            BitAddressableCell cell = new BitAddressableCell(cellAddress);
+            cell.setBitValue(bitAddress % 0x8, value);
+        }
+
+        private int determineCellAddress() {
+            int cellAddress = bitAddress / 0x8;
+            return bitAddress <= 0x7f ? cellAddress + 0x20 : cellAddress;
+        }
+
+        private boolean isBitAddress(int address) {
+            return address >= 0x0 && address <= 0x7f || (address - (address % 0x8)) % 0x8 == 0;
         }
 
     }

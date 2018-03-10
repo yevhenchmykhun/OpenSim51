@@ -84,7 +84,11 @@ public abstract class Memory {
         public void setBitValue(int position, boolean value) {
             checkRange(0, 7, position);
 
-            setValue(getValue().setBit(position));
+            if (value) {
+                setValue(getValue().setBit(position));
+            } else {
+                setValue(getValue().clearBit(position));
+            }
         }
 
     }

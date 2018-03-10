@@ -115,7 +115,7 @@ public enum Instruction {
     }),
 
     CLR_C3(0xc3, 1, (id, xd, xc, s, i) -> {
-        id.CY.setValue(false);
+        id.bitMap.CY.setValue(false);
         s.setPC(s.getPC().inc());
     }),
 
@@ -174,11 +174,11 @@ public enum Instruction {
     }
 
     private static void subtract(InternalData internalData, UnsignedInt8 value, int increment, Simulator simulator) {
-        value = internalData.CY.getValue() ? value.inc() : value;
-        internalData.CY.setValue(internalData.ACC.getValue().compareTo(value) < 0);
+        value = internalData.bitMap.CY.getValue() ? value.inc() : value;
+        internalData.bitMap.CY.setValue(internalData.ACC.getValue().compareTo(value) < 0);
 
         UnsignedInt8 mask = new UnsignedInt8(0x0f);
-        internalData.AC.setValue(internalData.ACC.getValue().and(mask).compareTo(value.and(mask)) < 0);
+        internalData.bitMap.AC.setValue(internalData.ACC.getValue().and(mask).compareTo(value.and(mask)) < 0);
 
         // TODO: handle OV flag
 //        internalData.OV.setValue(true);
