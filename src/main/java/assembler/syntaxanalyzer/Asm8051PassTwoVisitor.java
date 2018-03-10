@@ -5,13 +5,19 @@ import simulator.memory.ExternalCode;
 import simulator.memory.datatype.UnsignedInt16;
 import simulator.memory.datatype.UnsignedInt8;
 
-public class Asm8051BaseVisitorImpl<T> extends Asm8051BaseVisitor<Integer> {
+import java.util.HashMap;
+import java.util.Map;
 
-    private ExternalCode externalCode;
-    private UnsignedInt16 pointer = new UnsignedInt16(0);
+public class Asm8051PassTwoVisitor<T> extends Asm8051BaseVisitor<Integer> {
 
-    public Asm8051BaseVisitorImpl(ExternalCode externalCode) {
+    private final Map<String, UnsignedInt16> symbolTable;
+    private final ExternalCode externalCode;
+    private UnsignedInt16 locationCounter;
+
+    public Asm8051PassTwoVisitor(ExternalCode externalCode, HashMap<String, UnsignedInt16> symbolTable) {
+        this.symbolTable = symbolTable;
         this.externalCode = externalCode;
+        locationCounter = new UnsignedInt16(0);
     }
 
     @Override
@@ -25,25 +31,25 @@ public class Asm8051BaseVisitorImpl<T> extends Asm8051BaseVisitor<Integer> {
                 int opcode = 0x76;
 
                 int immediate = visitImmediate(((Asm8051Parser.ImmediateContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(immediate));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(immediate));
 
-                movePointer(2);
+                moveLocationCounter(2);
             } else if (secondArgument instanceof Asm8051Parser.AccumulatorContext) {
                 int opcode = 0xf6;
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
 
-                movePointer(1);
+                moveLocationCounter(1);
             } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
                 int opcode = 0xa6;
 
                 int direct = visitDirect(((Asm8051Parser.DirectContext) secondArgument));
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
 
-                movePointer(2);
+                moveLocationCounter(2);
             }
 
         } else if (firstArgument instanceof Asm8051Parser.AccumulatorContext) {
@@ -52,33 +58,33 @@ public class Asm8051BaseVisitorImpl<T> extends Asm8051BaseVisitor<Integer> {
                 int opcode = 0x74;
 
                 int immediate = visitImmediate(((Asm8051Parser.ImmediateContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(immediate));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(immediate));
 
-                movePointer(2);
+                moveLocationCounter(2);
             } else if (secondArgument instanceof Asm8051Parser.IndirectRegisterContext) {
                 int opcode = 0xe6;
 
                 int registerNumber = visitIndirectRegister(((Asm8051Parser.IndirectRegisterContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
 
-                movePointer(1);
+                moveLocationCounter(1);
             } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
                 int opcode = 0xe5;
 
                 int direct = visitDirect(((Asm8051Parser.DirectContext) secondArgument));
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
 
-                movePointer(2);
+                moveLocationCounter(2);
             } else if (secondArgument instanceof Asm8051Parser.RegisterContext) {
                 int opcode = 0xe8;
 
                 int registerNumber = visitRegister(((Asm8051Parser.RegisterContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
 
-                movePointer(1);
+                moveLocationCounter(1);
             }
 
         } else if (firstArgument instanceof Asm8051Parser.DirectContext) {
@@ -89,43 +95,43 @@ public class Asm8051BaseVisitorImpl<T> extends Asm8051BaseVisitor<Integer> {
 
                 int srcDirect = visitDirect(((Asm8051Parser.DirectContext) secondArgument));
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(srcDirect));
-                externalCode.setCellValue(pointer.inc().inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(srcDirect));
+                externalCode.setCellValue(locationCounter.inc().inc(), new UnsignedInt8(direct));
 
-                movePointer(3);
+                moveLocationCounter(3);
             } else if (secondArgument instanceof Asm8051Parser.ImmediateContext) {
                 int opcode = 0x75;
 
                 int immediate = visitImmediate(((Asm8051Parser.ImmediateContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
-                externalCode.setCellValue(pointer.inc().inc(), new UnsignedInt8(immediate));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter.inc().inc(), new UnsignedInt8(immediate));
 
-                movePointer(3);
+                moveLocationCounter(3);
             } else if (secondArgument instanceof Asm8051Parser.IndirectRegisterContext) {
                 int opcode = 0x86;
 
                 int registerNumber = visitIndirectRegister(((Asm8051Parser.IndirectRegisterContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
 
-                movePointer(2);
+                moveLocationCounter(2);
             } else if (secondArgument instanceof Asm8051Parser.AccumulatorContext) {
                 int opcode = 0xf5;
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
 
-                movePointer(2);
+                moveLocationCounter(2);
             } else if (secondArgument instanceof Asm8051Parser.RegisterContext) {
                 int opcode = 0x88;
 
                 int registerNumber = visitRegister(((Asm8051Parser.RegisterContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
 
-                movePointer(2);
+                moveLocationCounter(2);
             }
 
         } else if (firstArgument instanceof Asm8051Parser.RegisterContext) {
@@ -135,25 +141,25 @@ public class Asm8051BaseVisitorImpl<T> extends Asm8051BaseVisitor<Integer> {
                 int opcode = 0x78;
 
                 int immediate = visitImmediate(((Asm8051Parser.ImmediateContext) secondArgument));
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(immediate));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(immediate));
 
-                movePointer(2);
+                moveLocationCounter(2);
             } else if (secondArgument instanceof Asm8051Parser.AccumulatorContext) {
                 int opcode = 0xf8;
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
 
-                movePointer(1);
+                moveLocationCounter(1);
             } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
                 int opcode = 0xa8;
 
                 int direct = visitDirect(((Asm8051Parser.DirectContext) secondArgument));
 
-                externalCode.setCellValue(pointer, new UnsignedInt8(opcode | registerNumber));
-                externalCode.setCellValue(pointer.inc(), new UnsignedInt8(direct));
+                externalCode.setCellValue(locationCounter, new UnsignedInt8(opcode | registerNumber));
+                externalCode.setCellValue(locationCounter.inc(), new UnsignedInt8(direct));
 
-                movePointer(2);
+                moveLocationCounter(2);
             }
 
         }
@@ -191,8 +197,8 @@ public class Asm8051BaseVisitorImpl<T> extends Asm8051BaseVisitor<Integer> {
         return Integer.parseInt(text.substring(text.length() - 1, text.length()));
     }
 
-    private void movePointer(int offset) {
-        pointer = pointer.add(new UnsignedInt16(offset));
+    private void moveLocationCounter(int offset) {
+        locationCounter = locationCounter.add(new UnsignedInt16(offset));
     }
 
 }

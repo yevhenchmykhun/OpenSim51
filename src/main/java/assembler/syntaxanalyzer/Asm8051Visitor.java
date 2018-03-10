@@ -1,5 +1,8 @@
-// Generated from C:/Users/yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
 package assembler.syntaxanalyzer;
+
+// Generated from C:/Users/yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
+
+import assembler.syntaxanalyzer.Asm8051Parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -29,17 +32,47 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstruction(Asm8051Parser.InstructionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Asm8051Parser#opcode}.
+	 * Visit a parse tree produced by {@link Asm8051Parser#mnemonic}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOpcode(Asm8051Parser.OpcodeContext ctx);
+	T visitMnemonic(Asm8051Parser.MnemonicContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#ajmp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAjmp(Asm8051Parser.AjmpContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#clr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClr(Asm8051Parser.ClrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#jnz}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJnz(Asm8051Parser.JnzContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#mov}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitMov(Asm8051Parser.MovContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#nop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNop(Asm8051Parser.NopContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#subb}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubb(Asm8051Parser.SubbContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#lbl}.
 	 * @param ctx the parse tree
@@ -115,4 +148,16 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAccumulator(Asm8051Parser.AccumulatorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#sfr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSfr(Asm8051Parser.SfrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#bit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBit(Asm8051Parser.BitContext ctx);
 }
