@@ -1,6 +1,6 @@
 grammar Asm8051;
 
-listing
+source
     : (line? EOL)+
     ;
 
@@ -12,45 +12,109 @@ line
 
 instruction
     : lbl? mnemonic comment?
-   ;
+    ;
 
 mnemonic
-    : ajmp
+    : acall
+    | add
+    | addc
+    | ajmp
+    | anl
+    | cjne
     | clr
+    | cpl
+    | da
+    | dec
+    | div
+    | djnz
+    | inc
+    | jb
+    | jbc
+    | jc
+    | jmp
+    | jnb
+    | jnc
     | jnz
+    | jz
+    | lcall
+    | ljmp
     | mov
+    | movc
+    | movx
+    | mul
     | nop
+    | orl
+    | pop
+    | push
+    | ret
+    | reti
+    | rl
+    | rlc
+    | rr
+    | rrc
+    | setb
+    | sjmp
     | subb
+    | swap
+    | xch
+    | xchd
+    | xrl
     ;
 
-ajmp
-    : AJMP (number | label)
-    ;
-
-clr
-    : CLR (accumulator | bit)
-    ;
-
-jnz
-    : JNZ (number | label)
-    ;
-
-mov
-    : MOV (((accumulator | direct | indirectRegister | register) ',' immediate)
-         | (direct ',' (direct | indirectRegister | register))
-         | ((indirectRegister | register) ',' direct)
-         | (accumulator ',' (direct | indirectRegister | register))
-         | ((direct | indirectRegister | register) ',' accumulator))
-    ;
-
-nop
-    : NOP
-    ;
-
-subb
-    : SUBB (accumulator ',' (immediate | indirectRegister | direct | register))
-    ;
-
+acall : ACALL label;
+add   : ADD (accumulator ',' (immediate | indirectRegister | direct | register));
+addc  : ADDC (accumulator ',' (immediate | indirectRegister | direct | register));
+ajmp  : AJMP label;
+anl   : ANL (accumulator ',' (immediate | indirectRegister | direct | register));
+cjne  : CJNE (((indirectRegister | accumulator | register) ',' immediate)
+            | (accumulator ',' direct)) ',' label;
+clr   : CLR (accumulator | bit);
+cpl   : CPL (accumulator | bit);
+da    : DA accumulator;
+dec   : DEC (indirectRegister | accumulator | direct | register);
+div   : DIV AB;
+djnz  : DJNZ (direct | register) ',' label;
+inc   : INC (indirectRegister | accumulator | direct | register);
+jb    : JB bit ',' label;
+jbc   : JBC bit ',' label;
+jc    : JC label;
+jmp   : JMP '@' accumulator '+' DPTR;
+jnb   : JBC bit ',' label;
+jnc   : JNC label;
+jnz   : JNZ label;
+jz    : JZ label;
+lcall : LCALL label;
+ljmp  : LJMP label;
+mov   : MOV ((indirectRegister ',' (immediate | accumulator | direct))
+           | (accumulator ',' (immediate | indirectRegister | direct | register))
+           | (bit ',' CY | CY ',' bit)
+           | (direct ',' (direct | immediate | indirectRegister | accumulator | register))
+           | DPTR ',' immediate
+           | (register ',' (immediate | accumulator | direct)));
+movc  : MOVC accumulator ',' '@' accumulator '+' (DPTR | PC);
+movx  : MOVX (accumulator ',' ('@' DPTR | indirectRegister)
+           | indirectRegister ',' accumulator);
+mul   : MUL AB;
+nop   : NOP;
+orl   : ORL ((accumulator ',' (immediate | indirectRegister | direct | register))
+           | (CY ',' '/'? bit)
+           | (direct | (immediate | accumulator)));
+pop   : POP direct;
+push  : PUSH direct;
+ret   : RET;
+reti  : RETI;
+rl    : RL accumulator;
+rlc   : RLC accumulator;
+rr    : RR accumulator;
+rrc   : RRC accumulator;
+setb  : SETB bit;
+sjmp  : SJMP label;
+subb  : SUBB (accumulator ',' (immediate | indirectRegister | direct | register));
+swap  : SWAP accumulator;
+xch   : XCH accumulator ',' (indirectRegister | direct | register);
+xchd  : XCHD accumulator ',' indirectRegister;
+xrl   : XRL ((accumulator ',' (immediate | indirectRegister | direct | register))
+           | (direct ',' (immediate | accumulator)));
 
 lbl
     : label ':'
@@ -72,7 +136,6 @@ direct
     : number
     | sfr
     ;
-
 
 immediate
     : '#' number
@@ -172,6 +235,7 @@ bit
     | FO
     | AC
     | CY
+    | PORT_BIT
     ;
 
 // tokens
@@ -299,12 +363,16 @@ RS1    : R S '1';
 FO     : F O;
 AC     : A C;
 CY     : C;
+PORT_BIT: (P0 | P1 | P2 | P3) '.' [0-7];
 
+PC : P C;
+DPTR : D P T R;
+AB : A B;
 INDIRECT_REGISTER : '@' R [01];
 REGISTER : R [0-7];
-NAME : [a-zA-Z] [a-zA-Z0-9]*;
+NAME : [a-zA-Z] [a-zA-Z0-9_]*;
 DECIMAL : [0-9]+;
-HEXADECIMAL : [0-9a-fA-F]+ [Hh];
+HEXADECIMAL : '0x' [0-9a-fA-F]+ | [0-9a-fA-F]+ [Hh];
 BINARY : [01]+ [Bb];
 COMMENT : ';' ~[\r\n]* -> skip;
 EOL : '\r'? '\n';

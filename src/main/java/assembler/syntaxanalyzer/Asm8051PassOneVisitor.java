@@ -1,11 +1,40 @@
 package assembler.syntaxanalyzer;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import simulator.memory.datatype.UnsignedInt16;
 
+import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("SuspiciousMethodCalls")
 public class Asm8051PassOneVisitor<T> extends Asm8051BaseVisitor<Integer> {
+
+    private static final Map<Class<? extends ParserRuleContext>, Map<Class<? extends ParserRuleContext>, Integer>> SECOND_OPERAND;
+    private static final Map<Class<? extends ParserRuleContext>, Integer> BYTES;
+    private static final Map<Class<? extends ParserRuleContext>, Integer> BYTES_DIRECT;
+
+    static {
+        BYTES = new HashMap<>();
+        BYTES.put(Asm8051Parser.AccumulatorContext.class, 1);
+        BYTES.put(Asm8051Parser.ImmediateContext.class, 2);
+        BYTES.put(Asm8051Parser.IndirectRegisterContext.class, 1);
+        BYTES.put(Asm8051Parser.DirectContext.class, 2);
+        BYTES.put(Asm8051Parser.RegisterContext.class, 1);
+
+        BYTES_DIRECT = new HashMap<>();
+        BYTES_DIRECT.put(Asm8051Parser.AccumulatorContext.class, 2);
+        BYTES_DIRECT.put(Asm8051Parser.ImmediateContext.class, 3);
+        BYTES_DIRECT.put(Asm8051Parser.IndirectRegisterContext.class, 2);
+        BYTES_DIRECT.put(Asm8051Parser.DirectContext.class, 3);
+        BYTES_DIRECT.put(Asm8051Parser.RegisterContext.class, 2);
+
+        SECOND_OPERAND = new HashMap<>();
+        SECOND_OPERAND.put(Asm8051Parser.AccumulatorContext.class, BYTES);
+        SECOND_OPERAND.put(Asm8051Parser.IndirectRegisterContext.class, BYTES);
+        SECOND_OPERAND.put(Asm8051Parser.DirectContext.class, BYTES_DIRECT);
+        SECOND_OPERAND.put(Asm8051Parser.RegisterContext.class, BYTES);
+    }
 
     private final Map<String, UnsignedInt16> symbolTable;
     private UnsignedInt16 locationCounter;
@@ -57,11 +86,11 @@ public class Asm8051PassOneVisitor<T> extends Asm8051BaseVisitor<Integer> {
 
     @Override
     public Integer visitClr(Asm8051Parser.ClrContext ctx) {
-        ParseTree firstArgument = ctx.getChild(1);
-        if (firstArgument instanceof Asm8051Parser.AccumulatorContext) {
+        ParseTree child = ctx.getChild(1);
+        if (child instanceof Asm8051Parser.AccumulatorContext) {
             return 1;
-        } else if (firstArgument instanceof Asm8051Parser.BitContext) {
-            if (((Asm8051Parser.BitContext) firstArgument).CY() != null) {
+        } else if (child instanceof Asm8051Parser.BitContext) {
+            if (((Asm8051Parser.BitContext) child).CY() != null) {
                 return 1;
             } else {
                 return 2;
@@ -73,73 +102,18 @@ public class Asm8051PassOneVisitor<T> extends Asm8051BaseVisitor<Integer> {
 
     @Override
     public Integer visitSubb(Asm8051Parser.SubbContext ctx) {
-        ParseTree secondArgument = ctx.getChild(3);
-        if (secondArgument instanceof Asm8051Parser.ImmediateContext) {
-            return 2;
-        } else if (secondArgument instanceof Asm8051Parser.IndirectRegisterContext) {
-            return 1;
-        } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
-            return 2;
-        } else if (secondArgument instanceof Asm8051Parser.RegisterContext) {
-            return 1;
-        }
+        ParseTree firstOperand = ctx.getChild(1);
+        ParseTree secondOperand = ctx.getChild(3);
 
-        return 0;
+        return SECOND_OPERAND.get(firstOperand.getClass()).get(secondOperand.getClass());
     }
 
     @Override
     public Integer visitMov(Asm8051Parser.MovContext ctx) {
-        ParseTree firstArgument = ctx.getChild(1);
-        ParseTree secondArgument = ctx.getChild(3);
-        if (firstArgument instanceof Asm8051Parser.IndirectRegisterContext) {
+        ParseTree firstOperand = ctx.getChild(1);
+        ParseTree secondOperand = ctx.getChild(3);
 
-            if (secondArgument instanceof Asm8051Parser.ImmediateContext) {
-                return 2;
-            } else if (secondArgument instanceof Asm8051Parser.AccumulatorContext) {
-                return 1;
-            } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
-                return 2;
-            }
-
-        } else if (firstArgument instanceof Asm8051Parser.AccumulatorContext) {
-
-            if (secondArgument instanceof Asm8051Parser.ImmediateContext) {
-                return 2;
-            } else if (secondArgument instanceof Asm8051Parser.IndirectRegisterContext) {
-                return 1;
-            } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
-                return 2;
-            } else if (secondArgument instanceof Asm8051Parser.RegisterContext) {
-                return 1;
-            }
-
-        } else if (firstArgument instanceof Asm8051Parser.DirectContext) {
-
-            if (secondArgument instanceof Asm8051Parser.DirectContext) {
-                return 3;
-            } else if (secondArgument instanceof Asm8051Parser.ImmediateContext) {
-                return 3;
-            } else if (secondArgument instanceof Asm8051Parser.IndirectRegisterContext) {
-                return 2;
-            } else if (secondArgument instanceof Asm8051Parser.AccumulatorContext) {
-                return 2;
-            } else if (secondArgument instanceof Asm8051Parser.RegisterContext) {
-                return 2;
-            }
-
-        } else if (firstArgument instanceof Asm8051Parser.RegisterContext) {
-
-            if (secondArgument instanceof Asm8051Parser.ImmediateContext) {
-                return 2;
-            } else if (secondArgument instanceof Asm8051Parser.AccumulatorContext) {
-                return 1;
-            } else if (secondArgument instanceof Asm8051Parser.DirectContext) {
-                return 2;
-            }
-
-        }
-
-        return 0;
+        return SECOND_OPERAND.get(firstOperand.getClass()).get(secondOperand.getClass());
     }
 
 }
