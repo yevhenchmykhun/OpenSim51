@@ -113,7 +113,7 @@ public class InternalData extends Memory {
         public final Bit OV = new NamedBit(PSW, 2);
         public final Bit RS0 = new NamedBit(PSW, 3);
         public final Bit RS1 = new NamedBit(PSW, 4);
-        public final Bit FO = new NamedBit(PSW, 5);
+        public final Bit F0 = new NamedBit(PSW, 5);
         public final Bit AC = new NamedBit(PSW, 6);
         public final Bit CY = new NamedBit(PSW, 7);
 
