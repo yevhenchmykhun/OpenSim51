@@ -42,6 +42,10 @@ public abstract class Memory {
         }
     }
 
+    public int getMemorySize() {
+        return memorySize;
+    }
+
     public interface Bit {
 
         boolean getValue();
