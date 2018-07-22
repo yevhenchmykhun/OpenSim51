@@ -1,0 +1,23 @@
+.tree-table-row-cell {
+    -fx-cell-size: 24px;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}
+
+.tree-table-cell {
+  -fx-alignment: CENTER-LEFT;
+}
+
+.registers_tree_column .label {
+    -fx-alignment: CENTER-LEFT
+}
+
+.text-field.hex_value {
+    -fx-padding: 2;
+}
+
+.memory_table .text-field {
+    -fx-padding: 2;
+}
