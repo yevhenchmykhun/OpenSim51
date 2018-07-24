@@ -76,11 +76,15 @@ public class Simulator {
 
     public void run() {
         while (true) {
-            UnsignedInt8 opcode = externalCode.getCellValue(programCounter);
-            Instruction instruction = Instruction.findByOpcode(opcode.toInt());
-            Command command = instruction.getCommand();
-            command.execute(internalData, externalData, externalCode, this, instruction);
+            step();
         }
+    }
+
+    public void step() {
+        UnsignedInt8 opcode = externalCode.getCellValue(programCounter);
+        Instruction instruction = Instruction.findByOpcode(opcode.toInt());
+        Command command = instruction.getCommand();
+        command.execute(internalData, externalData, externalCode, this, instruction);
     }
 
 }

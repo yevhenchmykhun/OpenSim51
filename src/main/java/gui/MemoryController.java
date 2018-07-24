@@ -11,8 +11,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
-import simulator.memory.ExternalCode;
-import simulator.memory.ExternalData;
 import simulator.memory.Memory;
 import simulator.memory.datatype.UnsignedInt8;
 
@@ -168,11 +166,11 @@ public class MemoryController implements Updatable {
     private Memory getMemory() {
         switch (getRequestedMemoryType()) {
             case "D":
-                return MainWindow.data;
+                return MainWindow.simulator.getInternalData();
             case "C":
-                return new ExternalCode();
+                return MainWindow.simulator.getExternalCode();
             case "X":
-                return new ExternalData();
+                return MainWindow.simulator.getExternalData();
         }
 
         throw new RuntimeException("Unsupported memory type");

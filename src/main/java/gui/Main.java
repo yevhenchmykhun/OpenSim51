@@ -14,9 +14,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         primaryStage.setTitle("8051Sim");
         primaryStage.setMaximized(true);
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
+        Parent root = loader.load();
+        MainWindow controller = loader.getController();
+        controller.setStage(primaryStage);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("styles.css");

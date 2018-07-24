@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.fxmisc.richtext.CodeArea;
@@ -15,6 +16,7 @@ import simulator.Simulator;
 import simulator.memory.InternalData;
 import simulator.memory.Memory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,9 @@ public class MainWindow {
 
     @FXML
     public Button stepOverButton;
+
+    @FXML
+    public Button burnHexButton;
 
     private Map<String, Stage> shownPortWindows;
 
@@ -50,6 +55,7 @@ public class MainWindow {
     public MenuItem port2MenuItem;
     @FXML
     public MenuItem port3MenuItem;
+    private Stage primaryStage;
 
     public MainWindow() {
         this.shownPortWindows = new HashMap<>();
@@ -74,6 +80,25 @@ public class MainWindow {
 
         translateButton.setOnAction(event -> {
             simulator.translate(codeArea.getText());
+        });
+
+        burnHexButton.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open HEX File");
+            File file = fileChooser.showOpenDialog(primaryStage);
+
+            try {
+                simulator.burnIntel8HexFile(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            memoryController.update();
+        });
+
+        stepOverButton.setOnAction(event -> {
+            simulator.step();
+            updateUserInterface();
         });
     }
 
@@ -111,5 +136,10 @@ public class MainWindow {
     public void updateUserInterface() {
         registersController.update();
         memoryController.update();
+    }
+
+    public void setStage(Stage primaryStage) {
+
+        this.primaryStage = primaryStage;
     }
 }
