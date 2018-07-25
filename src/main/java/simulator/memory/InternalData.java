@@ -84,8 +84,8 @@ public class InternalData extends Memory {
         public final Bit C_T1 = new NamedBit(TMOD, 6);
         public final Bit GATE1 = new NamedBit(TMOD, 7);
         // Serial Control bits
-        public final Bit R1 = new NamedBit(SCON, 0);
-        public final Bit T1 = new NamedBit(SCON, 1);
+        public final Bit RI = new NamedBit(SCON, 0);
+        public final Bit TI = new NamedBit(SCON, 1);
         public final Bit RB8 = new NamedBit(SCON, 2);
         public final Bit TB8 = new NamedBit(SCON, 3);
         public final Bit REN = new NamedBit(SCON, 4);
