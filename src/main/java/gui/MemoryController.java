@@ -123,7 +123,7 @@ public class MemoryController implements Updatable {
 
                 // validate input
                 String text = event.getNewValue();
-                if (StringUtils.isBlank(text) || !text.matches(REGEX_ADDRESS_PREFIX + IntegerUtil.REGEX_HEX_OCT_DEC_INTEGER)) {
+                if (StringUtils.isBlank(text) || !text.matches(IntegerUtil.REGEX_HEX_OCT_DEC_INTEGER)) {
                     return;
                 }
 
