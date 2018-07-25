@@ -23,9 +23,21 @@ import java.util.HashMap;
 
 public class Simulator {
 
+    private static Simulator simulator;
+
     private final InternalData internalData = new InternalData();
     private final ExternalData externalData = new ExternalData();
     private final ExternalCode externalCode = new ExternalCode();
+
+    private UnsignedInt16 programCounter = new UnsignedInt16(0);
+
+    public static Simulator getInstance() {
+        if (simulator == null) {
+            simulator = new Simulator();
+        }
+
+        return simulator;
+    }
 
     public InternalData getInternalData() {
         return internalData;
@@ -38,8 +50,6 @@ public class Simulator {
     public ExternalCode getExternalCode() {
         return externalCode;
     }
-
-    private UnsignedInt16 programCounter = new UnsignedInt16(0);
 
     public UnsignedInt16 getPC() {
         return programCounter;

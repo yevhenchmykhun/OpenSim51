@@ -9,6 +9,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
+import simulator.Simulator;
 import simulator.memory.InternalData;
 import simulator.memory.Memory;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class InterruptController implements Updatable {
 
-    private static InternalData internalData = MainWindow.simulator.getInternalData();
+    private InternalData internalData = Simulator.getInstance().getInternalData();
 
     @FXML
     public TableView<Interrupt> tableView;

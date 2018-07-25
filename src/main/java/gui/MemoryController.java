@@ -11,6 +11,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
+import simulator.Simulator;
 import simulator.memory.Memory;
 import simulator.memory.datatype.UnsignedInt8;
 
@@ -23,6 +24,8 @@ public class MemoryController implements Updatable {
     private static final int HEX_RADIX = 16;
 
     private static final String REGEX_ADDRESS_PREFIX = "([dDcCxX]:)";
+
+    private Simulator simulator = Simulator.getInstance();
 
     @FXML
     private TextField addressTextField;
@@ -166,11 +169,11 @@ public class MemoryController implements Updatable {
     private Memory getMemory() {
         switch (getRequestedMemoryType()) {
             case "D":
-                return MainWindow.simulator.getInternalData();
+                return simulator.getInternalData();
             case "C":
-                return MainWindow.simulator.getExternalCode();
+                return simulator.getExternalCode();
             case "X":
-                return MainWindow.simulator.getExternalData();
+                return simulator.getExternalData();
         }
 
         throw new RuntimeException("Unsupported memory type");

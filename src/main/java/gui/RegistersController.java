@@ -7,10 +7,14 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
+import simulator.Simulator;
+import simulator.memory.InternalData;
 import simulator.memory.Memory;
 import simulator.memory.datatype.UnsignedInt8;
 
 public class RegistersController implements Updatable {
+    
+    private Simulator simulator = Simulator.getInstance();
 
     @FXML
     public TreeTableView<TreeTableViewEntry> registersView;
@@ -52,23 +56,25 @@ public class RegistersController implements Updatable {
 
     @Override
     public void update() {
+        InternalData internalData = simulator.getInternalData();
+
         TreeItem<TreeTableViewEntry> root = new TreeItem<>();
 
         TreeItem<TreeTableViewEntry> regs = new TreeItem<>(new TreeTableViewEntry("Regs", null));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r0", MainWindow.data.R0)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r1", MainWindow.data.R1)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r2", MainWindow.data.R2)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r3", MainWindow.data.R3)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r4", MainWindow.data.R4)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r5", MainWindow.data.R5)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r6", MainWindow.data.R6)));
-        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r7", MainWindow.data.R7)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r0", internalData.R0)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r1", internalData.R1)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r2", internalData.R2)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r3", internalData.R3)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r4", internalData.R4)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r5", internalData.R5)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r6", internalData.R6)));
+        regs.getChildren().add(new TreeItem<>(new TreeTableViewEntry("r7", internalData.R7)));
         regs.setExpanded(true);
 
         TreeItem<TreeTableViewEntry> sys = new TreeItem<>(new TreeTableViewEntry("Sys", null));
-        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("a", MainWindow.data.ACC)));
-        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("b", MainWindow.data.B)));
-        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("sp", MainWindow.data.SP)));
+        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("a", internalData.ACC)));
+        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("b", internalData.B)));
+        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("sp", internalData.SP)));
         sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("pc", null)));
 
         TreeItem<TreeTableViewEntry> dptr = new TreeItem<>(new TreeTableViewEntry("dptr", null));
@@ -76,15 +82,15 @@ public class RegistersController implements Updatable {
         dptr.getChildren().add(new TreeItem<>(new TreeTableViewEntry("[1]", null)));
         sys.getChildren().add(dptr);
 
-        TreeItem<TreeTableViewEntry> psw = new TreeItem<>(new TreeTableViewEntry("psw", MainWindow.data.PSW));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("p", MainWindow.data.bitMap.P)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ud", MainWindow.data.bitMap.UD)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ov", MainWindow.data.bitMap.OV)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs0", MainWindow.data.bitMap.RS0)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs1", MainWindow.data.bitMap.RS1)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("f0", MainWindow.data.bitMap.F0)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ac", MainWindow.data.bitMap.AC)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("cy", MainWindow.data.bitMap.CY)));
+        TreeItem<TreeTableViewEntry> psw = new TreeItem<>(new TreeTableViewEntry("psw", internalData.PSW));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("p", internalData.bitMap.P)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ud", internalData.bitMap.UD)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ov", internalData.bitMap.OV)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs0", internalData.bitMap.RS0)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs1", internalData.bitMap.RS1)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("f0", internalData.bitMap.F0)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ac", internalData.bitMap.AC)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("cy", internalData.bitMap.CY)));
 
         sys.getChildren().add(psw);
         sys.setExpanded(true);
