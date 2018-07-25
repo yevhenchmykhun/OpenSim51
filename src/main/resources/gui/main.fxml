@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainWindow">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.MainWindow">
     <children>
         <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -65,14 +65,14 @@
                 </ToolBar>
                 <SplitPane dividerPositions="0.5, 0.5" VBox.vgrow="ALWAYS">
                     <items>
-                        <fx:include fx:id="registers" maxWidth="-Infinity" prefWidth="175.0" source="registers.fxml" />
+                        <fx:include fx:id="registers" maxWidth="-Infinity" prefWidth="175.0" source="controller/registers.fxml" />
                         <ScrollPane fx:id="codeScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                         <TabPane tabClosingPolicy="UNAVAILABLE">
                             <tabs>
                                 <Tab closable="false" text="Call Stack" />
                                 <Tab closable="false" text="Memory">
                                     <content>
-                                        <fx:include fx:id="memory" source="memory.fxml" />
+                                        <fx:include fx:id="memory" source="controller/memory.fxml" />
                                     </content>
                                 </Tab>
                             </tabs>

@@ -1,4 +1,4 @@
-package gui;
+package gui.controller;
 
 import gui.util.IntegerUtil;
 import javafx.beans.property.ReadOnlyStringWrapper;
