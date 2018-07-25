@@ -30,7 +30,7 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Peripherals">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Interrupt" />
+                                <MenuItem fx:id="interruptMenuItem" mnemonicParsing="false" text="Interrupt" />
                                 <Menu mnemonicParsing="false" text="I/O-Ports">
                                     <items>
                                         <MenuItem fx:id="port0MenuItem" mnemonicParsing="false" text="Port 0" />

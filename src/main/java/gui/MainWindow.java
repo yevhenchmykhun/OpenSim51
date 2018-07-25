@@ -36,6 +36,9 @@ public class MainWindow {
     @FXML
     public Button burnHexButton;
 
+    @FXML
+    public MenuItem interruptMenuItem;
+
     private Map<String, Stage> shownPortWindows;
 
     @FXML
@@ -55,7 +58,11 @@ public class MainWindow {
     public MenuItem port2MenuItem;
     @FXML
     public MenuItem port3MenuItem;
+
     private Stage primaryStage;
+
+    private Stage interruptWindow;
+    private InterruptController interruptController;
 
     public MainWindow() {
         this.shownPortWindows = new HashMap<>();
@@ -65,6 +72,8 @@ public class MainWindow {
     public void initialize() {
         registersController.setMainWindow(this);
         memoryController.setMainWindow(this);
+
+        interruptMenuItem.setOnAction(event -> showInterruptWindow());
 
         port0MenuItem.setOnAction(event -> showPortWindow("0", MainWindow.data.P0));
         port1MenuItem.setOnAction(event -> showPortWindow("1", MainWindow.data.P1));
@@ -133,13 +142,45 @@ public class MainWindow {
         }
     }
 
+    private void showInterruptWindow() {
+        if (interruptWindow != null) {
+            interruptWindow.requestFocus();
+            return;
+        }
+
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Interrupt System");
+            stage.initStyle(StageStyle.UTILITY);
+            stage.setResizable(false);
+            stage.setAlwaysOnTop(true);
+            stage.setOnCloseRequest(event -> interruptWindow = null);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("interrupt.fxml"));
+            Parent root = loader.load();
+            interruptController = loader.getController();
+            interruptController.setMainWindow(this);
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add("styles.css");
+            stage.setScene(scene);
+            stage.show();
+
+            interruptWindow = stage;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateUserInterface() {
+        if (interruptController != null) {
+            interruptController.update();
+        }
         registersController.update();
         memoryController.update();
     }
 
     public void setStage(Stage primaryStage) {
-
         this.primaryStage = primaryStage;
     }
 }
