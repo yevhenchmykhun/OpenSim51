@@ -117,14 +117,17 @@ public class InternalData extends Memory {
         public final Bit AC = new NamedBit(PSW, 6);
         public final Bit CY = new NamedBit(PSW, 7);
 
+        public Bit getBit(int bitAddress) {
+            return new UnnamedBit(bitAddress);
+        }
+
         public void setBitValue(int bitAddress, boolean value) {
             new UnnamedBit(bitAddress).setValue(value);
         }
 
-        public boolean getBitValue(int address) {
-            return new UnnamedBit(address).getValue();
+        public boolean getBitValue(int bitAddress) {
+            return new UnnamedBit(bitAddress).getValue();
         }
-
     }
 
     private class RegisterCell extends Cell {
