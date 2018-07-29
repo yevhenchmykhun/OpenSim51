@@ -5,14 +5,19 @@ import java.util.Objects;
 
 public final class UnsignedInt8 implements Comparable<UnsignedInt8> {
 
+    public static final UnsignedInt8 ZERO = new UnsignedInt8(0);
+    public static final UnsignedInt8 ONE = new UnsignedInt8(1);
+    public static final UnsignedInt8 MAX_VALUE = new UnsignedInt8(255);
+
     private BigInteger value;
+    private boolean overflow;
 
     public UnsignedInt8(int magnitude) {
         this(1, magnitude);
     }
 
-    public UnsignedInt8(UnsignedInt8 unsignedInt8) {
-        this(unsignedInt8.value.signum(), unsignedInt8.value.byteValue());
+    public UnsignedInt8(UnsignedInt8 data) {
+        this(data.value.signum(), data.value.byteValue());
     }
 
     private UnsignedInt8(int sign, int magnitude) {
@@ -24,23 +29,29 @@ public final class UnsignedInt8 implements Comparable<UnsignedInt8> {
     }
 
     public UnsignedInt8 inc() {
-        return add(new UnsignedInt8(1));
+        return add(ONE);
     }
 
     public UnsignedInt8 setBit(int position) {
-        return toUnsignedInt8(this.value.setBit(position));
+        return toUnsignedInt8(value.setBit(position));
     }
 
     public UnsignedInt8 clearBit(int position) {
-        return toUnsignedInt8(this.value.clearBit(position));
+        return toUnsignedInt8(value.clearBit(position));
     }
 
     public UnsignedInt8 add(UnsignedInt8 data) {
-        return toUnsignedInt8(data.value.add(value));
+        BigInteger result = value.add(data.value);
+        overflow = result.compareTo(BigInteger.valueOf(MAX_VALUE.toInt())) > 0;
+
+        return toUnsignedInt8(result);
     }
 
     public UnsignedInt8 subtract(UnsignedInt8 data) {
-        return toUnsignedInt8(value.subtract(data.value));
+        BigInteger result = value.subtract(data.value);
+        overflow = result.compareTo(BigInteger.valueOf(ZERO.toInt())) < 0;
+
+        return toUnsignedInt8(result);
     }
 
     public UnsignedInt8 shiftLeft(int n) {
@@ -67,12 +78,16 @@ public final class UnsignedInt8 implements Comparable<UnsignedInt8> {
         return toUnsignedInt8(value.and(data.value));
     }
 
+    public boolean isOverflowOccurred() {
+        return overflow;
+    }
+
     public UnsignedInt16 toUnsignedInt16() {
         return new UnsignedInt16(toInt());
     }
 
     private UnsignedInt8 toUnsignedInt8(BigInteger src) {
-        return new UnsignedInt8(1, src.abs().byteValue());
+        return new UnsignedInt8(src.abs().byteValue());
     }
 
     @Override
@@ -98,5 +113,4 @@ public final class UnsignedInt8 implements Comparable<UnsignedInt8> {
         String hex = Integer.toHexString(value.byteValue());
         return hex.length() > 2 ? hex.substring(hex.length() - 2) : hex;
     }
-
 }
