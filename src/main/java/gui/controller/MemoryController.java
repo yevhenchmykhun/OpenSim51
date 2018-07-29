@@ -25,8 +25,6 @@ public class MemoryController implements Updatable {
 
     private static final String REGEX_ADDRESS_PREFIX = "([dDcCxX]:)";
 
-    private Simulator simulator = Simulator.getInstance();
-
     @FXML
     private TextField addressTextField;
 
@@ -39,6 +37,7 @@ public class MemoryController implements Updatable {
     @FXML
     private TableView<MemoryRow> memoryTableView;
 
+    private Simulator simulator = Simulator.getInstance();
     private MainWindow mainWindow;
 
     @FXML
@@ -133,7 +132,7 @@ public class MemoryController implements Updatable {
                 MemoryRow memoryRow = event.getRowValue();
                 int startAddress = IntegerUtil.parseInt(memoryRow.getStartAddress().substring(2));
                 int columnIndex = Integer.parseInt(event.getTableColumn().getId());
-                getMemory().setCellValue(startAddress + columnIndex, new UnsignedInt8(Integer.parseInt(text, HEX_RADIX)));
+                getMemory().setCellValue(startAddress + columnIndex, new UnsignedInt8(IntegerUtil.parseInt(text)));
 
                 // update the whole GUI
                 mainWindow.updateUserInterface();
