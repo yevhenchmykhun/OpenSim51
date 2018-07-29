@@ -214,7 +214,7 @@ public class InternalData extends Memory {
         }
 
         private int determineCellAddress() {
-            int cellAddress = bitAddress / 0x8;
+            int cellAddress = (bitAddress - (bitAddress % 0x8));
             return bitAddress <= 0x7f ? cellAddress + 0x20 : cellAddress;
         }
 
