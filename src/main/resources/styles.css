@@ -15,7 +15,7 @@
 }
 
 .text-field.hex_value {
-    -fx-padding: 2;
+    -fx-padding: 4;
 }
 
 .memory_table .text-field {
