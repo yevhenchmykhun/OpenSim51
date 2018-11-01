@@ -1,6 +1,5 @@
-package assembler.syntaxanalyzer;
-
-// Generated from C:/Users/yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
+// Generated from C:/Users/Yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
+package assembler.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -23,6 +22,84 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitLine(Asm8051Parser.LineContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#directive}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDirective(Asm8051Parser.DirectiveContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#org}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrg(Asm8051Parser.OrgContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#equ}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqu(Asm8051Parser.EquContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#set}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSet(Asm8051Parser.SetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#using}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUsing(Asm8051Parser.UsingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#ds}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDs(Asm8051Parser.DsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#db}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDb(Asm8051Parser.DbContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#dw}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDw(Asm8051Parser.DwContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#end}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEnd(Asm8051Parser.EndContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpression(Asm8051Parser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#character}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCharacter(Asm8051Parser.CharacterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#dollar}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDollar(Asm8051Parser.DollarContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#comparator}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparator(Asm8051Parser.ComparatorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#instruction}.
 	 * @param ctx the parse tree
@@ -300,23 +377,17 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitXrl(Asm8051Parser.XrlContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Asm8051Parser#lbl}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLbl(Asm8051Parser.LblContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#label}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLabel(Asm8051Parser.LabelContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Asm8051Parser#name}.
+	 * Visit a parse tree produced by {@link Asm8051Parser#symbol}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitName(Asm8051Parser.NameContext ctx);
+	T visitSymbol(Asm8051Parser.SymbolContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#comment}.
 	 * @param ctx the parse tree
@@ -350,12 +421,25 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitHexadecimal(Asm8051Parser.HexadecimalContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code octal}
+	 * labeled alternative in {@link Asm8051Parser#number}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOctal(Asm8051Parser.OctalContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code binary}
 	 * labeled alternative in {@link Asm8051Parser#number}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitBinary(Asm8051Parser.BinaryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#string}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitString(Asm8051Parser.StringContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#indirectRegister}.
 	 * @param ctx the parse tree
@@ -386,4 +470,16 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBit(Asm8051Parser.BitContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#carry}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCarry(Asm8051Parser.CarryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#dptr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDptr(Asm8051Parser.DptrContext ctx);
 }

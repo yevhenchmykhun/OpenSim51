@@ -1,9 +1,9 @@
 package simulator;
 
-import assembler.syntaxanalyzer.Asm8051Lexer;
-import assembler.syntaxanalyzer.Asm8051Parser;
-import assembler.syntaxanalyzer.Asm8051PassOneVisitor;
-import assembler.syntaxanalyzer.Asm8051PassTwoVisitor;
+import assembler.antlr.Asm8051Lexer;
+import assembler.antlr.Asm8051Parser;
+import assembler.syntaxanalyzer.Asm8051PassOneVisitorNew;
+import assembler.syntaxanalyzer.Asm8051PassTwoVisitorNew;
 import intelhexparser.Intel8HexParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -77,10 +77,10 @@ public class Simulator {
         ParseTree tree = parser.source();
 
         HashMap<String, UnsignedInt16> symbolTable = new HashMap<>();
-        Asm8051PassOneVisitor passOneVisitor = new Asm8051PassOneVisitor(symbolTable);
+        Asm8051PassOneVisitorNew passOneVisitor = new Asm8051PassOneVisitorNew(symbolTable);
         passOneVisitor.visit(tree);
 
-        Asm8051PassTwoVisitor passTwoVisitor = new Asm8051PassTwoVisitor(externalCode, symbolTable);
+        Asm8051PassTwoVisitorNew passTwoVisitor = new Asm8051PassTwoVisitorNew(externalCode, symbolTable);
         passTwoVisitor.visit(tree);
     }
 
