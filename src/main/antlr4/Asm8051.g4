@@ -5,13 +5,80 @@ source
     ;
 
 line
-    : lbl
+    : label
+    | directive
     | instruction
     | comment
     ;
 
+directive
+   :  (org | equ | set | using | ds | db | dw | end) comment?
+   ;
+
+org
+    : ORG expression
+    ;
+
+equ
+    : symbol EQU (expression | accumulator | register)
+    ;
+
+set
+    : symbol SET (expression | accumulator | register)
+    ;
+
+using
+    : USING expression
+    ;
+
+ds
+    : label DS expression
+    ;
+
+db
+    : label DB (expression | string) (COMMA (expression | string))*
+    ;
+
+dw
+    : label DW (expression | string) (COMMA (expression | string))*
+    ;
+
+end
+    : END
+    ;
+
+expression
+	:	(number | character | symbol | dollar)
+	|	LPAREN expression RPAREN
+	|	(UNARY_PLUS | UNARY_MINUS) expression
+	|	(HIGH | LOW) expression
+	|	expression (DIVISION | MULTIPLICATION | MOD | SHL | SHR) expression
+	|	expression (ADDITION | SUBTRACTION) expression
+	|	expression comparator expression
+	|   NOT expression
+	|   expression AND expression
+	|   expression (OR | XOR) expression
+	;
+
+character :
+    CHARACTER
+    ;
+
+dollar :
+    DOLLAR
+    ;
+
+comparator
+    :	EQ
+    |   NE
+    | 	LT
+    |	LE
+    |	GT
+    |	GE
+    ;
+
 instruction
-    : lbl? mnemonic comment?
+    : label? mnemonic comment?
     ;
 
 mnemonic
@@ -61,43 +128,43 @@ mnemonic
     | xrl
     ;
 
-acall : ACALL label;
-add   : ADD (accumulator ',' (immediate | indirectRegister | direct | register));
-addc  : ADDC (accumulator ',' (immediate | indirectRegister | direct | register));
-ajmp  : AJMP label;
-anl   : ANL (accumulator ',' (immediate | indirectRegister | direct | register));
-cjne  : CJNE (((indirectRegister | accumulator | register) ',' immediate)
-            | (accumulator ',' direct)) ',' label;
+acall : ACALL symbol;
+add   : ADD (accumulator COMMA (immediate | indirectRegister | direct | register));
+addc  : ADDC (accumulator COMMA (immediate | indirectRegister | direct | register));
+ajmp  : AJMP symbol;
+anl   : ANL (accumulator COMMA (immediate | indirectRegister | direct | register));
+cjne  : CJNE (((indirectRegister | accumulator | register) COMMA immediate)
+            | (accumulator COMMA direct)) COMMA symbol;
 clr   : CLR (accumulator | bit);
 cpl   : CPL (accumulator | bit);
 da    : DA accumulator;
 dec   : DEC (indirectRegister | accumulator | direct | register);
 div   : DIV AB;
-djnz  : DJNZ (direct | register) ',' label;
+djnz  : DJNZ (direct | register) COMMA symbol;
 inc   : INC (indirectRegister | accumulator | direct | register);
-jb    : JB bit ',' label;
-jbc   : JBC bit ',' label;
-jc    : JC label;
-jmp   : JMP '@' accumulator '+' DPTR;
-jnb   : JBC bit ',' label;
-jnc   : JNC label;
-jnz   : JNZ label;
-jz    : JZ label;
-lcall : LCALL label;
-ljmp  : LJMP label;
-mov   : MOV ((indirectRegister ',' (immediate | accumulator | direct))
-           | (accumulator ',' (immediate | indirectRegister | direct | register))
-           | (bit ',' CY | CY ',' bit)
-           | (direct ',' (direct | immediate | indirectRegister | accumulator | register))
-           | DPTR ',' immediate
-           | (register ',' (immediate | accumulator | direct)));
-movc  : MOVC accumulator ',' '@' accumulator '+' (DPTR | PC);
-movx  : MOVX (accumulator ',' ('@' DPTR | indirectRegister)
-           | indirectRegister ',' accumulator);
+jb    : JB bit COMMA symbol;
+jbc   : JBC bit COMMA symbol;
+jc    : JC symbol;
+jmp   : JMP AT accumulator ADDITION DPTR;
+jnb   : JBC bit COMMA symbol;
+jnc   : JNC symbol;
+jnz   : JNZ symbol;
+jz    : JZ symbol;
+lcall : LCALL symbol;
+ljmp  : LJMP symbol;
+mov   : MOV ((indirectRegister COMMA (immediate | accumulator | direct))
+           | (accumulator COMMA (immediate | indirectRegister | direct | register))
+           | (bit COMMA carry | carry COMMA bit)
+           | (direct COMMA (direct | immediate | indirectRegister | accumulator | register))
+           | dptr COMMA immediate
+           | (register COMMA (immediate | accumulator | direct)));
+movc  : MOVC accumulator COMMA AT accumulator ADDITION (DPTR | PC);
+movx  : MOVX (accumulator COMMA (AT DPTR | indirectRegister)
+           | indirectRegister COMMA accumulator);
 mul   : MUL AB;
 nop   : NOP;
-orl   : ORL ((accumulator ',' (immediate | indirectRegister | direct | register))
-           | (CY ',' '/'? bit)
+orl   : ORL ((accumulator COMMA (immediate | indirectRegister | direct | register))
+           | (carry COMMA SLASH? bit)
            | (direct | (immediate | accumulator)));
 pop   : POP direct;
 push  : PUSH direct;
@@ -108,24 +175,20 @@ rlc   : RLC accumulator;
 rr    : RR accumulator;
 rrc   : RRC accumulator;
 setb  : SETB bit;
-sjmp  : SJMP label;
-subb  : SUBB (accumulator ',' (immediate | indirectRegister | direct | register));
+sjmp  : SJMP symbol;
+subb  : SUBB (accumulator COMMA (immediate | indirectRegister | direct | register));
 swap  : SWAP accumulator;
-xch   : XCH accumulator ',' (indirectRegister | direct | register);
-xchd  : XCHD accumulator ',' indirectRegister;
-xrl   : XRL ((accumulator ',' (immediate | indirectRegister | direct | register))
-           | (direct ',' (immediate | accumulator)));
-
-lbl
-    : label ':'
-    ;
+xch   : XCH accumulator COMMA (indirectRegister | direct | register);
+xchd  : XCHD accumulator COMMA indirectRegister;
+xrl   : XRL ((accumulator COMMA (immediate | indirectRegister | direct | register))
+           | (direct COMMA (immediate | accumulator)));
 
 label
-    : name
+    : symbol COLON
     ;
 
-name
-    : NAME
+symbol
+    : SYMBOL
     ;
 
 comment
@@ -138,14 +201,19 @@ direct
     ;
 
 immediate
-    : '#' number
+    : HASH expression
     ;
 
 number
     : DECIMAL # decimal
     | HEXADECIMAL # hexadecimal
+    | OCTAL # octal
     | BINARY # binary
     ;
+
+string
+   : STRING
+   ;
 
 indirectRegister
     : INDIRECT_REGISTER
@@ -236,9 +304,58 @@ bit
     | AC
     | CY
     | PORT_BIT
+    | ACC_BIT
+    | BCC_BIT
+    ;
+
+carry :
+    CY
+    ;
+
+dptr :
+    DPTR
     ;
 
 // tokens
+
+// directive tokens
+
+EQU     : E Q U;
+SET     : S E T;
+ORG     : O R G;
+USING   : U S I N G;
+DS      : D S;
+DB      : D B;
+DW      : D W;
+END     : E N D;
+
+// expression tokens
+
+HIGH            : H I G H;
+LOW             : L O W;
+DOLLAR          : '$';
+DIVISION        : '/';
+MULTIPLICATION  : '*';
+ADDITION        : '+';
+SUBTRACTION     : '-';
+UNARY_PLUS      : '+';
+UNARY_MINUS     : '-';
+LPAREN          : '(';
+RPAREN          : ')';
+MOD             : M O D;
+SHL             : S H L;
+SHR             : S H R;
+NOT             : N O T;
+AND             : A N D;
+OR              : O R;
+XOR             : X O R;
+
+EQ  : E Q | '=';
+NE  : N E | '<>';
+LT  : L T | '<';
+LE  : L E | '<=';
+GT  : G T | '>';
+GE  : G E | '>=';
 
 // mnemonics
 
@@ -328,11 +445,11 @@ TR1    : T R '1';
 TF1    : T F '1';
 T0M0   : T '0' M '0';
 T0M1   : T '0' M '1';
-C_T0   : C '/' T '0';
+C_T0   : C SLASH T '0';
 GATE0  : G A T E '0';
 T1M0   : T '1' M '0';
 T1M1   : T '1' M '1';
-C_T1   : C '/' T '1';
+C_T1   : C SLASH T '1';
 GATE1  : G A T E '1';
 R1     : R '1';
 T1     : T '1';
@@ -363,17 +480,31 @@ RS1    : R S '1';
 FO     : F O;
 AC     : A C;
 CY     : C;
-PORT_BIT: (P0 | P1 | P2 | P3) '.' [0-7];
+PORT_BIT: (P0 | P1 | P2 | P3) DOT [0-7];
+ACC_BIT: ACC DOT [0-7];
+BCC_BIT: BCC DOT [0-7];
 
 PC : P C;
 DPTR : D P T R;
 AB : A B;
-INDIRECT_REGISTER : '@' R [01];
 REGISTER : R [0-7];
-NAME : [a-zA-Z] [a-zA-Z0-9_]*;
-DECIMAL : [0-9]+;
-HEXADECIMAL : '0x' [0-9a-fA-F]+ | [0-9a-fA-F]+ [Hh];
+INDIRECT_REGISTER : AT R [01];
+
+HASH    : '#';
+SLASH   : '/';
+COLON   : ':';
+COMMA   : ',';
+DOT     : '.';
+AT      : '@';
+
+DECIMAL : [0-9]+ [Dd]?;
+HEXADECIMAL : [0-9a-fA-F]+ [Hh];
+OCTAL : [0-7]+ [OoQq];
 BINARY : [01]+ [Bb];
+
+SYMBOL : [a-zA-Z?_] [a-zA-Z0-9?_]*;
+CHARACTER : '\'' [a-zA-Z0-9][a-zA-Z0-9]? '\'';
+STRING : '\'' ~ [']* '\'';
 COMMENT : ';' ~[\r\n]* -> skip;
 EOL : '\r'? '\n';
 WS : [ \t] -> skip;
