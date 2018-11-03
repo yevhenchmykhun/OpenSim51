@@ -95,12 +95,6 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDollar(Asm8051Parser.DollarContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link Asm8051Parser#comparator}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitComparator(Asm8051Parser.ComparatorContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#instruction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -471,6 +465,12 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBit(Asm8051Parser.BitContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#notBit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotBit(Asm8051Parser.NotBitContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Asm8051Parser#carry}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -482,4 +482,22 @@ public interface Asm8051Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDptr(Asm8051Parser.DptrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#atDptr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtDptr(Asm8051Parser.AtDptrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#atAPlusDptr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtAPlusDptr(Asm8051Parser.AtAPlusDptrContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Asm8051Parser#atAPlusPc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtAPlusPc(Asm8051Parser.AtAPlusPcContext ctx);
 }

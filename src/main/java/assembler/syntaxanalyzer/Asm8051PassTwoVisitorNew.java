@@ -3,6 +3,7 @@ package assembler.syntaxanalyzer;
 import assembler.Instruction;
 import assembler.Operand;
 import assembler.antlr.Asm8051Parser;
+import org.antlr.v4.runtime.tree.ParseTree;
 import simulator.memory.ExternalCode;
 import simulator.memory.datatype.UnsignedInt16;
 import simulator.memory.datatype.UnsignedInt8;
@@ -25,10 +26,10 @@ public class Asm8051PassTwoVisitorNew extends Asm8051CommonVisitor {
 
     @Override
     public Integer visitMnemonic(Asm8051Parser.MnemonicContext ctx) {
-        String mnemonic = ctx.getChild(0).getChild(0).getText();
+        ParseTree child = ctx.getChild(0);
+        String mnemonic = child.getChild(0).getText();
         Instruction instruction = Instruction.getByMnemonic(mnemonic.toUpperCase());
-
-        List<Operand> operands = processOperands(ctx, symbolTable);
+        List<Operand> operands = processOperands(child, symbolTable);
         List<Integer> machineCodes = instruction.toMachineCodes(operands);
         for (int machineCode : machineCodes) {
             externalCode.setCellValue(locationCounter, new UnsignedInt8(machineCode));

@@ -26,21 +26,21 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
         SFR_ADDRESS_BY_NAME.put("PCON", 0x87);
         SFR_ADDRESS_BY_NAME.put("TCON", 0x88);
         SFR_ADDRESS_BY_NAME.put("TMOD", 0x89);
-        SFR_ADDRESS_BY_NAME.put("TL0", 0x8A);
-        SFR_ADDRESS_BY_NAME.put("TL1", 0x8B);
-        SFR_ADDRESS_BY_NAME.put("TH0", 0x8C);
-        SFR_ADDRESS_BY_NAME.put("TH1", 0x8D);
+        SFR_ADDRESS_BY_NAME.put("TL0", 0x8a);
+        SFR_ADDRESS_BY_NAME.put("TL1", 0x8b);
+        SFR_ADDRESS_BY_NAME.put("TH0", 0x8c);
+        SFR_ADDRESS_BY_NAME.put("TH1", 0x8d);
         SFR_ADDRESS_BY_NAME.put("P1", 0x90);
         SFR_ADDRESS_BY_NAME.put("SCON", 0x98);
         SFR_ADDRESS_BY_NAME.put("SBUF", 0x99);
-        SFR_ADDRESS_BY_NAME.put("P2", 0xA0);
-        SFR_ADDRESS_BY_NAME.put("IE", 0xA8);
-        SFR_ADDRESS_BY_NAME.put("P3", 0xB0);
-        SFR_ADDRESS_BY_NAME.put("IP", 0xB8);
-        SFR_ADDRESS_BY_NAME.put("PSW", 0xD0);
-        SFR_ADDRESS_BY_NAME.put("ACC", 0xE0);
-        SFR_ADDRESS_BY_NAME.put("A", 0xE0);
-        SFR_ADDRESS_BY_NAME.put("B", 0xF0);
+        SFR_ADDRESS_BY_NAME.put("P2", 0xa0);
+        SFR_ADDRESS_BY_NAME.put("IE", 0xa8);
+        SFR_ADDRESS_BY_NAME.put("P3", 0xb0);
+        SFR_ADDRESS_BY_NAME.put("IP", 0xb8);
+        SFR_ADDRESS_BY_NAME.put("PSW", 0xd0);
+        SFR_ADDRESS_BY_NAME.put("ACC", 0xe0);
+        SFR_ADDRESS_BY_NAME.put("A", 0xe0);
+        SFR_ADDRESS_BY_NAME.put("B", 0xf0);
 
 
         BIT_ADDRESS_BY_NAME = new HashMap<>();
@@ -56,12 +56,12 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
         // Timer Control bits
         BIT_ADDRESS_BY_NAME.put("IT0", 0x88);
         BIT_ADDRESS_BY_NAME.put("IE0", 0x89);
-        BIT_ADDRESS_BY_NAME.put("IT1", 0x8A);
-        BIT_ADDRESS_BY_NAME.put("IE1", 0x8B);
-        BIT_ADDRESS_BY_NAME.put("TR0", 0x8C);
-        BIT_ADDRESS_BY_NAME.put("TF0", 0x8D);
-        BIT_ADDRESS_BY_NAME.put("TR1", 0x8E);
-        BIT_ADDRESS_BY_NAME.put("TF1", 0x8F);
+        BIT_ADDRESS_BY_NAME.put("IT1", 0x8a);
+        BIT_ADDRESS_BY_NAME.put("IE1", 0x8b);
+        BIT_ADDRESS_BY_NAME.put("TR0", 0x8c);
+        BIT_ADDRESS_BY_NAME.put("TF0", 0x8d);
+        BIT_ADDRESS_BY_NAME.put("TR1", 0x8e);
+        BIT_ADDRESS_BY_NAME.put("TF1", 0x8f);
         // Port 1 bits
         BIT_ADDRESS_BY_NAME.put("P1.0", 0x90);
         BIT_ADDRESS_BY_NAME.put("P1.1", 0x91);
@@ -74,72 +74,137 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
         // Serial Control bits
         BIT_ADDRESS_BY_NAME.put("RI", 0x98);
         BIT_ADDRESS_BY_NAME.put("TI", 0x99);
-        BIT_ADDRESS_BY_NAME.put("RB8", 0x9A);
-        BIT_ADDRESS_BY_NAME.put("TB8", 0x9B);
-        BIT_ADDRESS_BY_NAME.put("REN", 0x9C);
-        BIT_ADDRESS_BY_NAME.put("SM2", 0x9D);
-        BIT_ADDRESS_BY_NAME.put("SM1", 0x9E);
-        BIT_ADDRESS_BY_NAME.put("SM0", 0x9F);
+        BIT_ADDRESS_BY_NAME.put("RB8", 0x9a);
+        BIT_ADDRESS_BY_NAME.put("TB8", 0x9b);
+        BIT_ADDRESS_BY_NAME.put("REN", 0x9c);
+        BIT_ADDRESS_BY_NAME.put("SM2", 0x9d);
+        BIT_ADDRESS_BY_NAME.put("SM1", 0x9e);
+        BIT_ADDRESS_BY_NAME.put("SM0", 0x9f);
         // Port 2 bits
-        BIT_ADDRESS_BY_NAME.put("P2.0", 0xA0);
-        BIT_ADDRESS_BY_NAME.put("P2.1", 0xA1);
-        BIT_ADDRESS_BY_NAME.put("P2.2", 0xA2);
-        BIT_ADDRESS_BY_NAME.put("P2.3", 0xA3);
-        BIT_ADDRESS_BY_NAME.put("P2.4", 0xA4);
-        BIT_ADDRESS_BY_NAME.put("P2.5", 0xA5);
-        BIT_ADDRESS_BY_NAME.put("P2.6", 0xA6);
-        BIT_ADDRESS_BY_NAME.put("P2.7", 0xA7);
+        BIT_ADDRESS_BY_NAME.put("P2.0", 0xa0);
+        BIT_ADDRESS_BY_NAME.put("P2.1", 0xa1);
+        BIT_ADDRESS_BY_NAME.put("P2.2", 0xa2);
+        BIT_ADDRESS_BY_NAME.put("P2.3", 0xa3);
+        BIT_ADDRESS_BY_NAME.put("P2.4", 0xa4);
+        BIT_ADDRESS_BY_NAME.put("P2.5", 0xa5);
+        BIT_ADDRESS_BY_NAME.put("P2.6", 0xa6);
+        BIT_ADDRESS_BY_NAME.put("P2.7", 0xa7);
         // Interrupt Enable bits
-        BIT_ADDRESS_BY_NAME.put("EX0", 0xA8);
-        BIT_ADDRESS_BY_NAME.put("ET0", 0xA9);
-        BIT_ADDRESS_BY_NAME.put("EX1", 0xAA);
-        BIT_ADDRESS_BY_NAME.put("ET1", 0xAB);
-        BIT_ADDRESS_BY_NAME.put("ES", 0xAC);
-        BIT_ADDRESS_BY_NAME.put("ET2", 0xAD);
-        BIT_ADDRESS_BY_NAME.put("EA", 0xAF);
+        BIT_ADDRESS_BY_NAME.put("EX0", 0xa8);
+        BIT_ADDRESS_BY_NAME.put("ET0", 0xa9);
+        BIT_ADDRESS_BY_NAME.put("EX1", 0xaa);
+        BIT_ADDRESS_BY_NAME.put("ET1", 0xab);
+        BIT_ADDRESS_BY_NAME.put("ES", 0xac);
+        BIT_ADDRESS_BY_NAME.put("ET2", 0xad);
+        BIT_ADDRESS_BY_NAME.put("EA", 0xaf);
         // Port 3 bits
-        BIT_ADDRESS_BY_NAME.put("P3.0", 0xB0);
-        BIT_ADDRESS_BY_NAME.put("P3.1", 0xB1);
-        BIT_ADDRESS_BY_NAME.put("P3.2", 0xB2);
-        BIT_ADDRESS_BY_NAME.put("P3.3", 0xB3);
-        BIT_ADDRESS_BY_NAME.put("P3.4", 0xB4);
-        BIT_ADDRESS_BY_NAME.put("P3.5", 0xB5);
-        BIT_ADDRESS_BY_NAME.put("P3.6", 0xB6);
-        BIT_ADDRESS_BY_NAME.put("P3.7", 0xB7);
+        BIT_ADDRESS_BY_NAME.put("P3.0", 0xb0);
+        BIT_ADDRESS_BY_NAME.put("P3.1", 0xb1);
+        BIT_ADDRESS_BY_NAME.put("P3.2", 0xb2);
+        BIT_ADDRESS_BY_NAME.put("P3.3", 0xb3);
+        BIT_ADDRESS_BY_NAME.put("P3.4", 0xb4);
+        BIT_ADDRESS_BY_NAME.put("P3.5", 0xb5);
+        BIT_ADDRESS_BY_NAME.put("P3.6", 0xb6);
+        BIT_ADDRESS_BY_NAME.put("P3.7", 0xb7);
         // Interrupt Priority bits
-        BIT_ADDRESS_BY_NAME.put("PX0", 0xB8);
-        BIT_ADDRESS_BY_NAME.put("PT0", 0xB9);
-        BIT_ADDRESS_BY_NAME.put("PX1", 0xBA);
-        BIT_ADDRESS_BY_NAME.put("PT1", 0xBB);
-        BIT_ADDRESS_BY_NAME.put("PS", 0xBC);
-        BIT_ADDRESS_BY_NAME.put("PT2", 0xBD);
+        BIT_ADDRESS_BY_NAME.put("PX0", 0xb8);
+        BIT_ADDRESS_BY_NAME.put("PT0", 0xb9);
+        BIT_ADDRESS_BY_NAME.put("PX1", 0xba);
+        BIT_ADDRESS_BY_NAME.put("PT1", 0xbb);
+        BIT_ADDRESS_BY_NAME.put("PS", 0xbc);
+        BIT_ADDRESS_BY_NAME.put("PT2", 0xbd);
         // PSW bits
-        BIT_ADDRESS_BY_NAME.put("P", 0xD0);
-        BIT_ADDRESS_BY_NAME.put("UD", 0xD1);
-        BIT_ADDRESS_BY_NAME.put("OV", 0xD2);
-        BIT_ADDRESS_BY_NAME.put("RS0", 0xD3);
-        BIT_ADDRESS_BY_NAME.put("RS1", 0xD4);
-        BIT_ADDRESS_BY_NAME.put("F0", 0xD5);
-        BIT_ADDRESS_BY_NAME.put("AC", 0xD6);
-        BIT_ADDRESS_BY_NAME.put("CY", 0xD7);
+        BIT_ADDRESS_BY_NAME.put("P", 0xd0);
+        BIT_ADDRESS_BY_NAME.put("UD", 0xd1);
+        BIT_ADDRESS_BY_NAME.put("OV", 0xd2);
+        BIT_ADDRESS_BY_NAME.put("RS0", 0xd3);
+        BIT_ADDRESS_BY_NAME.put("RS1", 0xd4);
+        BIT_ADDRESS_BY_NAME.put("F0", 0xd5);
+        BIT_ADDRESS_BY_NAME.put("AC", 0xd6);
+        BIT_ADDRESS_BY_NAME.put("CY", 0xd7);
         // ACC bits
-        BIT_ADDRESS_BY_NAME.put("ACC.0", 0xE0);
-        BIT_ADDRESS_BY_NAME.put("ACC.1", 0xE1);
-        BIT_ADDRESS_BY_NAME.put("ACC.2", 0xE2);
-        BIT_ADDRESS_BY_NAME.put("ACC.3", 0xE3);
-        BIT_ADDRESS_BY_NAME.put("ACC.4", 0xE4);
-        BIT_ADDRESS_BY_NAME.put("ACC.5", 0xE5);
-        BIT_ADDRESS_BY_NAME.put("ACC.6", 0xE6);
-        BIT_ADDRESS_BY_NAME.put("ACC.7", 0xE7);
+        BIT_ADDRESS_BY_NAME.put("ACC.0", 0xe0);
+        BIT_ADDRESS_BY_NAME.put("ACC.1", 0xe1);
+        BIT_ADDRESS_BY_NAME.put("ACC.2", 0xe2);
+        BIT_ADDRESS_BY_NAME.put("ACC.3", 0xe3);
+        BIT_ADDRESS_BY_NAME.put("ACC.4", 0xe4);
+        BIT_ADDRESS_BY_NAME.put("ACC.5", 0xe5);
+        BIT_ADDRESS_BY_NAME.put("ACC.6", 0xe6);
+        BIT_ADDRESS_BY_NAME.put("ACC.7", 0xe7);
         // B bits
-        BIT_ADDRESS_BY_NAME.put("B.0", 0xF0);
-        BIT_ADDRESS_BY_NAME.put("B.1", 0xF1);
-        BIT_ADDRESS_BY_NAME.put("B.2", 0xF2);
-        BIT_ADDRESS_BY_NAME.put("B.3", 0xF3);
-        BIT_ADDRESS_BY_NAME.put("B.4", 0xF4);
-        BIT_ADDRESS_BY_NAME.put("B.5", 0xF5);
-        BIT_ADDRESS_BY_NAME.put("B.6", 0xF6);
-        BIT_ADDRESS_BY_NAME.put("B.7", 0xF7);
+        BIT_ADDRESS_BY_NAME.put("B.0", 0xf0);
+        BIT_ADDRESS_BY_NAME.put("B.1", 0xf1);
+        BIT_ADDRESS_BY_NAME.put("B.2", 0xf2);
+        BIT_ADDRESS_BY_NAME.put("B.3", 0xf3);
+        BIT_ADDRESS_BY_NAME.put("B.4", 0xf4);
+        BIT_ADDRESS_BY_NAME.put("B.5", 0xf5);
+        BIT_ADDRESS_BY_NAME.put("B.6", 0xf6);
+        BIT_ADDRESS_BY_NAME.put("B.7", 0xf7);
+    }
+
+    @Override
+    public Integer visitExpression(Asm8051Parser.ExpressionContext ctx) {
+        if (ctx.LPAREN() != null) {
+            return visitExpression(ctx.expression(0));
+        } else if (ctx.prefix != null) {
+            int value = visitExpression(ctx.expression(0));
+            switch (ctx.prefix.getType()) {
+                case Asm8051Parser.PLUS:
+                    return +value;
+                case Asm8051Parser.MINUS:
+                    return -value;
+                case Asm8051Parser.HIGH:
+                    return (value >> 8) & 0xff;
+                case Asm8051Parser.LOW:
+                    return value & 0xff;
+                case Asm8051Parser.NOT:
+                    return ~value;
+            }
+        } else if (ctx.bop != null) {
+            int left = visitExpression(ctx.expression(0));
+            int right = visitExpression(ctx.expression(1));
+            switch (ctx.bop.getType()) {
+                case Asm8051Parser.SLASH:
+                    return left / right;
+                case Asm8051Parser.ASTERISK:
+                    return left * right;
+                case Asm8051Parser.MOD:
+                    return left % right;
+//                case Asm8051Parser.SHL:
+//                    return value & 0xff;
+//                case Asm8051Parser.SHR:
+//                    return ~value;
+                case Asm8051Parser.PLUS:
+                    return left + right;
+                case Asm8051Parser.MINUS:
+                    return left - right;
+                case Asm8051Parser.AND:
+                    return left & right;
+                case Asm8051Parser.OR:
+                    return left | right;
+                case Asm8051Parser.XOR:
+                    return left ^ right;
+            }
+        } else if (ctx.comparator != null) {
+            int left = visitExpression(ctx.expression(0));
+            int right = visitExpression(ctx.expression(1));
+            switch (ctx.comparator.getType()) {
+                case Asm8051Parser.EQ:
+                    return left == right ? 1 : 0;
+                case Asm8051Parser.NE:
+                    return left != right ? 1 : 0;
+                case Asm8051Parser.LT:
+                    return left < right ? 1 : 0;
+                case Asm8051Parser.LE:
+                    return left <= right ? 1 : 0;
+                case Asm8051Parser.GT:
+                    return left > right ? 1 : 0;
+                case Asm8051Parser.GE:
+                    return left >= right ? 1 : 0;
+            }
+        }
+
+        return super.visitExpression(ctx);
     }
 
     @Override
@@ -153,6 +218,12 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
     public Integer visitHexadecimal(Asm8051Parser.HexadecimalContext ctx) {
         String text = ctx.getText();
         return Integer.parseInt(text.substring(0, text.length() - 1), 16);
+    }
+
+    @Override
+    public Integer visitOctal(Asm8051Parser.OctalContext ctx) {
+        String text = ctx.getText();
+        return Integer.parseInt(text.substring(0, text.length() - 1), 8);
     }
 
     @Override
@@ -178,14 +249,21 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
         return SFR_ADDRESS_BY_NAME.get(ctx.getText().toUpperCase());
     }
 
-    protected List<Operand> processOperands(ParseTree tree, Map<String, UnsignedInt16> symbolTable) {
+    @Override
+    public Integer visitBit(Asm8051Parser.BitContext ctx) {
+        ParseTree child = ctx.getChild(0);
+        return child instanceof Asm8051Parser.NumberContext ? visit(child) : BIT_ADDRESS_BY_NAME.get(child.getText().toUpperCase());
+    }
+
+    protected List<Operand> processOperands(ParseTree parseTree, Map<String, UnsignedInt16> symbolTable) {
         List<Operand> operands = new ArrayList<>();
 
-        for (int i = 1; i < tree.getChildCount(); i++) {
-            ParseTree child = tree.getChild(i);
+        for (int i = 1; i < parseTree.getChildCount(); i++) {
+            ParseTree child = parseTree.getChild(i);
             if (isOperand(child)) {
                 OperandType operandType = determineOperandType(child);
-                operands.add(new Operand(operandType, determineOperandValue(child, operandType, symbolTable)));
+                int operandValue = determineOperandValue(child, operandType, symbolTable);
+                operands.add(new Operand(operandType, operandValue));
             }
         }
 
@@ -199,9 +277,13 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
                 || child instanceof Asm8051Parser.ImmediateContext
                 || child instanceof Asm8051Parser.AccumulatorContext
                 || child instanceof Asm8051Parser.BitContext
+                || child instanceof Asm8051Parser.NotBitContext
                 || child instanceof Asm8051Parser.SymbolContext
                 || child instanceof Asm8051Parser.CarryContext
-                || child instanceof Asm8051Parser.DptrContext;
+                || child instanceof Asm8051Parser.DptrContext
+                || child instanceof Asm8051Parser.AtDptrContext
+                || child instanceof Asm8051Parser.AtAPlusDptrContext
+                || child instanceof Asm8051Parser.AtAPlusPcContext;
     }
 
     protected OperandType determineOperandType(ParseTree operand) {
@@ -217,12 +299,20 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
             return OperandType.ACCUMULATOR;
         } else if (operand instanceof Asm8051Parser.BitContext) {
             return OperandType.BIT;
+        } else if (operand instanceof Asm8051Parser.NotBitContext) {
+            return OperandType.NOT_BIT;
         } else if (operand instanceof Asm8051Parser.SymbolContext) {
             return OperandType.SYMBOL;
         } else if (operand instanceof Asm8051Parser.CarryContext) {
             return OperandType.CARRY;
         } else if (operand instanceof Asm8051Parser.DptrContext) {
             return OperandType.DPTR;
+        } else if (operand instanceof Asm8051Parser.AtDptrContext) {
+            return OperandType.AT_DPTR;
+        } else if (operand instanceof Asm8051Parser.AtAPlusDptrContext) {
+            return OperandType.AT_A_PLUS_DPTR;
+        } else if (operand instanceof Asm8051Parser.AtAPlusPcContext) {
+            return OperandType.AT_A_PLUS_PC;
         } else {
             return OperandType.UNKNOWN;
         }
@@ -231,29 +321,23 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
     protected int determineOperandValue(ParseTree operand, OperandType operandType, Map<String, UnsignedInt16> symbolTable) {
         int value = 0;
         switch (operandType) {
-            case REGISTER:
-                value = visitRegister(((Asm8051Parser.RegisterContext) operand));
-                break;
-            case INDIRECT_REGISTER:
-                value = visitIndirectRegister(((Asm8051Parser.IndirectRegisterContext) operand));
-                break;
-            case DIRECT:
-                value = visitDirect(((Asm8051Parser.DirectContext) operand));
-                break;
-            case IMMEDIATE:
-                value = visitImmediate(((Asm8051Parser.ImmediateContext) operand));
-                break;
-            case SYMBOL:
+            case SYMBOL: {
                 if (symbolTable != null) {
-                    String symbol = ((Asm8051Parser.LabelContext) operand).symbol().getText();
-                    value = symbolTable.get(symbol).toInt();
+                    String symbol = ((Asm8051Parser.SymbolContext) operand).SYMBOL().getText();
+                    if (symbolTable.containsKey(symbol)) {
+                        value = symbolTable.get(symbol).toInt();
+                    }
                 }
                 break;
-            case BIT: {
-                ParseTree child = operand.getChild(0);
-                value = child instanceof Asm8051Parser.NumberContext ? visit(child) : BIT_ADDRESS_BY_NAME.get(child.getText().toUpperCase());
-                break;
             }
+            case REGISTER:
+            case INDIRECT_REGISTER:
+            case DIRECT:
+            case IMMEDIATE:
+            case BIT:
+            case NOT_BIT:
+                value = visit(operand);
+                break;
         }
 
         return value;

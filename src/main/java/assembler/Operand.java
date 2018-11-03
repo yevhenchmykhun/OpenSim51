@@ -1,8 +1,8 @@
 package assembler;
 
-public class Operand {
-    private OperandType type;
-    private int value;
+public final class Operand {
+    private final OperandType type;
+    private final int value;
 
     public Operand(OperandType type, int value) {
         this.type = type;

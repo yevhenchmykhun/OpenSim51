@@ -50,14 +50,14 @@ end
 expression
 	:	(number | character | symbol | dollar)
 	|	LPAREN expression RPAREN
-	|	(UNARY_PLUS | UNARY_MINUS) expression
-	|	(HIGH | LOW) expression
-	|	expression (DIVISION | MULTIPLICATION | MOD | SHL | SHR) expression
-	|	expression (ADDITION | SUBTRACTION) expression
-	|	expression comparator expression
-	|   NOT expression
-	|   expression AND expression
-	|   expression (OR | XOR) expression
+	|	prefix=(PLUS | MINUS) expression
+	|	prefix=(HIGH | LOW) expression
+	|	expression bop=(SLASH | ASTERISK | MOD | SHL | SHR) expression
+	|	expression bop=(PLUS | MINUS) expression
+	|	expression comparator=(EQ | NE | LT | LE | GT | GE) expression
+	|   prefix=NOT expression
+	|   expression bop=AND expression
+	|   expression bop=(OR | XOR) expression
 	;
 
 character :
@@ -66,15 +66,6 @@ character :
 
 dollar :
     DOLLAR
-    ;
-
-comparator
-    :	EQ
-    |   NE
-    | 	LT
-    |	LE
-    |	GT
-    |	GE
     ;
 
 instruction
@@ -132,21 +123,25 @@ acall : ACALL symbol;
 add   : ADD (accumulator COMMA (immediate | indirectRegister | direct | register));
 addc  : ADDC (accumulator COMMA (immediate | indirectRegister | direct | register));
 ajmp  : AJMP symbol;
-anl   : ANL (accumulator COMMA (immediate | indirectRegister | direct | register));
+anl   : ANL ((accumulator COMMA (immediate | indirectRegister | direct | register))
+            | (carry COMMA (bit | notBit))
+            | (direct COMMA (accumulator | immediate)));
 cjne  : CJNE (((indirectRegister | accumulator | register) COMMA immediate)
             | (accumulator COMMA direct)) COMMA symbol;
-clr   : CLR (accumulator | bit);
-cpl   : CPL (accumulator | bit);
+clr   : CLR (accumulator | carry | bit);
+cpl   : CPL (accumulator | carry | bit);
 da    : DA accumulator;
 dec   : DEC (indirectRegister | accumulator | direct | register);
 div   : DIV AB;
 djnz  : DJNZ (direct | register) COMMA symbol;
-inc   : INC (indirectRegister | accumulator | direct | register);
+inc   : INC ((indirectRegister | accumulator | direct | register)
+            | dptr
+            | register);
 jb    : JB bit COMMA symbol;
 jbc   : JBC bit COMMA symbol;
 jc    : JC symbol;
-jmp   : JMP AT accumulator ADDITION DPTR;
-jnb   : JBC bit COMMA symbol;
+jmp   : JMP atAPlusDptr;
+jnb   : JNB bit COMMA symbol;
 jnc   : JNC symbol;
 jnz   : JNZ symbol;
 jz    : JZ symbol;
@@ -156,16 +151,16 @@ mov   : MOV ((indirectRegister COMMA (immediate | accumulator | direct))
            | (accumulator COMMA (immediate | indirectRegister | direct | register))
            | (bit COMMA carry | carry COMMA bit)
            | (direct COMMA (direct | immediate | indirectRegister | accumulator | register))
-           | dptr COMMA immediate
+           | (dptr COMMA immediate)
            | (register COMMA (immediate | accumulator | direct)));
-movc  : MOVC accumulator COMMA AT accumulator ADDITION (DPTR | PC);
-movx  : MOVX (accumulator COMMA (AT DPTR | indirectRegister)
-           | indirectRegister COMMA accumulator);
+movc  : MOVC accumulator COMMA (atAPlusDptr | atAPlusPc);
+movx  : MOVX (accumulator COMMA (atDptr | indirectRegister)
+           | (indirectRegister COMMA accumulator));
 mul   : MUL AB;
 nop   : NOP;
 orl   : ORL ((accumulator COMMA (immediate | indirectRegister | direct | register))
-           | (carry COMMA SLASH? bit)
-           | (direct | (immediate | accumulator)));
+           | (carry COMMA (bit | notBit))
+           | (direct COMMA (immediate | accumulator)));
 pop   : POP direct;
 push  : PUSH direct;
 ret   : RET;
@@ -174,7 +169,7 @@ rl    : RL accumulator;
 rlc   : RLC accumulator;
 rr    : RR accumulator;
 rrc   : RRC accumulator;
-setb  : SETB bit;
+setb  : SETB (carry | bit);
 sjmp  : SJMP symbol;
 subb  : SUBB (accumulator COMMA (immediate | indirectRegister | direct | register));
 swap  : SWAP accumulator;
@@ -302,18 +297,34 @@ bit
     | RS1
     | FO
     | AC
-    | CY
+    | CARRY
     | PORT_BIT
     | ACC_BIT
-    | BCC_BIT
+    | B_BIT
+    ;
+
+notBit
+    : '/' bit
     ;
 
 carry :
-    CY
+    CARRY
     ;
 
 dptr :
     DPTR
+    ;
+
+atDptr :
+    AT DPTR
+    ;
+
+atAPlusDptr :
+    AT accumulator PLUS DPTR
+    ;
+
+atAPlusPc :
+    AT accumulator PLUS PC
     ;
 
 // tokens
@@ -334,12 +345,10 @@ END     : E N D;
 HIGH            : H I G H;
 LOW             : L O W;
 DOLLAR          : '$';
-DIVISION        : '/';
-MULTIPLICATION  : '*';
-ADDITION        : '+';
-SUBTRACTION     : '-';
-UNARY_PLUS      : '+';
-UNARY_MINUS     : '-';
+SLASH           : '/';
+ASTERISK        : '*';
+PLUS            : '+';
+MINUS           : '-';
 LPAREN          : '(';
 RPAREN          : ')';
 MOD             : M O D;
@@ -445,14 +454,14 @@ TR1    : T R '1';
 TF1    : T F '1';
 T0M0   : T '0' M '0';
 T0M1   : T '0' M '1';
-C_T0   : C SLASH T '0';
+C_T0   : C '/' T '0';
 GATE0  : G A T E '0';
 T1M0   : T '1' M '0';
 T1M1   : T '1' M '1';
-C_T1   : C SLASH T '1';
+C_T1   : C '/' T '1';
 GATE1  : G A T E '1';
-R1     : R '1';
-T1     : T '1';
+R1     : R I;
+T1     : T I;
 RB8    : R B '8';
 TB8    : T B '8';
 REN    : R E N;
@@ -479,10 +488,10 @@ RS0    : R S '0';
 RS1    : R S '1';
 FO     : F O;
 AC     : A C;
-CY     : C;
+CARRY  : C;
 PORT_BIT: (P0 | P1 | P2 | P3) DOT [0-7];
 ACC_BIT: ACC DOT [0-7];
-BCC_BIT: BCC DOT [0-7];
+B_BIT: BCC DOT [0-7];
 
 PC : P C;
 DPTR : D P T R;
@@ -491,7 +500,6 @@ REGISTER : R [0-7];
 INDIRECT_REGISTER : AT R [01];
 
 HASH    : '#';
-SLASH   : '/';
 COLON   : ':';
 COMMA   : ',';
 DOT     : '.';
