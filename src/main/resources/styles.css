@@ -21,3 +21,7 @@
 .memory_table .text-field {
     -fx-padding: 2;
 }
+
+.styled-text-area:has-caret .selection {
+    -fx-fill: pink;
+}

@@ -1,0 +1,57 @@
+#editor {
+    -fx-font-size: 18;
+}
+
+#editor .gutter {
+    -fx-background-color: #ddd;
+    -fx-alignment: CENTER;
+}
+
+#editor .breakpoint {
+    -fx-fill: red;
+    -fx-stroke: black;
+    -fx-stroke-width: 0.5;
+    -fx-smooth: true;
+}
+
+#editor .selectedLineArrow {
+    -fx-fill: #F0F8FF;
+    -fx-stroke: black;
+    -fx-stroke-width: 0.5;
+    -fx-smooth: true;
+}
+
+#editor .debuggerArrow {
+    -fx-fill: gold;
+    -fx-stroke: black;
+    -fx-stroke-width: 0.5;
+    -fx-smooth: true;
+}
+
+#editor .lineno {
+    -fx-font-size: 18;
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #F0F8FF;
+}
+
+#editor .mnemonic {
+    -fx-fill: blue;
+}
+
+#editor .register {
+    -fx-fill: red;
+}
+
+#editor .bit {
+    -fx-fill: orange;
+}
+
+#editor .string {
+    -fx-fill: purple;
+}
+
+#editor .comment {
+    -fx-fill: green;
+}

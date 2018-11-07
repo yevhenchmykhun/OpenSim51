@@ -5,11 +5,12 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.MainWindow">
@@ -42,9 +43,8 @@
                                 <MenuItem mnemonicParsing="false" text="Serial" />
                                 <Menu mnemonicParsing="false" text="Timer">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" text="Timer 0" />
-                                        <MenuItem mnemonicParsing="false" text="Timer 1" />
-                                        <MenuItem mnemonicParsing="false" text="Timer 3" />
+                                        <MenuItem fx:id="timer0MenuItem" mnemonicParsing="false" text="Timer 0" />
+                                        <MenuItem fx:id="timer1MenuItem" mnemonicParsing="false" text="Timer 1" />
                                     </items>
                                 </Menu>
                             </items>
@@ -56,20 +56,30 @@
                         </Menu>
                     </menus>
                 </MenuBar>
-                <ToolBar>
-                    <items>
-                        <Button fx:id="translateButton" mnemonicParsing="false" text="Translate" />
-                        <Button fx:id="stepOverButton" mnemonicParsing="false" text="Step Over" />
-                  <Button fx:id="burnHexButton" mnemonicParsing="false" text="Burn HEX" />
-                    </items>
-                </ToolBar>
-                <SplitPane dividerPositions="0.5, 0.5" VBox.vgrow="ALWAYS">
-                    <items>
-                        <fx:include fx:id="registers" maxWidth="-Infinity" prefWidth="175.0" source="controller/registers.fxml" />
+            <BorderPane VBox.vgrow="ALWAYS">
+               <top>
+                      <ToolBar BorderPane.alignment="CENTER">
+                          <items>
+                              <Button fx:id="translateButton" mnemonicParsing="false" text="Translate" />
+                              <Button fx:id="stepOverButton" mnemonicParsing="false" text="Step Over" />
+                        <Button fx:id="burnHexButton" mnemonicParsing="false" text="Burn HEX" />
+                          </items>
+                      </ToolBar>
+               </top>
+               <left>
+                        <fx:include fx:id="registers" source="controller/registers.fxml" />
+               </left>
+               <center>
                         <ScrollPane fx:id="codeScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-                        <TabPane tabClosingPolicy="UNAVAILABLE">
+               </center>
+               <right>
+                        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                             <tabs>
-                                <Tab closable="false" text="Call Stack" />
+                        <Tab closable="false" text="Call Stack">
+                          <content>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                          </content>
+                        </Tab>
                                 <Tab closable="false" text="Memory">
                                     <content>
                                         <fx:include fx:id="memory" source="controller/memory.fxml" />
@@ -77,8 +87,11 @@
                                 </Tab>
                             </tabs>
                         </TabPane>
-                    </items>
-                </SplitPane>
+               </right>
+               <bottom>
+                  <TextField fx:id="messageTextField" editable="false" focusTraversable="false" prefHeight="15.0" promptText="Message..." />
+               </bottom>
+            </BorderPane>
             </children>
         </VBox>
     </children>
