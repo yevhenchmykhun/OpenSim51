@@ -21,7 +21,7 @@ public class BreakpointFactory implements IntFunction<Node> {
     public Node apply(int lineNumber) {
         Circle circle = new Circle();
         circle.getStyleClass().add("breakpoint");
-        circle.setRadius(7);
+        circle.setRadius(8);
 
         SimpleObjectProperty<Boolean> visible = new SimpleObjectProperty<>(breakpointLineNumbers.contains(lineNumber));
         breakpointLineNumbers.addListener((ListChangeListener<? super Integer>)  c -> {

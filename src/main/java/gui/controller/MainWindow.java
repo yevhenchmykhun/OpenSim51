@@ -7,6 +7,8 @@ import gui.editorstyles.TokensHighlighting;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -128,24 +130,44 @@ public class MainWindow {
         IntFunction<Node> debuggerArrowFactory = new DebuggerArrowFactory(debuggedLine);
         IntFunction<Node> lineNumberFactory = LineNumberFactory.get(editor);
         IntFunction<Node> graphicFactory = line -> {
-            HBox hbox = new HBox(
-                    breakpointFactory.apply(line),
-                    selectedLineArrowFactory.apply(line),
-                    debuggerArrowFactory.apply(line),
-                    lineNumberFactory.apply(line));
-            hbox.getStyleClass().add("gutter");
-            hbox.setOnMouseClicked(event -> {
-                if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                    int currentParagraph = editor.getCurrentParagraph();
-                    if (breakpointLineNumbers.contains(currentParagraph)) {
-                        breakpointLineNumbers.remove((Integer) currentParagraph);
+
+            Node lineNumberNode = lineNumberFactory.apply(line);
+
+            // each breakpoint node has a separate container that has a mouse click listener for showing or hiding the breakpoint node
+            HBox breakpointContainer = new HBox(breakpointFactory.apply(line));
+            breakpointContainer.setAlignment(Pos.CENTER);
+            breakpointContainer.setPadding(new Insets(0, 5, 0, 5));
+            breakpointContainer.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 1) {
+                    int currentLineNumber = Integer.parseInt(((Label) lineNumberNode).getText().trim()) - 1;
+                    if (breakpointLineNumbers.contains(currentLineNumber)) {
+                        breakpointLineNumbers.remove((Integer) currentLineNumber);
                     } else {
-                        breakpointLineNumbers.add(currentParagraph);
+                        breakpointLineNumbers.add(currentLineNumber);
                     }
                 }
             });
 
-            return hbox;
+            HBox gutter = new HBox(
+                    breakpointContainer,
+                    selectedLineArrowFactory.apply(line),
+                    debuggerArrowFactory.apply(line),
+                    lineNumberNode);
+
+            gutter.getStyleClass().add("gutter");
+
+            // addEventFilter and removeEventFilter must receive the same instance of EventHandler
+            EventHandler<MouseEvent> consume = Event::consume;
+
+            gutter.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+                editor.addEventFilter(MouseEvent.MOUSE_PRESSED, consume);
+            });
+
+            gutter.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+                editor.removeEventFilter(MouseEvent.MOUSE_PRESSED, consume);
+            });
+
+            return gutter;
         };
         editor.setParagraphGraphicFactory(graphicFactory);
 
