@@ -52,15 +52,6 @@ public class RegistersController implements Updatable {
             mainWindow.updateUserInterface();
         });
 
-        update();
-    }
-
-    public void setMainWindow(MainWindow mainWindow) {
-        this.mainWindow = mainWindow;
-    }
-
-    @Override
-    public void update() {
         InternalData id = simulator.getInternalData();
 
         TreeItem<TreeTableViewEntry> root = new TreeItem<>();
@@ -80,10 +71,9 @@ public class RegistersController implements Updatable {
         sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("a", id.ACC)));
         sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("b", id.B)));
         sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry("sp", id.SP)));
-        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry(TREE_ITEM_NAME_PC, simulator.getPC())));
+        sys.getChildren().add(new TreeItem<>(new TreeTableViewEntry(TREE_ITEM_NAME_PC, null)));
 
-        UnsignedInt16 dptrValue = id.DPH.getValue().toUnsignedInt16().shiftLeft(8).or(id.DPL.getValue().toUnsignedInt16());
-        TreeItem<TreeTableViewEntry> dptr = new TreeItem<>(new TreeTableViewEntry(TREE_ITEM_NAME_DPTR, dptrValue));
+        TreeItem<TreeTableViewEntry> dptr = new TreeItem<>(new TreeTableViewEntry(TREE_ITEM_NAME_DPTR, null));
         dptr.getChildren().add(new TreeItem<>(new TreeTableViewEntry("[0]", id.DPL)));
         dptr.getChildren().add(new TreeItem<>(new TreeTableViewEntry("[1]", id.DPH)));
         sys.getChildren().add(dptr);
@@ -107,6 +97,15 @@ public class RegistersController implements Updatable {
         registersView.setRoot(root);
     }
 
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
+    @Override
+    public void update() {
+        registersView.refresh();
+    }
+
     private class TreeTableViewEntry {
         private static final int RADIX_HEX = 16;
         private static final String PREFIX_HEX = "0x";
@@ -128,8 +127,15 @@ public class RegistersController implements Updatable {
                 return PREFIX_HEX + IntegerUtil.toString(((Memory.Cell) value).getValue().toInt(), RADIX_HEX, 2);
             } else if (value instanceof Memory.Bit) {
                 return ((Memory.Bit) value).getValue() ? "1" : "0";
-            } else if (value instanceof UnsignedInt16) {
-                return PREFIX_HEX + IntegerUtil.toString(((UnsignedInt16) value).toInt(), RADIX_HEX, 4);
+            } else if (value == null) {
+                if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
+                    return PREFIX_HEX + IntegerUtil.toString(simulator.getPC().toInt(), RADIX_HEX, 4);
+                } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
+                    UnsignedInt8 dph = simulator.getInternalData().DPH.getValue();
+                    UnsignedInt8 dpl = simulator.getInternalData().DPL.getValue();
+                    UnsignedInt16 dptr = dph.toUnsignedInt16().shiftLeft(8).or(dpl.toUnsignedInt16());
+                    return PREFIX_HEX + IntegerUtil.toString(dptr.toInt(), RADIX_HEX, 4);
+                }
             }
 
             return "";
@@ -144,7 +150,7 @@ public class RegistersController implements Updatable {
                 if (StringUtils.isNotBlank(value) && value.matches("[01]")) {
                     ((Memory.Bit) this.value).setValue(Integer.parseInt(value) != 0);
                 }
-            } else if (this.value instanceof UnsignedInt16) {
+            } else if (this.value == null) {
                 if (!IntegerUtil.isValid(value)) {
                     return;
                 }
