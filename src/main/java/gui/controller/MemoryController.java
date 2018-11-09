@@ -6,7 +6,12 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
@@ -21,9 +26,15 @@ import java.util.List;
 
 public class MemoryController implements Updatable {
 
-    private static final int HEX_RADIX = 16;
-
     private static final String REGEX_ADDRESS_PREFIX = "([dDcCxX]:)";
+
+    private static final int RADIX_HEX = 16;
+
+    private static final int WIDTH_CELL_COLUMN = 45;
+
+    private static final int WIDTH_ADDRESS_COLUMN = 100;
+
+    private static final int WIDTH_SCROLL_BAR = 19;
 
     @FXML
     private TextField addressTextField;
@@ -38,6 +49,7 @@ public class MemoryController implements Updatable {
     private TableView<MemoryRow> memoryTableView;
 
     private Simulator simulator = Simulator.getInstance();
+
     private MainWindow mainWindow;
 
     @FXML
@@ -58,16 +70,21 @@ public class MemoryController implements Updatable {
 
         // initialize lock/unlock button
         lockUnlockButton.setOnAction(event -> {
+
+            // cancel memory table editing
+            memoryTableView.edit(-1, null);
+
             memoryTableView.setEditable(!memoryTableView.isEditable());
             lockUnlockButton.setText(memoryTableView.isEditable() ? "Lock" : "Unlock");
         });
 
         // initialize table row length choice box
-        tableRowLengthChoiceBox.setItems(FXCollections.observableArrayList("16", "8"));
+        tableRowLengthChoiceBox.setItems(FXCollections.observableArrayList("8", "16"));
         tableRowLengthChoiceBox.getSelectionModel().selectFirst();
         tableRowLengthChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             initializeMemoryTableView();
             fillTable(getMemory(), Integer.parseInt(newValue));
+            mainWindow.updateUserInterface();
         });
 
         initializeMemoryTableView();
@@ -80,7 +97,7 @@ public class MemoryController implements Updatable {
         memoryTableView.getColumns().clear();
 
         TableColumn<MemoryRow, MemoryRow> addressColumn = new TableColumn<>();
-        addressColumn.setPrefWidth(100);
+        addressColumn.setPrefWidth(WIDTH_ADDRESS_COLUMN);
         addressColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
         addressColumn.setCellFactory(new Callback<TableColumn<MemoryRow, MemoryRow>, TableCell<MemoryRow, MemoryRow>>() {
             @Override
@@ -106,7 +123,7 @@ public class MemoryController implements Updatable {
         int columnsNumber = Integer.parseInt(tableRowLengthChoiceBox.getSelectionModel().getSelectedItem());
         for (int i = 0; i < columnsNumber; i++) {
             TableColumn<MemoryRow, String> column = new TableColumn<>();
-            column.setPrefWidth(45);
+            column.setPrefWidth(WIDTH_CELL_COLUMN);
 
             // make it possible to correctly match a memory cell value with the corresponding table column
             column.setId(Integer.toString(i));
@@ -153,6 +170,16 @@ public class MemoryController implements Updatable {
                 header.setVisible(false);
             }
         });
+
+        // set width of the memory table
+        memoryTableView.setPrefWidth(columns.size() * WIDTH_CELL_COLUMN + WIDTH_ADDRESS_COLUMN + WIDTH_SCROLL_BAR);
+
+        // TabPane does not shrink to fit its child (bug?) so the size of TabPane is set manually
+        // every time the memory table is updated
+        if (mainWindow != null) {
+            mainWindow.tabPane.setPrefWidth(columns.size() * WIDTH_CELL_COLUMN + WIDTH_ADDRESS_COLUMN + WIDTH_SCROLL_BAR + 2);
+        }
+
     }
 
     public void setMainWindow(MainWindow mainWindow) {
@@ -197,7 +224,7 @@ public class MemoryController implements Updatable {
             }
 
             // a memory cell value in form of a HEX string
-            String hex = IntegerUtil.toString(memory.getCellValue(address).toInt(), HEX_RADIX, 2);
+            String hex = IntegerUtil.toString(memory.getCellValue(address).toInt(), RADIX_HEX, 2);
             row.add(hex.toUpperCase());
 
             // as soon as the row reaches the size of tableRowLength, it is combined in a separate entity that contains
@@ -206,13 +233,13 @@ public class MemoryController implements Updatable {
             if (((address + 1) % tableRowLength) - (requestedAddress % tableRowLength) == 0) {
 
                 // calculate the number of leading zeros taking into account the size of the memory
-                int leadingZeros = (int) (Math.log(memory.getMemorySize()) / Math.log(HEX_RADIX));
+                int leadingZeros = (int) (Math.log(memory.getMemorySize()) / Math.log(RADIX_HEX));
 
                 // build start address of a row taking into account offset
                 int adjustedAddress = address + 1 - tableRowLength;
                 adjustedAddress = adjustedAddress >= 0 ? adjustedAddress : adjustedAddress + memory.getMemorySize();
 
-                String addressHex = IntegerUtil.toString(adjustedAddress, HEX_RADIX, leadingZeros);
+                String addressHex = IntegerUtil.toString(adjustedAddress, RADIX_HEX, leadingZeros);
                 String startAddress = getRequestedMemoryType() + ":0x" + addressHex.toUpperCase();
 
                 tableData.add(new MemoryRow(startAddress, new ArrayList<>(row)));
