@@ -11,14 +11,22 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -36,41 +44,48 @@ import simulator.memory.Memory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.IntFunction;
 
 public class MainWindow {
 
-    public static Simulator simulator = Simulator.getInstance();
+    @FXML
+    private Button translateButton;
 
     @FXML
-    public Button translateButton;
+    private Button stepOverButton;
 
     @FXML
-    public Button stepOverButton;
+    private MenuItem interruptMenuItem;
 
     @FXML
-    public Button burnHexButton;
+    private MenuItem timer0MenuItem;
 
     @FXML
-    public MenuItem interruptMenuItem;
+    private MenuItem timer1MenuItem;
 
     @FXML
-    public MenuItem timer0MenuItem;
+    private TextField statusBarTextField;
 
     @FXML
-    public MenuItem timer1MenuItem;
+    private TabPane tabPane;
 
     @FXML
-    public TextField messageTextField;
+    private MenuItem burnHexMenuItem;
 
-    private Map<String, Stage> shownPortWindows;
+    @FXML
+    private MenuItem exitMenuItem;
 
-    private Map<String, Stage> shownTimerWindows;
-
-    private Map<String, Updatable> loadedControllers;
+    @FXML
+    private MenuItem registerBanksMenuItem;
 
     @FXML
     private RegistersController registersController;
@@ -78,23 +93,38 @@ public class MainWindow {
     @FXML
     private MemoryController memoryController;
 
-    private InterruptController interruptController;
+    @FXML
+    private ScrollPane codeScrollPane;
 
     @FXML
-    public ScrollPane codeScrollPane;
+    private MenuItem port0MenuItem;
 
     @FXML
-    public MenuItem port0MenuItem;
+    private MenuItem port1MenuItem;
+
     @FXML
-    public MenuItem port1MenuItem;
+    private MenuItem port2MenuItem;
+
     @FXML
-    public MenuItem port2MenuItem;
-    @FXML
-    public MenuItem port3MenuItem;
+    private MenuItem port3MenuItem;
 
     private Stage primaryStage;
 
     private Stage interruptWindow;
+
+    private Map<String, Stage> shownPortWindows;
+
+    private Map<String, Stage> shownTimerWindows;
+
+    private Map<String, Updatable> loadedControllers;
+
+    private InterruptController interruptController;
+
+    public static Simulator simulator = Simulator.getInstance();
+
+    private List<Integer> executableLineNumbers;
+
+    private int currentExecutableLine;
 
     public MainWindow() {
         shownPortWindows = new HashMap<>();
@@ -106,6 +136,7 @@ public class MainWindow {
     public void initialize() {
         registersController.setMainWindow(this);
         memoryController.setMainWindow(this);
+        memoryController.setMemoryTableContainer(tabPane);
 
         interruptMenuItem.setOnAction(event -> showInterruptWindow());
 
@@ -192,7 +223,6 @@ public class MainWindow {
 
         codeScrollPane.setContent(new VirtualizedScrollPane<>(editor));
 
-
         translateButton.setOnAction(event -> {
             messageTextField.clear();
 
@@ -211,7 +241,7 @@ public class MainWindow {
             updateUserInterface();
         });
 
-        burnHexButton.setOnAction(event -> {
+        burnHexMenuItem.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open HEX File");
             File file = fileChooser.showOpenDialog(primaryStage);
@@ -232,6 +262,25 @@ public class MainWindow {
             simulator.step();
             updateUserInterface();
         });
+
+        registerBanksMenuItem.setOnAction(event -> {
+            editor.replaceText(readFileToString("examples/register_banks.A51", Charset.forName("UTF-8")));
+        });
+
+        exitMenuItem.setOnAction(event -> primaryStage.close());
+    }
+
+    private String readFileToString(String path, Charset encoding) {
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            URI uri = classLoader.getResource(path).toURI();
+            byte[] bytes = Files.readAllBytes(Paths.get(uri));
+            return new String(bytes, encoding);
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     private void showPortWindow(String portNumber, Memory.BitAddressableCell port) {

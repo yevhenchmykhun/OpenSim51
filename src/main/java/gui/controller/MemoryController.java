@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -51,6 +52,8 @@ public class MemoryController implements Updatable {
     private Simulator simulator = Simulator.getInstance();
 
     private MainWindow mainWindow;
+
+    private TabPane memoryTableContainer;
 
     @FXML
     public void initialize() {
@@ -176,14 +179,17 @@ public class MemoryController implements Updatable {
 
         // TabPane does not shrink to fit its child (bug?) so the size of TabPane is set manually
         // every time the memory table is updated
-        if (mainWindow != null) {
-            mainWindow.tabPane.setPrefWidth(columns.size() * WIDTH_CELL_COLUMN + WIDTH_ADDRESS_COLUMN + WIDTH_SCROLL_BAR + 2);
+        if (memoryTableContainer != null) {
+            memoryTableContainer.setPrefWidth(columns.size() * WIDTH_CELL_COLUMN + WIDTH_ADDRESS_COLUMN + WIDTH_SCROLL_BAR + 2);
         }
-
     }
 
     public void setMainWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
+    }
+
+    public void setMemoryTableContainer(TabPane memoryTableContainer) {
+        this.memoryTableContainer = memoryTableContainer;
     }
 
     @Override

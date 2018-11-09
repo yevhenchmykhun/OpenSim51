@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -21,7 +29,9 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Close" />
+                                <MenuItem fx:id="burnHexMenuItem" mnemonicParsing="false" text="Burn HEX" />
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" text="Exit" />
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
@@ -51,35 +61,177 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
+                        <Menu mnemonicParsing="false" text="Examples">
+                          <items>
+                            <MenuItem fx:id="registerBanksMenuItem" mnemonicParsing="false" text="Register Banks" />
+                          </items>
+                        </Menu>
                                 <MenuItem mnemonicParsing="false" text="About" />
                             </items>
                         </Menu>
                     </menus>
                 </MenuBar>
-            <BorderPane VBox.vgrow="ALWAYS">
-               <top>
-                      <ToolBar BorderPane.alignment="CENTER">
-                          <items>
-                              <Button fx:id="translateButton" mnemonicParsing="false" text="Translate" />
-                              <Button fx:id="stepOverButton" mnemonicParsing="false" text="Step Over" />
-                        <Button fx:id="burnHexButton" mnemonicParsing="false" text="Burn HEX" />
-                          </items>
-                      </ToolBar>
-               </top>
-               <left>
+                <BorderPane VBox.vgrow="ALWAYS">
+                    <top>
+                        <VBox BorderPane.alignment="CENTER">
+                            <children>
+                                <ToolBar>
+                                    <items>
+                                        <Button fx:id="translateButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/translate.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip text="Translate" />
+                                            </tooltip>
+                                        </Button>
+                                    </items>
+                                </ToolBar>
+                                <ToolBar>
+                                    <items>
+                                        <Button fx:id="resetButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/reset.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip autoHide="true" text="Reset" />
+                                            </tooltip>
+                                        </Button>
+                                        <Separator orientation="VERTICAL" />
+                                        <Button fx:id="runButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                                                    <image>
+                                                        <Image url="@../icons/run.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip text="Run" />
+                                            </tooltip>
+                                        </Button>
+                                        <Button fx:id="stopButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/stop.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip text="Stop" />
+                                            </tooltip>
+                                        </Button>
+                                        <Separator orientation="VERTICAL" />
+                                        <Button fx:id="stepOverButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/debug-step-over.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip autoHide="true" text="Step Over" />
+                                            </tooltip>
+                                        </Button>
+                                        <Button fx:id="stepIntoButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/debug-step-into.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip autoHide="true" text="Step Into" />
+                                            </tooltip>
+                                        </Button>
+                                        <Button fx:id="stepOutButton" mnemonicParsing="false">
+                                            <graphic>
+                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                    <image>
+                                                        <Image url="@../icons/debug-step-out.png" />
+                                                    </image>
+                                                    <viewport>
+                                                        <Rectangle2D />
+                                                    </viewport>
+                                                </ImageView>
+                                            </graphic>
+                                            <padding>
+                                                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                                            </padding>
+                                            <tooltip>
+                                                <Tooltip autoHide="true" text="Step Out" />
+                                            </tooltip>
+                                        </Button>
+                                        <Separator orientation="VERTICAL" />
+                                    </items>
+                                </ToolBar>
+                            </children>
+                        </VBox>
+                    </top>
+                    <left>
                         <fx:include fx:id="registers" source="controller/registers.fxml" />
-               </left>
-               <center>
+                    </left>
+                    <center>
                         <ScrollPane fx:id="codeScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-               </center>
-               <right>
-                        <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                    </center>
+                    <bottom>
+                        <TextField fx:id="statusBarTextField" editable="false" focusTraversable="false" prefHeight="15.0" promptText="Message..." />
+                    </bottom>
+                    <right>
+                        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
                             <tabs>
-                        <Tab closable="false" text="Call Stack">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                          </content>
-                        </Tab>
+                                <Tab closable="false" text="Call Stack">
+                                    <content>
+                                        <TreeView />
+                                    </content>
+                                </Tab>
                                 <Tab closable="false" text="Memory">
                                     <content>
                                         <fx:include fx:id="memory" source="controller/memory.fxml" />
@@ -87,11 +239,8 @@
                                 </Tab>
                             </tabs>
                         </TabPane>
-               </right>
-               <bottom>
-                  <TextField fx:id="messageTextField" editable="false" focusTraversable="false" prefHeight="15.0" promptText="Message..." />
-               </bottom>
-            </BorderPane>
+                    </right>
+                </BorderPane>
             </children>
         </VBox>
     </children>
