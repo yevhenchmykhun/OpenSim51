@@ -9,6 +9,10 @@ public final class IntegerUtil {
     private IntegerUtil() {
     }
 
+    public static boolean isValid(String value) {
+        return StringUtils.isNotBlank(value) && value.matches(REGEX_HEX_OCT_DEC_INTEGER);
+    }
+
     public static int parseInt(String value) {
         if (StringUtils.isBlank(value) || !value.matches(REGEX_HEX_OCT_DEC_INTEGER)) {
             return -1;
