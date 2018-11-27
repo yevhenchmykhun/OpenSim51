@@ -1,15 +1,13 @@
 // Generated from C:/Users/Yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
 package assembler.antlr;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.ATN;
-import org.antlr.v4.runtime.atn.ATNDeserializer;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
-import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.tree.*;
 import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class Asm8051Parser extends Parser {
@@ -171,6 +169,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_source; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSource(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSource(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSource(this);
 			else return visitor.visitChildren(this);
@@ -238,6 +244,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_line; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterLine(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitLine(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitLine(this);
@@ -325,6 +339,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_directive; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDirective(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDirective(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDirective(this);
@@ -424,6 +446,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_org; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterOrg(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitOrg(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitOrg(this);
 			else return visitor.visitChildren(this);
@@ -471,6 +501,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_equ; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterEqu(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitEqu(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitEqu(this);
@@ -556,6 +594,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_set; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSet(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSet(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSet(this);
 			else return visitor.visitChildren(this);
@@ -631,6 +677,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_using; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterUsing(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitUsing(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitUsing(this);
 			else return visitor.visitChildren(this);
@@ -672,6 +726,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ds; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDs(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDs(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDs(this);
@@ -729,6 +791,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_db; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDb(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDb(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDb(this);
@@ -860,6 +930,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_dw; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDw(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDw(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDw(this);
 			else return visitor.visitChildren(this);
@@ -971,6 +1049,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_end; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterEnd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitEnd(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitEnd(this);
 			else return visitor.visitChildren(this);
@@ -1045,6 +1131,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_expression; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterExpression(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitExpression(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitExpression(this);
@@ -1306,6 +1400,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_character; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterCharacter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitCharacter(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitCharacter(this);
 			else return visitor.visitChildren(this);
@@ -1339,6 +1441,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_dollar; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDollar(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDollar(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDollar(this);
@@ -1381,6 +1491,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_instruction; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterInstruction(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitInstruction(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitInstruction(this);
@@ -1567,6 +1685,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_mnemonic; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterMnemonic(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitMnemonic(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitMnemonic(this);
@@ -1914,6 +2040,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_acall; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAcall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAcall(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAcall(this);
 			else return visitor.visitChildren(this);
@@ -1965,6 +2099,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_add; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAdd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAdd(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAdd(this);
@@ -2076,6 +2218,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_addc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAddc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAddc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAddc(this);
 			else return visitor.visitChildren(this);
@@ -2173,6 +2323,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_ajmp; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAjmp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAjmp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAjmp(this);
 			else return visitor.visitChildren(this);
@@ -2233,6 +2391,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_anl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAnl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAnl(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAnl(this);
@@ -2470,6 +2636,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_cjne; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterCjne(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitCjne(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitCjne(this);
 			else return visitor.visitChildren(this);
@@ -2567,6 +2741,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_clr; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterClr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitClr(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitClr(this);
 			else return visitor.visitChildren(this);
@@ -2632,6 +2814,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_cpl; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterCpl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitCpl(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitCpl(this);
 			else return visitor.visitChildren(this);
@@ -2691,6 +2881,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_da; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDa(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDa(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDa(this);
 			else return visitor.visitChildren(this);
@@ -2738,6 +2936,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_dec; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDec(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDec(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDec(this);
@@ -2802,6 +3008,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_div; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDiv(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDiv(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDiv(this);
 			else return visitor.visitChildren(this);
@@ -2847,6 +3061,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_djnz; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDjnz(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDjnz(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDjnz(this);
@@ -2943,6 +3165,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_inc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterInc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitInc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitInc(this);
 			else return visitor.visitChildren(this);
@@ -3032,6 +3262,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_jb; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJb(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJb(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJb(this);
 			else return visitor.visitChildren(this);
@@ -3079,6 +3317,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_jbc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJbc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJbc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJbc(this);
 			else return visitor.visitChildren(this);
@@ -3122,6 +3368,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_jc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJc(this);
 			else return visitor.visitChildren(this);
@@ -3160,6 +3414,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_jmp; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJmp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJmp(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJmp(this);
@@ -3204,6 +3466,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_jnb; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJnb(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJnb(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJnb(this);
 			else return visitor.visitChildren(this);
@@ -3247,6 +3517,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_jnc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJnc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJnc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJnc(this);
 			else return visitor.visitChildren(this);
@@ -3285,6 +3563,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_jnz; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJnz(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJnz(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJnz(this);
@@ -3325,6 +3611,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_jz; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterJz(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitJz(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitJz(this);
 			else return visitor.visitChildren(this);
@@ -3364,6 +3658,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_lcall; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterLcall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitLcall(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitLcall(this);
 			else return visitor.visitChildren(this);
@@ -3402,6 +3704,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ljmp; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterLjmp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitLjmp(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitLjmp(this);
@@ -3466,6 +3776,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_mov; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterMov(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitMov(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitMov(this);
@@ -3727,6 +4045,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_movc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterMovc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitMovc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitMovc(this);
 			else return visitor.visitChildren(this);
@@ -3790,6 +4116,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_movx; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterMovx(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitMovx(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitMovx(this);
@@ -3870,6 +4204,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_mul; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterMul(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitMul(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitMul(this);
 			else return visitor.visitChildren(this);
@@ -3905,6 +4247,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_nop; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterNop(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitNop(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitNop(this);
@@ -3964,6 +4314,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_orl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterOrl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitOrl(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitOrl(this);
@@ -4182,6 +4540,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_pop; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterPop(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitPop(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitPop(this);
 			else return visitor.visitChildren(this);
@@ -4221,6 +4587,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_push; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterPush(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitPush(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitPush(this);
 			else return visitor.visitChildren(this);
@@ -4257,6 +4631,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_ret; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterRet(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitRet(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitRet(this);
 			else return visitor.visitChildren(this);
@@ -4290,6 +4672,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_reti; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterReti(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitReti(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitReti(this);
@@ -4327,6 +4717,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_rl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterRl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitRl(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitRl(this);
@@ -4367,6 +4765,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_rlc; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterRlc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitRlc(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitRlc(this);
 			else return visitor.visitChildren(this);
@@ -4406,6 +4812,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_rr; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterRr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitRr(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitRr(this);
 			else return visitor.visitChildren(this);
@@ -4444,6 +4858,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_rrc; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterRrc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitRrc(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitRrc(this);
@@ -4486,6 +4908,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_setb; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSetb(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSetb(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSetb(this);
@@ -4540,6 +4970,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_sjmp; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSjmp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSjmp(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSjmp(this);
 			else return visitor.visitChildren(this);
@@ -4591,6 +5029,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_subb; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSubb(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSubb(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSubb(this);
@@ -4689,6 +5135,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_swap; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSwap(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSwap(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSwap(this);
 			else return visitor.visitChildren(this);
@@ -4737,6 +5191,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_xch; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterXch(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitXch(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitXch(this);
@@ -4831,6 +5293,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_xchd; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterXchd(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitXchd(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitXchd(this);
 			else return visitor.visitChildren(this);
@@ -4886,6 +5356,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_xrl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterXrl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitXrl(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitXrl(this);
@@ -5020,6 +5498,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_label; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterLabel(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitLabel(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitLabel(this);
 			else return visitor.visitChildren(this);
@@ -5056,6 +5542,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_symbol; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSymbol(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSymbol(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSymbol(this);
 			else return visitor.visitChildren(this);
@@ -5089,6 +5583,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_comment; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterComment(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitComment(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitComment(this);
@@ -5128,6 +5630,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_direct; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDirect(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDirect(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDirect(this);
@@ -5204,6 +5714,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_immediate; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterImmediate(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitImmediate(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitImmediate(this);
 			else return visitor.visitChildren(this);
@@ -5248,6 +5766,14 @@ public class Asm8051Parser extends Parser {
 		public TerminalNode OCTAL() { return getToken(Asm8051Parser.OCTAL, 0); }
 		public OctalContext(NumberContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterOctal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitOctal(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitOctal(this);
 			else return visitor.visitChildren(this);
@@ -5256,6 +5782,14 @@ public class Asm8051Parser extends Parser {
 	public static class BinaryContext extends NumberContext {
 		public TerminalNode BINARY() { return getToken(Asm8051Parser.BINARY, 0); }
 		public BinaryContext(NumberContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterBinary(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitBinary(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitBinary(this);
@@ -5266,6 +5800,14 @@ public class Asm8051Parser extends Parser {
 		public TerminalNode DECIMAL() { return getToken(Asm8051Parser.DECIMAL, 0); }
 		public DecimalContext(NumberContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDecimal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDecimal(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDecimal(this);
 			else return visitor.visitChildren(this);
@@ -5274,6 +5816,14 @@ public class Asm8051Parser extends Parser {
 	public static class HexadecimalContext extends NumberContext {
 		public TerminalNode HEXADECIMAL() { return getToken(Asm8051Parser.HEXADECIMAL, 0); }
 		public HexadecimalContext(NumberContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterHexadecimal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitHexadecimal(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitHexadecimal(this);
@@ -5342,6 +5892,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_string; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterString(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitString(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitString(this);
 			else return visitor.visitChildren(this);
@@ -5375,6 +5933,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_indirectRegister; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterIndirectRegister(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitIndirectRegister(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitIndirectRegister(this);
@@ -5410,6 +5976,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_register; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterRegister(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitRegister(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitRegister(this);
 			else return visitor.visitChildren(this);
@@ -5443,6 +6017,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_accumulator; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAccumulator(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAccumulator(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAccumulator(this);
@@ -5497,6 +6079,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_sfr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterSfr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitSfr(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitSfr(this);
@@ -5595,6 +6185,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_bit; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterBit(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitBit(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitBit(this);
@@ -6014,6 +6612,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_notBit; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterNotBit(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitNotBit(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitNotBit(this);
 			else return visitor.visitChildren(this);
@@ -6050,6 +6656,14 @@ public class Asm8051Parser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_carry; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterCarry(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitCarry(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitCarry(this);
 			else return visitor.visitChildren(this);
@@ -6083,6 +6697,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_dptr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterDptr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitDptr(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitDptr(this);
@@ -6118,6 +6740,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atDptr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAtDptr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAtDptr(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAtDptr(this);
@@ -6159,6 +6789,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atAPlusDptr; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAtAPlusDptr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAtAPlusDptr(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAtAPlusDptr(this);
@@ -6204,6 +6842,14 @@ public class Asm8051Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atAPlusPc; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).enterAtAPlusPc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof Asm8051Listener ) ((Asm8051Listener)listener).exitAtAPlusPc(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof Asm8051Visitor ) return ((Asm8051Visitor<? extends T>)visitor).visitAtAPlusPc(this);

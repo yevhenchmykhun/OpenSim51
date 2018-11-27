@@ -5,6 +5,10 @@ import java.util.Objects;
 
 public final class UnsignedInt16 implements Comparable<UnsignedInt16> {
 
+    public static final UnsignedInt16 ZERO = new UnsignedInt16(0x0000);
+    public static final UnsignedInt16 ONE = new UnsignedInt16(0x0001);
+    public static final UnsignedInt16 MAX_VALUE = new UnsignedInt16(0xffff);
+
     private BigInteger value;
 
     public UnsignedInt16(int magnitude) {
@@ -27,7 +31,7 @@ public final class UnsignedInt16 implements Comparable<UnsignedInt16> {
     }
 
     public UnsignedInt16 inc() {
-        return add(new UnsignedInt16(1));
+        return add(ONE);
     }
 
     public UnsignedInt16 add(UnsignedInt16 data) {

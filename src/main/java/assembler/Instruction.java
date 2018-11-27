@@ -1027,12 +1027,12 @@ public enum Instruction {
         INSTRUCTION_INFO_BY_OPCODE.put(0xFF, new InstructionInfo(1, MOV));      // MOV	R7, A
     }
 
-    private AssemblyInstructionTransformer assemblyInstructionTransformer;
-    private MachineCodesTransformer machineCodesTransformer;
+    private AssemblyInstructionTranslator assemblyInstructionTranslator;
+    private MachineCodesTranslator machineCodesTranslator;
 
-    Instruction(AssemblyInstructionTransformer assemblyInstructionTransformer, MachineCodesTransformer machineCodesTransformer) {
-        this.assemblyInstructionTransformer = assemblyInstructionTransformer;
-        this.machineCodesTransformer = machineCodesTransformer;
+    Instruction(AssemblyInstructionTranslator assemblyInstructionTranslator, MachineCodesTranslator machineCodesTranslator) {
+        this.assemblyInstructionTranslator = assemblyInstructionTranslator;
+        this.machineCodesTranslator = machineCodesTranslator;
     }
 
     public static Instruction getByMnemonic(String mnemonic) {
@@ -1048,18 +1048,18 @@ public enum Instruction {
     }
 
     public List<Integer> toMachineCodes(List<Operand> operands) {
-        return assemblyInstructionTransformer.transform(operands);
+        return assemblyInstructionTranslator.transform(operands);
     }
 
     public List<String> toAssemblyInstruction(List<Integer> machineCodes) {
-        return machineCodesTransformer.transform(machineCodes);
+        return machineCodesTranslator.transform(machineCodes);
     }
 
-    private interface AssemblyInstructionTransformer {
+    private interface AssemblyInstructionTranslator {
         List<Integer> transform(List<Operand> operands);
     }
 
-    private interface MachineCodesTransformer {
+    private interface MachineCodesTranslator {
         List<String> transform(List<Integer> machineCodes);
     }
 

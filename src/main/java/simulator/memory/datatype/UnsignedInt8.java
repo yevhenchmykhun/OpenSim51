@@ -5,9 +5,12 @@ import java.util.Objects;
 
 public final class UnsignedInt8 implements Comparable<UnsignedInt8> {
 
-    public static final UnsignedInt8 ZERO = new UnsignedInt8(0);
-    public static final UnsignedInt8 ONE = new UnsignedInt8(1);
-    public static final UnsignedInt8 MAX_VALUE = new UnsignedInt8(255);
+    public static final UnsignedInt8 ZERO = new UnsignedInt8(0x00);
+    public static final UnsignedInt8 ONE = new UnsignedInt8(0x01);
+    public static final UnsignedInt8 MAX_VALUE = new UnsignedInt8(0xff);
+
+    public static final UnsignedInt8 MASK_HIGH_NIBBLE = new UnsignedInt8(0xf0);
+    public static final UnsignedInt8 MASK_LOW_NIBBLE = new UnsignedInt8(0x0f);
 
     private BigInteger value;
     private boolean overflow;

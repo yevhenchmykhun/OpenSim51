@@ -21,26 +21,25 @@ public class InstructionTest {
     @Before
     public void setUp() throws Exception {
         s = new Simulator();
-        id = new InternalData();
-        xd = new ExternalData();
-        xc = new ExternalCode();
+        id = s.getInternalData();
+        xd = s.getExternalData();
+        xc = s.getExternalCode();
     }
 
     @Test
     public void NOP() throws Exception {
-        Instruction instruction = Instruction.findByOpcode(0x0);
-        Command command = instruction.getCommand();
+        Instruction instruction = Instruction.getByOpcode(0x0);
 
         Assert.assertEquals(instruction.getBytes(), 1);
 
-        command.execute(id, xd, xc, s, instruction);
+        instruction.execute(s);
         Assert.assertEquals(s.getPC(), new UnsignedInt16(1));
     }
 
     @Test
     public void MOV_74() throws Exception {
-        Instruction instruction = Instruction.findByOpcode(0x74);
-        Command command = instruction.getCommand();
+        xc.setCellValue(s.getPC(), new UnsignedInt8(0x74));
+        Instruction instruction = Instruction.getByOpcode(0x74);
 
         Assert.assertEquals(instruction.getBytes(), 2);
 
@@ -52,7 +51,7 @@ public class InstructionTest {
         xc.setCellValue(s.getPC().inc(), seven);
         Assert.assertEquals(xc.getCellValue(s.getPC().inc()), seven);
 
-        command.execute(id, xd, xc, s, instruction);
+        instruction.execute(s);
 
         Assert.assertEquals(id.ACC.getValue(), seven);
     }

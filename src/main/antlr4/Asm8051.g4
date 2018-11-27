@@ -513,7 +513,7 @@ BINARY : [01]+ [Bb];
 SYMBOL : [a-zA-Z?_] [a-zA-Z0-9?_]*;
 CHARACTER : '\'' [a-zA-Z0-9][a-zA-Z0-9]? '\'';
 STRING : '\'' ~ [']* '\'';
-COMMENT : ';' ~[\r\n]* -> skip;
+COMMENT : ';' ~[\r\n]* -> channel(1);
 EOL : '\r'? '\n';
 WS : [ \t] -> skip;
 

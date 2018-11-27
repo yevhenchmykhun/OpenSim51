@@ -16,7 +16,7 @@ public class Asm8051PassOneVisitorNew extends Asm8051CommonVisitor {
 
     public Asm8051PassOneVisitorNew(Map<String, UnsignedInt16> symbolTable) {
         this.symbolTable = symbolTable;
-        locationCounter = new UnsignedInt16(0);
+        locationCounter = UnsignedInt16.ZERO;
     }
 
     @Override

@@ -19,6 +19,10 @@ public abstract class Memory {
         this.rawMemory = rawMemory;
     }
 
+    public Memory.Cell getCell(int address) {
+        return new Cell(address);
+    }
+
     public UnsignedInt8 getCellValue(int address) {
         checkRange(0, memorySize - 1, address);
 
@@ -51,6 +55,14 @@ public abstract class Memory {
         boolean getValue();
 
         void setValue(boolean value);
+
+        default void setBit() {
+            setValue(true);
+        }
+
+        default void clearBit() {
+            setValue(false);
+        }
 
     }
 

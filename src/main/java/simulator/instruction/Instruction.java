@@ -1,6 +1,7 @@
 package simulator.instruction;
 
 import simulator.Simulator;
+import simulator.memory.ExternalCode;
 import simulator.memory.InternalData;
 import simulator.memory.Memory;
 import simulator.memory.datatype.UnsignedInt16;
@@ -11,204 +12,728 @@ import java.util.Map;
 
 public enum Instruction {
 
-    NOP(0x0, 1, 0, (id, xd, xc, s, i) -> s.setPC(s.getPC().inc())),
+    NOP((simulator, instructionInfo) -> simulator.getPC().inc()),
 
-    MOV_74(0x74, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_75(0x75, 3, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), xc.getCellValue(s.getPC().inc().inc()), i.bytes, s)),
-    MOV_76(0x76, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, id.R0.getValue(), xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_77(0x77, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, id.R1.getValue(), xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_78(0x78, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R0, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_79(0x79, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R1, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_7A(0x7a, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R2, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_7B(0x7b, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R3, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_7C(0x7c, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R4, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_7D(0x7d, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R5, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_7E(0x7e, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R6, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_7F(0x7f, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R7, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
+    AJMP((simulator, instructionInfo) -> {
+        UnsignedInt16 pc = simulator.getPC();
+        ExternalCode code = simulator.getExternalCode();
 
-    MOV_85(0x85, 3, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc().inc()), id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_86(0x86, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.getCellValue(id.R0.getValue()), i.bytes, s)),
-    MOV_87(0x87, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.getCellValue(id.R1.getValue()), i.bytes, s)),
-    MOV_88(0x88, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R0.getValue(), i.bytes, s)),
-    MOV_89(0x89, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R1.getValue(), i.bytes, s)),
-    MOV_8A(0x8a, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R2.getValue(), i.bytes, s)),
-    MOV_8B(0x8b, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R3.getValue(), i.bytes, s)),
-    MOV_8C(0x8c, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R4.getValue(), i.bytes, s)),
-    MOV_8D(0x8d, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R5.getValue(), i.bytes, s)),
-    MOV_8E(0x8e, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R6.getValue(), i.bytes, s)),
-    MOV_8F(0x8f, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.R7.getValue(), i.bytes, s)),
-
-    MOV_90(0x90, 3, 0, (id, xd, xc, s, i) -> {
-        id.DPH.setValue(xc.getCellValue(s.getPC().inc()));
-        id.DPL.setValue(xc.getCellValue(s.getPC().inc().inc()));
-        s.setPC(s.getPC().add(new UnsignedInt16(i.bytes)));
+        UnsignedInt8 opcode = code.getCellValue(pc);
+        UnsignedInt16 highOrderBits = opcode.and(new UnsignedInt8(0xe0)).toUnsignedInt16().shiftLeft(8);
+        UnsignedInt16 lowOrderBits = code.getCellValue(pc.inc()).toUnsignedInt16();
+        UnsignedInt16 addr11 = highOrderBits.or(lowOrderBits);
+        return pc.and(new UnsignedInt16(0xf800)).or(addr11);
     }),
 
-    MOV_92(0x92, 2, 0, (id, xd, xc, s, i) -> {
-        // TODO: impl
+    LJMP((simulator, instructionInfo) -> {
+        UnsignedInt16 pc = simulator.getPC();
+        ExternalCode code = simulator.getExternalCode();
+
+        UnsignedInt8 highOrderByte = code.getCellValue(pc.inc());
+        UnsignedInt8 lowOrderByte = code.getCellValue(pc.inc().inc());
+        return highOrderByte.toUnsignedInt16().shiftLeft(8).and(lowOrderByte.toUnsignedInt16());
     }),
 
-    MOV_94(0x94, 2, 0, (id, xd, xc, s, i) -> subtract(id, xc.getCellValue(s.getPC().inc()), i.bytes, s)),
-    MOV_95(0x95, 2, 0, (id, xd, xc, s, i) -> subtract(id, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_96(0x96, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.getCellValue(id.R0.getValue()), i.bytes, s)),
-    MOV_97(0x97, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.getCellValue(id.R1.getValue()), i.bytes, s)),
-    MOV_98(0x98, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R0.getValue(), i.bytes, s)),
-    MOV_99(0x99, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R1.getValue(), i.bytes, s)),
-    MOV_9A(0x9a, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R2.getValue(), i.bytes, s)),
-    MOV_9B(0x9b, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R3.getValue(), i.bytes, s)),
-    MOV_9C(0x9c, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R4.getValue(), i.bytes, s)),
-    MOV_9D(0x9d, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R5.getValue(), i.bytes, s)),
-    MOV_9E(0x9e, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R6.getValue(), i.bytes, s)),
-    MOV_9F(0x9f, 1, 0, (id, xd, xc, s, i) -> subtract(id, id.R7.getValue(), i.bytes, s)),
-
-    MOV_A2(0xa2, 2, 0, (id, xd, xc, s, i) -> {
-        // TODO: impl
+    RR((simulator, instructionInfo) -> {
+        return null;
     }),
 
-    MOV_A6(0xa6, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, id.R0.getValue(), id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_A7(0xa7, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, id.R1.getValue(), id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_A8(0xa8, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R0, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_A9(0xa9, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R1, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_AA(0xaa, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R2, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_AB(0xab, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R3, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_AC(0xac, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R4, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_AD(0xad, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R5, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_AE(0xae, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R6, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_AF(0xaf, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R7, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-
-    MOV_E5(0xe5, 2, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.getCellValue(xc.getCellValue(s.getPC().inc())), i.bytes, s)),
-    MOV_E6(0xe6, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.getCellValue(id.R0.getValue()), i.bytes, s)),
-    MOV_E7(0xe7, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.getCellValue(id.R1.getValue()), i.bytes, s)),
-    MOV_E8(0xe8, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R0.getValue(), i.bytes, s)),
-    MOV_E9(0xe9, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R1.getValue(), i.bytes, s)),
-    MOV_EA(0xea, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R2.getValue(), i.bytes, s)),
-    MOV_EB(0xeb, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R3.getValue(), i.bytes, s)),
-    MOV_EC(0xec, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R4.getValue(), i.bytes, s)),
-    MOV_ED(0xed, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R5.getValue(), i.bytes, s)),
-    MOV_EE(0xee, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R6.getValue(), i.bytes, s)),
-    MOV_EF(0xef, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.ACC, id.R7.getValue(), i.bytes, s)),
-
-    MOV_F5(0xF5, 2, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, xc.getCellValue(s.getPC().inc()), id.ACC.getValue(), i.bytes, s)),
-    MOV_F6(0xf6, 1, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, id.R0.getValue(), id.ACC.getValue(), i.bytes, s)),
-    MOV_F7(0xf7, 1, 0, (id, xd, xc, s, i) -> setIndirectCellValue(id, id.R1.getValue(), id.ACC.getValue(), i.bytes, s)),
-    MOV_F8(0xf8, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R0, id.ACC.getValue(), i.bytes, s)),
-    MOV_F9(0xf9, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R1, id.ACC.getValue(), i.bytes, s)),
-    MOV_FA(0xfa, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R2, id.ACC.getValue(), i.bytes, s)),
-    MOV_FB(0xfb, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R3, id.ACC.getValue(), i.bytes, s)),
-    MOV_FC(0xfc, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R4, id.ACC.getValue(), i.bytes, s)),
-    MOV_FD(0xfd, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R5, id.ACC.getValue(), i.bytes, s)),
-    MOV_FE(0xfe, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R6, id.ACC.getValue(), i.bytes, s)),
-    MOV_FF(0xff, 1, 0, (id, xd, xc, s, i) -> setDirectCellValue(id.R7, id.ACC.getValue(), i.bytes, s)),
-
-    AJMP_01(0x1, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_21(0x21, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_41(0x41, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_61(0x61, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_81(0x81, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_A1(0xa1, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_C1(0xc1, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-    AJMP_E1(0xe1, 1, 0, (id, xd, xc, s, i) -> s.setPC(determineNextAbsoluteJumpAddress(s.getPC(), xc.getCellValue(s.getPC().inc()), new UnsignedInt8(i.opcode)))),
-
-    CLR_C2(0xc2, 2, 0, (id, xd, xc, s, i) -> {
-        // TODO: impl
-        s.setPC(s.getPC().inc().inc());
+    INC((simulator, instructionInfo) -> {
+        return null;
     }),
 
-    CLR_C3(0xc3, 1, 0, (id, xd, xc, s, i) -> {
-        id.bitMap.CY.setValue(false);
-        s.setPC(s.getPC().inc());
+    JBC((simulator, instructionInfo) -> {
+        return null;
     }),
 
-    CLR_E4(0xe4, 1, 0, (id, xd, xc, s, i) -> {
-        id.ACC.setValue(new UnsignedInt8(0x0));
-        s.setPC(s.getPC().inc());
+    ACALL((simulator, instructionInfo) -> {
+        return null;
     }),
 
-    JNZ(0x70, 2, 0, (id, xd, xc, s, i) -> {
-        UnsignedInt16 programCounter = s.getPC();
+    LCALL((simulator, instructionInfo) -> {
+        return null;
+    }),
 
-        UnsignedInt16 nextAddress;
-        if (id.ACC.getValue().equals(new UnsignedInt8(0x0))) {
-            nextAddress = programCounter.inc().inc();
-        } else {
-            nextAddress = programCounter.add(xc.getCellValue(programCounter.inc()).toUnsignedInt16());
+    RRC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    DEC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    JB((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    RET((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    RL((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    ADD((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    JNB((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    RETI((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    RLC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    ADDC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    JC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    ORL((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    JNC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    ANL((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    JZ((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    XRL((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    JNZ((simulator, instructionInfo) -> {
+        UnsignedInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        pc = pc.add(new UnsignedInt16(instructionInfo.bytes));
+        if (!data.ACC.getValue().equals(UnsignedInt8.ZERO)) {
+            UnsignedInt16 offset = code.getCellValue(pc.inc()).not().inc().toUnsignedInt16();
+            pc = pc.add(offset);
         }
-        s.setPC(nextAddress);
+
+        return pc;
     }),
 
-    LJMP(2, 3, 0, (id, xd, xc, s, i) -> {
-        UnsignedInt8 highOrderByte = xc.getCellValue(s.getPC().inc());
-        UnsignedInt8 lowOrderByte = xc.getCellValue(s.getPC().inc().inc());
-        UnsignedInt16 nextAddress = highOrderByte.toUnsignedInt16().shiftLeft(0x8).and(lowOrderByte.toUnsignedInt16());
-        s.setPC(nextAddress);
+    JMP((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    MOV((simulator, instructionInfo) -> {
+        UnsignedInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        int opcode = code.getCellValue(pc).toInt();
+        if ((opcode & 0xfe) == 0x76) {
+
+            Memory.Cell register = getRegister(data, opcode & 0x01);
+            UnsignedInt8 value = code.getCellValue(pc.inc());
+            setIndirect(register, value, data);
+
+        } else if ((opcode & 0xfe) == 0xf6) {
+
+            Memory.Cell register = getRegister(data, opcode & 0x01);
+            UnsignedInt8 value = data.ACC.getValue();
+            setIndirect(register, value, data);
+
+        } else if ((opcode & 0xfe) == 0xa6) {
+
+            Memory.Cell register = getRegister(data, opcode & 0x01);
+            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            setIndirect(register, value, data);
+
+        } else if (opcode == 0x74) {
+
+            Memory.Cell destination = data.ACC;
+            UnsignedInt8 value = code.getCellValue(pc.inc());
+            destination.setValue(value);
+
+        } else if ((opcode & 0xfe) == 0xe6) {
+
+            Memory.Cell destination = data.ACC;
+            Memory.Cell register = getRegister(data, opcode & 0x01);
+            setIndirect(destination, register, data);
+
+        } else if (opcode == 0xe5) {
+
+            Memory.Cell destination = data.ACC;
+            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            destination.setValue(value);
+
+        } else if ((opcode & 0xf8) == 0xe8) {
+
+            Memory.Cell destination = data.ACC;
+            UnsignedInt8 value = getRegister(data, opcode & 0x07).getValue();
+            destination.setValue(value);
+
+        } else if (opcode == 0x92) {
+
+            Memory.Bit destination = data.bitMap.getBit(code.getCellValue(pc.inc()).toInt());
+            boolean value = data.bitMap.CY.getValue();
+            destination.setValue(value);
+
+        } else if (opcode == 0xa2) {
+
+            Memory.Bit destination = data.bitMap.CY;
+            boolean value = data.bitMap.getBit(code.getCellValue(pc.inc()).toInt()).getValue();
+            destination.setValue(value);
+
+        } else if (opcode == 0x85) {
+
+            Memory.Cell destination = data.getCell(code.getCellValue(pc.inc().inc()).toInt());
+            UnsignedInt8 value = data.getCell(code.getCellValue(pc.inc()).toInt()).getValue();
+            destination.setValue(value);
+
+        } else if (opcode == 0x75) {
+
+            Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
+            UnsignedInt8 value = code.getCellValue(pc.inc().inc());
+            destination.setValue(value);
+
+        } else if ((opcode & 0xfe) == 0x86) {
+
+            Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
+            Memory.Cell register = getRegister(data, opcode & 0x01);
+            setIndirect(destination, register, data);
+
+        } else if (opcode == 0xf5) {
+
+            Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
+            UnsignedInt8 value = data.ACC.getValue();
+            destination.setValue(value);
+
+        } else if ((opcode & 0xfe) == 0x88) {
+
+            Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
+            UnsignedInt8 value = getRegister(data, opcode & 0x01).getValue();
+            destination.setValue(value);
+
+        } else if (opcode == 0x90) {
+
+            data.DPH.setValue(code.getCellValue(pc.inc()));
+            data.DPL.setValue(code.getCellValue(pc.inc().inc()));
+
+        } else if ((opcode & 0xf8) == 0x78) {
+
+            Memory.Cell destination = getRegister(data, opcode & 0x07);
+            UnsignedInt8 value = code.getCellValue(pc.inc());
+            destination.setValue(value);
+
+        } else if ((opcode & 0xf8) == 0xf8) {
+
+            Memory.Cell destination = getRegister(data, opcode & 0x07);
+            UnsignedInt8 value = data.ACC.getValue();
+            destination.setValue(value);
+
+        } else if ((opcode & 0xf8) == 0xa8) {
+
+            Memory.Cell destination = getRegister(data, opcode & 0x07);
+            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            destination.setValue(value);
+
+        }
+
+        return pc.add(new UnsignedInt16(instructionInfo.bytes));
+    }),
+
+    SJMP((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    MOVC((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    DIV((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    SUBB((simulator, instructionInfo) -> {
+        UnsignedInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        int opcode = code.getCellValue(pc).toInt();
+        if (opcode == 0x94) {
+
+            UnsignedInt8 value = code.getCellValue(pc.inc());
+            subtract(data, value);
+
+        } else if ((opcode & 0xfe) == 0x96) {
+
+            UnsignedInt8 value = data.getCellValue(getRegister(data, opcode & 0x01).getValue());
+            subtract(data, value);
+
+        } else if (opcode == 0x95) {
+
+            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            subtract(data, value);
+
+        } else if ((opcode & 0xf8) == 0x98) {
+
+            UnsignedInt8 value = getRegister(data, opcode & 0x07).getValue();
+            subtract(data, value);
+
+        }
+
+        return pc.add(new UnsignedInt16(instructionInfo.bytes));
+    }),
+
+    MUL((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    CPL((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    CJNE((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    PUSH((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    CLR((simulator, instructionInfo) -> {
+        UnsignedInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        int opcode = code.getCellValue(pc).toInt();
+        if (opcode == 0xe4) {
+
+            data.ACC.setValue(UnsignedInt8.ZERO);
+
+        } else if (opcode == 0xc2) {
+
+            Memory.Bit bit = data.bitMap.getBit(code.getCellValue(pc.inc()).toInt());
+            bit.setValue(false);
+
+        } else if (opcode == 0xc3) {
+
+            data.bitMap.CY.setValue(false);
+
+        }
+
+        return pc.add(new UnsignedInt16(instructionInfo.bytes));
+    }),
+
+    SWAP((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    XCH((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    POP((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    SETB((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    DA((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    DJNZ((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    XCHD((simulator, instructionInfo) -> {
+        return null;
+    }),
+
+    MOVX((simulator, instructionInfo) -> {
+        return null;
     });
 
-    private static final Map<Integer, Instruction> INSTRUCTIONS;
+    private static final Map<Integer, InstructionInfo> INSTRUCTION_INFO_BY_OPCODE;
 
     static {
-        INSTRUCTIONS = new HashMap<>(256);
-        for (Instruction instruction : Instruction.values()) {
-            INSTRUCTIONS.put(instruction.opcode, instruction);
+        INSTRUCTION_INFO_BY_OPCODE = new HashMap<>(256);
+        INSTRUCTION_INFO_BY_OPCODE.put(0x00, new InstructionInfo(1, 0, NOP));      // NOP
+        INSTRUCTION_INFO_BY_OPCODE.put(0x01, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x02, new InstructionInfo(3, 0, LJMP));     // LJMP	addr16
+        INSTRUCTION_INFO_BY_OPCODE.put(0x03, new InstructionInfo(1, 0, RR));       // RR	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x04, new InstructionInfo(1, 0, INC));      // INC	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x05, new InstructionInfo(2, 0, INC));      // INC	direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x06, new InstructionInfo(1, 0, INC));      // INC	@R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x07, new InstructionInfo(1, 0, INC));      // INC	@R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x08, new InstructionInfo(1, 0, INC));      // INC	R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x09, new InstructionInfo(1, 0, INC));      // INC	R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x0A, new InstructionInfo(1, 0, INC));      // INC	R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x0B, new InstructionInfo(1, 0, INC));      // INC	R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x0C, new InstructionInfo(1, 0, INC));      // INC	R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x0D, new InstructionInfo(1, 0, INC));      // INC	R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x0E, new InstructionInfo(1, 0, INC));      // INC	R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x0F, new InstructionInfo(1, 0, INC));      // INC	R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x10, new InstructionInfo(3, 0, JBC));      // JBC	bit, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x11, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x12, new InstructionInfo(3, 0, LCALL));    // LCALL	addr16
+        INSTRUCTION_INFO_BY_OPCODE.put(0x13, new InstructionInfo(1, 0, RRC));      // RRC	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x14, new InstructionInfo(1, 0, DEC));      // DEC	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x15, new InstructionInfo(2, 0, DEC));      // DEC	direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x16, new InstructionInfo(1, 0, DEC));      // DEC	@R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x17, new InstructionInfo(1, 0, DEC));      // DEC	@R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x18, new InstructionInfo(1, 0, DEC));      // DEC	R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x19, new InstructionInfo(1, 0, DEC));      // DEC	R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x1A, new InstructionInfo(1, 0, DEC));      // DEC	R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x1B, new InstructionInfo(1, 0, DEC));      // DEC	R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x1C, new InstructionInfo(1, 0, DEC));      // DEC	R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x1D, new InstructionInfo(1, 0, DEC));      // DEC	R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x1E, new InstructionInfo(1, 0, DEC));      // DEC	R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x1F, new InstructionInfo(1, 0, DEC));      // DEC	R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x20, new InstructionInfo(3, 0, JB));       // JB	bit, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x21, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x22, new InstructionInfo(1, 0, RET));      // RET
+        INSTRUCTION_INFO_BY_OPCODE.put(0x23, new InstructionInfo(1, 0, RL));       // RL	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x24, new InstructionInfo(2, 0, ADD));      // ADD	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x25, new InstructionInfo(2, 0, ADD));      // ADD	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x26, new InstructionInfo(1, 0, ADD));      // ADD	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x27, new InstructionInfo(1, 0, ADD));      // ADD	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x28, new InstructionInfo(1, 0, ADD));      // ADD	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x29, new InstructionInfo(1, 0, ADD));      // ADD	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x2A, new InstructionInfo(1, 0, ADD));      // ADD	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x2B, new InstructionInfo(1, 0, ADD));      // ADD	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x2C, new InstructionInfo(1, 0, ADD));      // ADD	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x2D, new InstructionInfo(1, 0, ADD));      // ADD	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x2E, new InstructionInfo(1, 0, ADD));      // ADD	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x2F, new InstructionInfo(1, 0, ADD));      // ADD	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x30, new InstructionInfo(3, 0, JNB));      // JNB	bit, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x31, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x32, new InstructionInfo(1, 0, RETI));     // RETI
+        INSTRUCTION_INFO_BY_OPCODE.put(0x33, new InstructionInfo(1, 0, RLC));      // RLC	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x34, new InstructionInfo(2, 0, ADDC));     // ADDC	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x35, new InstructionInfo(2, 0, ADDC));     // ADDC	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x36, new InstructionInfo(1, 0, ADDC));     // ADDC	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x37, new InstructionInfo(1, 0, ADDC));     // ADDC	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x38, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x39, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x3A, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x3B, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x3C, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x3D, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x3E, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x3F, new InstructionInfo(1, 0, ADDC));     // ADDC	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x40, new InstructionInfo(2, 0, JC));       // JC	offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x41, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x42, new InstructionInfo(2, 0, ORL));      // ORL	direct, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x43, new InstructionInfo(3, 0, ORL));      // ORL	direct, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x44, new InstructionInfo(2, 0, ORL));      // ORL	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x45, new InstructionInfo(2, 0, ORL));      // ORL	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x46, new InstructionInfo(1, 0, ORL));      // ORL	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x47, new InstructionInfo(1, 0, ORL));      // ORL	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x48, new InstructionInfo(1, 0, ORL));      // ORL	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x49, new InstructionInfo(1, 0, ORL));      // ORL	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x4A, new InstructionInfo(1, 0, ORL));      // ORL	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x4B, new InstructionInfo(1, 0, ORL));      // ORL	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x4C, new InstructionInfo(1, 0, ORL));      // ORL	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x4D, new InstructionInfo(1, 0, ORL));      // ORL	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x4E, new InstructionInfo(1, 0, ORL));      // ORL	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x4F, new InstructionInfo(1, 0, ORL));      // ORL	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x50, new InstructionInfo(2, 0, JNC));      // JNC	offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x51, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x52, new InstructionInfo(2, 0, ANL));      // ANL	direct, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x53, new InstructionInfo(3, 0, ANL));      // ANL	direct, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x54, new InstructionInfo(2, 0, ANL));      // ANL	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x55, new InstructionInfo(2, 0, ANL));      // ANL	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x56, new InstructionInfo(1, 0, ANL));      // ANL	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x57, new InstructionInfo(1, 0, ANL));      // ANL	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x58, new InstructionInfo(1, 0, ANL));      // ANL	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x59, new InstructionInfo(1, 0, ANL));      // ANL	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x5A, new InstructionInfo(1, 0, ANL));      // ANL	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x5B, new InstructionInfo(1, 0, ANL));      // ANL	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x5C, new InstructionInfo(1, 0, ANL));      // ANL	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x5D, new InstructionInfo(1, 0, ANL));      // ANL	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x5E, new InstructionInfo(1, 0, ANL));      // ANL	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x5F, new InstructionInfo(1, 0, ANL));      // ANL	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x60, new InstructionInfo(2, 0, JZ));       // JZ	offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x61, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x62, new InstructionInfo(2, 0, XRL));      // XRL	direct, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0x63, new InstructionInfo(3, 0, XRL));      // XRL	direct, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x64, new InstructionInfo(2, 0, XRL));      // XRL	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x65, new InstructionInfo(2, 0, XRL));      // XRL	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x66, new InstructionInfo(1, 0, XRL));      // XRL	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x67, new InstructionInfo(1, 0, XRL));      // XRL	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x68, new InstructionInfo(1, 0, XRL));      // XRL	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x69, new InstructionInfo(1, 0, XRL));      // XRL	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x6A, new InstructionInfo(1, 0, XRL));      // XRL	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x6B, new InstructionInfo(1, 0, XRL));      // XRL	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x6C, new InstructionInfo(1, 0, XRL));      // XRL	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x6D, new InstructionInfo(1, 0, XRL));      // XRL	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x6E, new InstructionInfo(1, 0, XRL));      // XRL	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x6F, new InstructionInfo(1, 0, XRL));      // XRL	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x70, new InstructionInfo(2, 0, JNZ));      // JNZ	offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x71, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x72, new InstructionInfo(2, 0, ORL));      // ORL	C, bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0x73, new InstructionInfo(1, 0, JMP));      // JMP	@A+DPTR
+        INSTRUCTION_INFO_BY_OPCODE.put(0x74, new InstructionInfo(2, 0, MOV));      // MOV	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x75, new InstructionInfo(3, 0, MOV));      // MOV	direct, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x76, new InstructionInfo(2, 0, MOV));      // MOV	@R0, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x77, new InstructionInfo(2, 0, MOV));      // MOV	@R1, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x78, new InstructionInfo(2, 0, MOV));      // MOV	R0, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x79, new InstructionInfo(2, 0, MOV));      // MOV	R1, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x7A, new InstructionInfo(2, 0, MOV));      // MOV	R2, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x7B, new InstructionInfo(2, 0, MOV));      // MOV	R3, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x7C, new InstructionInfo(2, 0, MOV));      // MOV	R4, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x7D, new InstructionInfo(2, 0, MOV));      // MOV	R5, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x7E, new InstructionInfo(2, 0, MOV));      // MOV	R6, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x7F, new InstructionInfo(2, 0, MOV));      // MOV	R7, #immed
+
+        INSTRUCTION_INFO_BY_OPCODE.put(0x80, new InstructionInfo(2, 0, SJMP));     // SJMP	offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0x81, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x82, new InstructionInfo(2, 0, ANL));      // ANL	C, bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0x83, new InstructionInfo(1, 0, MOVC));     // MOVC	A, @A+PC
+        INSTRUCTION_INFO_BY_OPCODE.put(0x84, new InstructionInfo(1, 0, DIV));      // DIV	AB
+        INSTRUCTION_INFO_BY_OPCODE.put(0x85, new InstructionInfo(3, 0, MOV));      // MOV	direct, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x86, new InstructionInfo(2, 0, MOV));      // MOV	direct, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x87, new InstructionInfo(2, 0, MOV));      // MOV	direct, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x88, new InstructionInfo(2, 0, MOV));      // MOV	direct, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x89, new InstructionInfo(2, 0, MOV));      // MOV	direct, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x8A, new InstructionInfo(2, 0, MOV));      // MOV	direct, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x8B, new InstructionInfo(2, 0, MOV));      // MOV	direct, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x8C, new InstructionInfo(2, 0, MOV));      // MOV	direct, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x8D, new InstructionInfo(2, 0, MOV));      // MOV	direct, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x8E, new InstructionInfo(2, 0, MOV));      // MOV	direct, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x8F, new InstructionInfo(2, 0, MOV));      // MOV	direct, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0x90, new InstructionInfo(3, 0, MOV));      // MOV	DPTR, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x91, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0x92, new InstructionInfo(2, 0, MOV));      // MOV	bit, C
+        INSTRUCTION_INFO_BY_OPCODE.put(0x93, new InstructionInfo(1, 0, MOVC));     // MOVC	A, @A+DPTR
+        INSTRUCTION_INFO_BY_OPCODE.put(0x94, new InstructionInfo(2, 0, SUBB));     // SUBB	A, #immed
+        INSTRUCTION_INFO_BY_OPCODE.put(0x95, new InstructionInfo(2, 0, SUBB));     // SUBB	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0x96, new InstructionInfo(1, 0, SUBB));     // SUBB	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x97, new InstructionInfo(1, 0, SUBB));     // SUBB	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x98, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0x99, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0x9A, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0x9B, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0x9C, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0x9D, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0x9E, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0x9F, new InstructionInfo(1, 0, SUBB));     // SUBB	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA0, new InstructionInfo(2, 0, ORL));      // ORL	C, /bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA1, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA2, new InstructionInfo(2, 0, MOV));      // MOV	C, bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA3, new InstructionInfo(1, 0, INC));      // INC	DPTR
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA4, new InstructionInfo(1, 0, MUL));      // MUL	AB
+        // INSTRUCTION_INFO_BY_OPCODE.put(0xA5, 0);    // reserved
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA6, new InstructionInfo(2, 0, MOV));      // MOV	@R0, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA7, new InstructionInfo(2, 0, MOV));      // MOV	@R1, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA8, new InstructionInfo(2, 0, MOV));      // MOV	R0, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xA9, new InstructionInfo(2, 0, MOV));      // MOV	R1, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xAA, new InstructionInfo(2, 0, MOV));      // MOV	R2, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xAB, new InstructionInfo(2, 0, MOV));      // MOV	R3, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xAC, new InstructionInfo(2, 0, MOV));      // MOV	R4, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xAD, new InstructionInfo(2, 0, MOV));      // MOV	R5, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xAE, new InstructionInfo(2, 0, MOV));      // MOV	R6, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xAF, new InstructionInfo(2, 0, MOV));      // MOV	R7, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB0, new InstructionInfo(2, 0, ANL));      // ANL	C, /bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB1, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB2, new InstructionInfo(2, 0, CPL));      // CPL	bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB3, new InstructionInfo(1, 0, CPL));      // CPL	C
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB4, new InstructionInfo(3, 0, CJNE));     // CJNE	A, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB5, new InstructionInfo(3, 0, CJNE));     // CJNE	A, direct, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB6, new InstructionInfo(3, 0, CJNE));     // CJNE	@R0, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB7, new InstructionInfo(3, 0, CJNE));     // CJNE	@R1, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB8, new InstructionInfo(3, 0, CJNE));     // CJNE	R0, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xB9, new InstructionInfo(3, 0, CJNE));     // CJNE	R1, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xBA, new InstructionInfo(3, 0, CJNE));     // CJNE	R2, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xBB, new InstructionInfo(3, 0, CJNE));     // CJNE	R3, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xBC, new InstructionInfo(3, 0, CJNE));     // CJNE	R4, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xBD, new InstructionInfo(3, 0, CJNE));     // CJNE	R5, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xBE, new InstructionInfo(3, 0, CJNE));     // CJNE	R6, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xBF, new InstructionInfo(3, 0, CJNE));     // CJNE	R7, #immed, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC0, new InstructionInfo(2, 0, PUSH));     // PUSH	direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC1, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC2, new InstructionInfo(2, 0, CLR));      // CLR	bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC3, new InstructionInfo(1, 0, CLR));      // CLR	C
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC4, new InstructionInfo(1, 0, SWAP));     // SWAP	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC5, new InstructionInfo(2, 0, XCH));      // XCH	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC6, new InstructionInfo(1, 0, XCH));      // XCH	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC7, new InstructionInfo(1, 0, XCH));      // XCH	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC8, new InstructionInfo(1, 0, XCH));      // XCH	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0xC9, new InstructionInfo(1, 0, XCH));      // XCH	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0xCA, new InstructionInfo(1, 0, XCH));      // XCH	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0xCB, new InstructionInfo(1, 0, XCH));      // XCH	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0xCC, new InstructionInfo(1, 0, XCH));      // XCH	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0xCD, new InstructionInfo(1, 0, XCH));      // XCH	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0xCE, new InstructionInfo(1, 0, XCH));      // XCH	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0xCF, new InstructionInfo(1, 0, XCH));      // XCH	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD0, new InstructionInfo(2, 0, POP));      // POP	direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD1, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD2, new InstructionInfo(2, 0, SETB));     // SETB	bit
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD3, new InstructionInfo(1, 0, SETB));     // SETB	C
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD4, new InstructionInfo(1, 0, DA));       // DA	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD5, new InstructionInfo(3, 0, DJNZ));     // DJNZ	direct, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD6, new InstructionInfo(1, 0, XCHD));     // XCHD	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD7, new InstructionInfo(1, 0, XCHD));     // XCHD	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD8, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R0, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xD9, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R1, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xDA, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R2, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xDB, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R3, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xDC, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R4, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xDD, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R5, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xDE, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R6, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xDF, new InstructionInfo(2, 0, DJNZ));     // DJNZ	R7, offset
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE0, new InstructionInfo(1, 0, MOVX));     // MOVX	A, @DPTR
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE1, new InstructionInfo(2, 0, AJMP));     // AJMP	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE2, new InstructionInfo(1, 0, MOVX));     // MOVX	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE3, new InstructionInfo(1, 0, MOVX));     // MOVX	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE4, new InstructionInfo(1, 0, CLR));      // CLR	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE5, new InstructionInfo(2, 0, MOV));      // MOV	A, direct
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE6, new InstructionInfo(1, 0, MOV));      // MOV	A, @R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE7, new InstructionInfo(1, 0, MOV));      // MOV	A, @R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE8, new InstructionInfo(1, 0, MOV));      // MOV	A, R0
+        INSTRUCTION_INFO_BY_OPCODE.put(0xE9, new InstructionInfo(1, 0, MOV));      // MOV	A, R1
+        INSTRUCTION_INFO_BY_OPCODE.put(0xEA, new InstructionInfo(1, 0, MOV));      // MOV	A, R2
+        INSTRUCTION_INFO_BY_OPCODE.put(0xEB, new InstructionInfo(1, 0, MOV));      // MOV	A, R3
+        INSTRUCTION_INFO_BY_OPCODE.put(0xEC, new InstructionInfo(1, 0, MOV));      // MOV	A, R4
+        INSTRUCTION_INFO_BY_OPCODE.put(0xED, new InstructionInfo(1, 0, MOV));      // MOV	A, R5
+        INSTRUCTION_INFO_BY_OPCODE.put(0xEE, new InstructionInfo(1, 0, MOV));      // MOV	A, R6
+        INSTRUCTION_INFO_BY_OPCODE.put(0xEF, new InstructionInfo(1, 0, MOV));      // MOV	A, R7
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF0, new InstructionInfo(1, 0, MOVX));     // MOVX	@DPTR, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF1, new InstructionInfo(2, 0, ACALL));    // ACALL	addr11
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF2, new InstructionInfo(1, 0, MOVX));     // MOVX	@R0, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF3, new InstructionInfo(1, 0, MOVX));     // MOVX	@R1, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF4, new InstructionInfo(1, 0, CPL));      // CPL	A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF5, new InstructionInfo(2, 0, MOV));      // MOV	direct, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF6, new InstructionInfo(1, 0, MOV));      // MOV	@R0, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF7, new InstructionInfo(1, 0, MOV));      // MOV	@R1, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF8, new InstructionInfo(1, 0, MOV));      // MOV	R0, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xF9, new InstructionInfo(1, 0, MOV));      // MOV	R1, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xFA, new InstructionInfo(1, 0, MOV));      // MOV	R2, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xFB, new InstructionInfo(1, 0, MOV));      // MOV	R3, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xFC, new InstructionInfo(1, 0, MOV));      // MOV	R4, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xFD, new InstructionInfo(1, 0, MOV));      // MOV	R5, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xFE, new InstructionInfo(1, 0, MOV));      // MOV	R6, A
+        INSTRUCTION_INFO_BY_OPCODE.put(0xFF, new InstructionInfo(1, 0, MOV));      // MOV	R7, A
+    }
+
+    private final Operation operation;
+
+    private InstructionInfo instructionInfo;
+
+    Instruction(Operation operation) {
+        this.operation = operation;
+    }
+
+    public static Instruction getByOpcode(int opcode) {
+        InstructionInfo instructionInfo = INSTRUCTION_INFO_BY_OPCODE.get(opcode);
+        Instruction instruction = instructionInfo.instruction;
+
+        instruction.setInstructionInfo(instructionInfo);
+        return instruction;
+    }
+
+    private static Memory.Cell getRegister(InternalData data, int number) {
+        switch (number) {
+            case 0:
+                return data.R0;
+            case 1:
+                return data.R1;
+            case 2:
+                return data.R2;
+            case 3:
+                return data.R3;
+            case 4:
+                return data.R4;
+            case 5:
+                return data.R5;
+            case 6:
+                return data.R6;
+            case 7:
+                return data.R7;
+
+            // it will never happen
+            default:
+                return data.getCell(-1);
         }
     }
 
-    private final int opcode;
-
-    private final int bytes;
-
-    private int cycles;
-
-    private final Command command;
-
-    Instruction(int code, int bytes, int cycles, Command command) {
-        this.opcode = code;
-        this.bytes = bytes;
-        this.cycles = cycles;
-        this.command = command;
+    public UnsignedInt16 execute(Simulator simulator) {
+        return operation.execute(simulator, instructionInfo);
     }
 
-    public static Instruction findByOpcode(int opcode) {
-        return INSTRUCTIONS.get(opcode);
+    private void setInstructionInfo(InstructionInfo instructionInfo) {
+        this.instructionInfo = instructionInfo;
     }
 
-    private static void setDirectCellValue(Memory.Cell cell, UnsignedInt8 value, int increment, Simulator simulator) {
-        cell.setValue(value);
-        simulator.setPC(simulator.getPC().add(new UnsignedInt16(increment)));
+    private static void subtract(InternalData data, UnsignedInt8 value) {
+        value = data.bitMap.CY.getValue() ? value.inc() : value;
+        UnsignedInt8 result = data.ACC.getValue().subtract(value);
+
+        data.ACC.setValue(result);
+
+        // set C flag
+        data.bitMap.CY.setValue(result.isOverflowOccurred());
+
+        // set OV flag
+//        int signedResult = ram.toSignedNumber(a) - ram.toSignedNumber(data);
+//        if (signedResult <= 127 && signedResult >= -128) {
+//            data.bitMap.OV.setBit();
+//        } else {
+//            ram.setBit(210);
+//        }
+
+        // set AC flag
+        UnsignedInt8 accumulatorLowNibble = data.ACC.getValue().and(UnsignedInt8.MASK_LOW_NIBBLE);
+        UnsignedInt8 valueLowNibble = value.and(UnsignedInt8.MASK_LOW_NIBBLE);
+        data.bitMap.AC.setValue(accumulatorLowNibble.compareTo(valueLowNibble) < 0);
     }
 
-    private static void subtract(InternalData internalData, UnsignedInt8 value, int increment, Simulator simulator) {
-        value = internalData.bitMap.CY.getValue() ? value.inc() : value;
-        internalData.bitMap.CY.setValue(internalData.ACC.getValue().compareTo(value) < 0);
-
-        UnsignedInt8 mask = new UnsignedInt8(0x0f);
-        internalData.bitMap.AC.setValue(internalData.ACC.getValue().and(mask).compareTo(value.and(mask)) < 0);
-
-        // TODO: handle OV flag
-//        internalData.OV.setValue(true);
-
-        internalData.ACC.setValue(internalData.ACC.getValue().subtract(value));
-        simulator.setPC(simulator.getPC().add(new UnsignedInt16(increment)));
+    private static void setIndirect(Memory.Cell destination, Memory.Cell register, InternalData data) {
+        destination.setValue(data.getCellValue(register.getValue()));
     }
 
-    private static void setIndirectCellValue(InternalData internalData, UnsignedInt8 address, UnsignedInt8 value, int increment, Simulator simulator) {
-        internalData.setCellValue(address, value);
-        simulator.setPC(simulator.getPC().add(new UnsignedInt16(increment)));
-    }
-
-    private static UnsignedInt16 determineNextAbsoluteJumpAddress(UnsignedInt16 pc, UnsignedInt8 operand, UnsignedInt8 opcode) {
-        UnsignedInt8 upperAddress = opcode.shiftRight(0x5).and(new UnsignedInt8(0x7));
-        return pc.and(new UnsignedInt16(0xf800)).or(upperAddress.shiftLeft(0x8).or(operand).toUnsignedInt16());
+    private static void setIndirect(Memory.Cell register, UnsignedInt8 value, InternalData data) {
+        data.setCellValue(register.getValue(), value);
     }
 
     public int getBytes() {
-        return bytes;
+        return instructionInfo.bytes;
     }
 
     public int getCycles() {
-        return cycles;
+        return instructionInfo.cycles;
     }
 
-    public Command getCommand() {
-        return command;
+    private interface Operation {
+        UnsignedInt16 execute(Simulator simulator, InstructionInfo instructionInfo);
     }
+
+    private static final class InstructionInfo {
+        private final int bytes;
+        private final int cycles;
+        private final Instruction instruction;
+
+        InstructionInfo(int bytes, int cycles, Instruction instruction) {
+            this.bytes = bytes;
+            this.cycles = cycles;
+            this.instruction = instruction;
+        }
+    }
+
 }

@@ -1,5 +1,8 @@
 package gui.controller;
 
+import assembler.Assembler;
+import assembler.format.SourceCodeFormatter;
+import gui.debug.LineInfo;
 import gui.editorstyles.BreakpointFactory;
 import gui.editorstyles.DebuggerArrowFactory;
 import gui.editorstyles.SelectedLineArrowFactory;
@@ -39,8 +42,11 @@ import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.reactfx.Subscription;
+import simulator.ExecutionListener;
 import simulator.Simulator;
 import simulator.memory.Memory;
+import simulator.memory.datatype.UnsignedInt16;
+import simulator.memory.datatype.UnsignedInt8;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,12 +56,16 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntFunction;
 
 public class MainWindow {
+
+    @FXML
+    private Button runButton;
 
     @FXML
     private Button translateButton;
@@ -122,14 +132,13 @@ public class MainWindow {
 
     public static Simulator simulator = Simulator.getInstance();
 
-    private List<Integer> executableLineNumbers;
-
-    private int currentExecutableLine;
+    private List<LineInfo> lineInfos;
 
     public MainWindow() {
         shownPortWindows = new HashMap<>();
         shownTimerWindows = new HashMap<>();
         loadedControllers = new HashMap<>();
+        lineInfos = new ArrayList<>();
     }
 
     @FXML
@@ -153,8 +162,23 @@ public class MainWindow {
         editor.setId("editor");
         editor.getStylesheets().add(getClass().getResource("editor.css").toExternalForm());
 
+        editor.setOnKeyPressed(event -> {
+            KeyCodeCombination combination = new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+            if (combination.match(event)) {
+                String text = editor.getText();
+                String format = SourceCodeFormatter.format(text);
+                editor.replaceText(format);
+
+                // TODO: richtextfx 0.9.1 has a bug related to selection replacement
+                // String selectedText = editor.getSelectedText();
+                // String format = SourceCodeFormatter.format(selectedText);
+                // editor.replaceSelection(format);
+            }
+        });
+
         ObservableList<Integer> breakpointLineNumbers = FXCollections.observableArrayList();
-        SimpleObjectProperty<Integer> debuggedLine = new SimpleObjectProperty<>(0);
+        SimpleObjectProperty<Integer> debuggedLine = new SimpleObjectProperty<>(-1);
+
 
         IntFunction<Node> breakpointFactory = new BreakpointFactory(breakpointLineNumbers);
         IntFunction<Node> selectedLineArrowFactory = new SelectedLineArrowFactory(editor.currentParagraphProperty());
@@ -224,16 +248,28 @@ public class MainWindow {
         codeScrollPane.setContent(new VirtualizedScrollPane<>(editor));
 
         translateButton.setOnAction(event -> {
-            messageTextField.clear();
+            statusBarTextField.clear();
 
             try {
-                simulator.translate(editor.getText(), new BaseErrorListener() {
+                Assembler assembler = new Assembler(editor.getText());
+                assembler.assemble((ctx, locationCounter, machineCodes) -> {
+                    lineInfos.add(new LineInfo(ctx.getStart().getLine() - 1, locationCounter));
+
+                    for (Integer machineCode : machineCodes) {
+                        simulator.getExternalCode().setCellValue(locationCounter, new UnsignedInt8(machineCode));
+                        locationCounter = locationCounter.inc();
+                    }
+                }, new BaseErrorListener() {
                     @Override
                     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-                        messageTextField.setText("line " + line + ":" + charPositionInLine + " " + msg);
+                        statusBarTextField.setText("line " + line + ":" + charPositionInLine + " " + msg);
                         throw new ParseCancellationException();
                     }
                 });
+
+                if (!lineInfos.isEmpty()) {
+                    debuggedLine.set(lineInfos.get(0).getEditorLineNumber());
+                }
             } catch (ParseCancellationException e) {
                 e.printStackTrace();
             }
@@ -255,11 +291,44 @@ public class MainWindow {
             memoryController.update();
         });
 
-        stepOverButton.setOnAction(event -> {
-            if (debuggedLine.getValue() < editor.getLength()) {
-                debuggedLine.set(debuggedLine.getValue() + 1);
+
+        ExecutionListener executionListener = new ExecutionListener() {
+            private boolean running = true;
+
+            @Override
+            public void process(UnsignedInt16 programCounter) {
+                int line = -1;
+                for (LineInfo lineInfo : lineInfos) {
+                    if (lineInfo.getAssociatedLocationCounter().equals(programCounter)) {
+                        line = lineInfo.getEditorLineNumber();
+                        running = !breakpointLineNumbers.contains(line);
+                        break;
+                    }
+                }
+                debuggedLine.set(line);
+                editor.showParagraphInViewport(line);
             }
-            simulator.step();
+
+            @Override
+            public void reset() {
+                running = true;
+            }
+
+            @Override
+            public boolean isRunning() {
+                return running;
+            }
+        };
+
+        runButton.setOnAction(event -> {
+            simulator.run(executionListener);
+            executionListener.reset();
+            updateUserInterface();
+        });
+
+
+        stepOverButton.setOnAction(event -> {
+            simulator.step(executionListener);
             updateUserInterface();
         });
 

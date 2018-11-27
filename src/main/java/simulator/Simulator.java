@@ -1,14 +1,6 @@
 package simulator;
 
-import assembler.antlr.Asm8051Lexer;
-import assembler.antlr.Asm8051Parser;
-import assembler.syntaxanalyzer.Asm8051PassOneVisitorNew;
-import assembler.syntaxanalyzer.Asm8051PassTwoVisitorNew;
 import intelhexparser.Intel8HexParser;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.antlr.v4.runtime.tree.ParseTree;
-import simulator.instruction.Command;
 import simulator.instruction.Instruction;
 import simulator.memory.ExternalCode;
 import simulator.memory.ExternalData;
@@ -19,7 +11,6 @@ import simulator.peripherals.Timer0;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
 
 public class Simulator {
 
@@ -71,37 +62,15 @@ public class Simulator {
         hexParser.parse();
     }
 
-    public void translate(String sourceCode, BaseErrorListener errorListener) throws ParseCancellationException {
-        CharStream stream = CharStreams.fromString(sourceCode);
-
-        Asm8051Lexer lexer = new Asm8051Lexer(stream);
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorListener);
-
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        Asm8051Parser parser = new Asm8051Parser(tokens);
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorListener);
-
-        ParseTree tree = parser.source();
-
-        HashMap<String, UnsignedInt16> symbolTable = new HashMap<>();
-        Asm8051PassOneVisitorNew passOneVisitor = new Asm8051PassOneVisitorNew(symbolTable);
-        passOneVisitor.visit(tree);
-
-        Asm8051PassTwoVisitorNew passTwoVisitor = new Asm8051PassTwoVisitorNew(externalCode, symbolTable);
-        passTwoVisitor.visit(tree);
-    }
-
-    public void run() {
-        while (true) {
-            step();
+    public void run(ExecutionListener executionListener) {
+        while (executionListener.isRunning()) {
+            step(executionListener);
         }
     }
 
-    public void step() {
+    public void step(ExecutionListener executionListener) {
         UnsignedInt8 opcode = externalCode.getCellValue(programCounter);
-        Instruction instruction = Instruction.findByOpcode(opcode.toInt());
+        Instruction instruction = Instruction.getByOpcode(opcode.toInt());
 
         for (int cycles = 0; cycles < instruction.getCycles(); cycles++) {
             if (timer0.isRunning()) {
@@ -109,8 +78,20 @@ public class Simulator {
             }
         }
 
-        Command command = instruction.getCommand();
-        command.execute(internalData, externalData, externalCode, this, instruction);
+        programCounter = instruction.execute(this);
+        executionListener.process(programCounter);
     }
+
+    //    private synchronized void updateParity() {
+//        int psw = this.memory[208];
+//        if (this.evenNumberOfOnesInAcc()) {
+//            if (psw % 2 != 0) {
+//                this.memory[208] = psw - 1;
+//            }
+//        } else if (psw % 2 != 1) {
+//            this.memory[208] = psw + 1;
+//        }
+//
+//    }
 
 }
