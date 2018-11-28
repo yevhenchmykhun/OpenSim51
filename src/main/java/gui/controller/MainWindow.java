@@ -2,6 +2,7 @@ package gui.controller;
 
 import assembler.Assembler;
 import assembler.format.SourceCodeFormatter;
+import gui.controller.device.DisplayController;
 import gui.debug.LineInfo;
 import gui.editorstyles.BreakpointFactory;
 import gui.editorstyles.DebuggerArrowFactory;
@@ -65,6 +66,9 @@ import java.util.function.IntFunction;
 public class MainWindow {
 
     @FXML
+    private MenuItem displayMenuItem;
+
+    @FXML
     private Button runButton;
 
     @FXML
@@ -104,6 +108,9 @@ public class MainWindow {
     private MemoryController memoryController;
 
     @FXML
+    private DisplayController displayController;
+
+    @FXML
     private ScrollPane codeScrollPane;
 
     @FXML
@@ -121,6 +128,8 @@ public class MainWindow {
     private Stage primaryStage;
 
     private Stage interruptWindow;
+
+    private Stage displayWindow;
 
     private Map<String, Stage> shownPortWindows;
 
@@ -156,6 +165,8 @@ public class MainWindow {
 
         timer0MenuItem.setOnAction(event -> showTimerWindow("0"));
         timer1MenuItem.setOnAction(event -> showTimerWindow("1"));
+
+        displayMenuItem.setOnAction(event -> showDisplayWindow());
 
 
         CodeArea editor = new CodeArea();
@@ -412,6 +423,36 @@ public class MainWindow {
 
             shownTimerWindows.put(timerNumber, stage);
             loadedControllers.put("timer" + timerNumber, controller);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showDisplayWindow() {
+        if (displayWindow != null) {
+            displayWindow.requestFocus();
+            return;
+        }
+
+        try {
+            Stage stage = new Stage();
+            stage.setTitle("Display");
+            stage.initStyle(StageStyle.UTILITY);
+            stage.setResizable(false);
+            stage.setAlwaysOnTop(true);
+            stage.setOnCloseRequest(event -> displayWindow = null);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("device/display.fxml"));
+            Parent root = loader.load();
+            displayController = loader.getController();
+            displayController.setMainWindow(this);
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add("styles.css");
+            stage.setScene(scene);
+            stage.show();
+
+            displayWindow = stage;
         } catch (IOException e) {
             e.printStackTrace();
         }

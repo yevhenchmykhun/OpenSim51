@@ -59,6 +59,11 @@
                                 </Menu>
                             </items>
                         </Menu>
+                  <Menu mnemonicParsing="false" text="Devices">
+                     <items>
+                        <MenuItem fx:id="displayMenuItem" mnemonicParsing="false" text="Display" />
+                     </items>
+                  </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
                         <Menu mnemonicParsing="false" text="Examples">
