@@ -1,4 +1,3 @@
-// Generated from C:/Users/Yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
 package assembler.antlr;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -138,7 +137,7 @@ public class Asm8051Parser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Asm8051.g4"; }
+	public String getGrammarFileName() { return "OpenSim51.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

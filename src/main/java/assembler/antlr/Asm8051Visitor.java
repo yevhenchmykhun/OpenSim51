@@ -1,4 +1,3 @@
-// Generated from C:/Users/Yevhen/IdeaProjects/8051Sim/src/main/antlr4\Asm8051.g4 by ANTLR 4.7
 package assembler.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
