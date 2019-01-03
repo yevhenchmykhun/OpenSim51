@@ -15,7 +15,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        primaryStage.setTitle("8051Sim");
+        primaryStage.setTitle("OpenSim51");
         primaryStage.setMaximized(true);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
