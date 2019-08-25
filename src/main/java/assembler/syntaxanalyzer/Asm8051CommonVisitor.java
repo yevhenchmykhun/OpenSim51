@@ -5,7 +5,7 @@ import assembler.OperandType;
 import assembler.antlr.Asm8051BaseVisitor;
 import assembler.antlr.Asm8051Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
-import simulator.memory.datatype.UnsignedInt16;
+import simulator.memory.datatype.UInt16;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -255,7 +255,7 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
         return child instanceof Asm8051Parser.NumberContext ? visit(child) : BIT_ADDRESS_BY_NAME.get(child.getText().toUpperCase());
     }
 
-    protected List<Operand> processOperands(ParseTree parseTree, Map<String, UnsignedInt16> symbolTable) {
+    protected List<Operand> processOperands(ParseTree parseTree, Map<String, UInt16> symbolTable) {
         List<Operand> operands = new ArrayList<>();
 
         for (int i = 1; i < parseTree.getChildCount(); i++) {
@@ -318,7 +318,7 @@ public class Asm8051CommonVisitor extends Asm8051BaseVisitor<Integer> {
         }
     }
 
-    protected int determineOperandValue(ParseTree operand, OperandType operandType, Map<String, UnsignedInt16> symbolTable) {
+    protected int determineOperandValue(ParseTree operand, OperandType operandType, Map<String, UInt16> symbolTable) {
         int value = 0;
         switch (operandType) {
             case SYMBOL: {

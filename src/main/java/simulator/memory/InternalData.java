@@ -1,6 +1,6 @@
 package simulator.memory;
 
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt8;
 
 public class InternalData extends Memory {
 
@@ -49,11 +49,11 @@ public class InternalData extends Memory {
         super(MEMORY_SIZE);
     }
 
-    public UnsignedInt8 getCellValue(UnsignedInt8 address) {
+    public UInt8 getCellValue(UInt8 address) {
         return super.getCellValue(address.toInt());
     }
 
-    public void setCellValue(UnsignedInt8 address, UnsignedInt8 value) {
+    public void setCellValue(UInt8 address, UInt8 value) {
         setCellValue(address.toInt(), value);
     }
 
@@ -137,13 +137,13 @@ public class InternalData extends Memory {
         }
 
         @Override
-        public UnsignedInt8 getValue() {
+        public UInt8 getValue() {
             determineRegisterBank();
             return super.getValue();
         }
 
         @Override
-        public void setValue(UnsignedInt8 value) {
+        public void setValue(UInt8 value) {
             determineRegisterBank();
             super.setValue(value);
         }

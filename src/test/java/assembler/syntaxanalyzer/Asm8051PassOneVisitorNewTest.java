@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import simulator.memory.datatype.UnsignedInt16;
+import simulator.memory.datatype.UInt16;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,12 +42,12 @@ public class Asm8051PassOneVisitorNewTest {
 
     private class Asm8051PassOneVisitorNewMock extends Asm8051PassOneVisitorNew {
 
-        Asm8051PassOneVisitorNewMock(Map<String, UnsignedInt16> symbolTable) {
+        Asm8051PassOneVisitorNewMock(Map<String, UInt16> symbolTable) {
             super(symbolTable);
         }
 
         @Override
-        protected List<Operand> processOperands(ParseTree parseTree, Map<String, UnsignedInt16> symbolTable) {
+        protected List<Operand> processOperands(ParseTree parseTree, Map<String, UInt16> symbolTable) {
             List<Operand> operands = super.processOperands(parseTree, symbolTable);
 
             List<String> list = new ArrayList<>();
@@ -76,7 +76,7 @@ public class Asm8051PassOneVisitorNewTest {
 
                 printWriter.println(line);
 
-                HashMap<String, UnsignedInt16> symbolTable = new HashMap<>();
+                HashMap<String, UInt16> symbolTable = new HashMap<>();
                 Asm8051PassOneVisitorNewMock passOneVisitor = new Asm8051PassOneVisitorNewMock(symbolTable);
                 passOneVisitor.visit(tree);
             });

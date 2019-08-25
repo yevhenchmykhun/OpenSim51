@@ -7,8 +7,8 @@ import simulator.Simulator;
 import simulator.memory.ExternalCode;
 import simulator.memory.ExternalData;
 import simulator.memory.InternalData;
-import simulator.memory.datatype.UnsignedInt16;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt16;
+import simulator.memory.datatype.UInt8;
 
 public class InstructionTest {
 
@@ -33,21 +33,21 @@ public class InstructionTest {
         Assert.assertEquals(instruction.getBytes(), 1);
 
         instruction.execute(s);
-        Assert.assertEquals(s.getPC(), new UnsignedInt16(1));
+        Assert.assertEquals(s.getPC(), new UInt16(1));
     }
 
     @Test
     public void MOV_74() throws Exception {
-        xc.setCellValue(s.getPC(), new UnsignedInt8(0x74));
+        xc.setCellValue(s.getPC(), new UInt8(0x74));
         Instruction instruction = Instruction.getByOpcode(0x74);
 
         Assert.assertEquals(instruction.getBytes(), 2);
 
-        UnsignedInt8 zero = new UnsignedInt8(0x0);
+        UInt8 zero = new UInt8(0x0);
         id.ACC.setValue(zero);
         Assert.assertEquals(id.ACC.getValue(), zero);
 
-        UnsignedInt8 seven = new UnsignedInt8(0x7);
+        UInt8 seven = new UInt8(0x7);
         xc.setCellValue(s.getPC().inc(), seven);
         Assert.assertEquals(xc.getCellValue(s.getPC().inc()), seven);
 

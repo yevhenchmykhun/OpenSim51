@@ -19,7 +19,7 @@ import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
 import simulator.Simulator;
 import simulator.memory.Memory;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt8;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -152,7 +152,7 @@ public class MemoryController implements Updatable {
                 MemoryRow memoryRow = event.getRowValue();
                 int startAddress = IntegerUtil.parseInt(memoryRow.getStartAddress().substring(2));
                 int columnIndex = Integer.parseInt(event.getTableColumn().getId());
-                getMemory().setCellValue(startAddress + columnIndex, new UnsignedInt8(IntegerUtil.parseInt(text)));
+                getMemory().setCellValue(startAddress + columnIndex, new UInt8(IntegerUtil.parseInt(text)));
 
                 // update the whole GUI
                 mainWindow.updateUserInterface();

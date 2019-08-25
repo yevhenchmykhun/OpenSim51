@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.ParseTree;
-import simulator.memory.datatype.UnsignedInt16;
+import simulator.memory.datatype.UInt16;
 
 import java.util.HashMap;
 
@@ -42,7 +42,7 @@ public final class Assembler {
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
-        HashMap<String, UnsignedInt16> symbolTable = new HashMap<>();
+        HashMap<String, UInt16> symbolTable = new HashMap<>();
         Asm8051PassOneVisitorNew passOneVisitor = new Asm8051PassOneVisitorNew(symbolTable);
         passOneVisitor.visit(tree);
 

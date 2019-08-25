@@ -4,8 +4,8 @@ import simulator.Simulator;
 import simulator.memory.ExternalCode;
 import simulator.memory.InternalData;
 import simulator.memory.Memory;
-import simulator.memory.datatype.UnsignedInt16;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt16;
+import simulator.memory.datatype.UInt8;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,23 +15,23 @@ public enum Instruction {
     NOP((simulator, instructionInfo) -> simulator.getPC().inc()),
 
     AJMP((simulator, instructionInfo) -> {
-        UnsignedInt16 pc = simulator.getPC();
+        UInt16 pc = simulator.getPC();
         ExternalCode code = simulator.getExternalCode();
 
-        UnsignedInt8 opcode = code.getCellValue(pc);
-        UnsignedInt16 highOrderBits = opcode.and(new UnsignedInt8(0xe0)).toUnsignedInt16().shiftLeft(8);
-        UnsignedInt16 lowOrderBits = code.getCellValue(pc.inc()).toUnsignedInt16();
-        UnsignedInt16 addr11 = highOrderBits.or(lowOrderBits);
-        return pc.and(new UnsignedInt16(0xf800)).or(addr11);
+        UInt8 opcode = code.getCellValue(pc);
+        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).toUInt16().shiftLeft(8);
+        UInt16 lowOrderBits = code.getCellValue(pc.inc()).toUInt16();
+        UInt16 addr11 = highOrderBits.or(lowOrderBits);
+        return pc.and(new UInt16(0xf800)).or(addr11);
     }),
 
     LJMP((simulator, instructionInfo) -> {
-        UnsignedInt16 pc = simulator.getPC();
+        UInt16 pc = simulator.getPC();
         ExternalCode code = simulator.getExternalCode();
 
-        UnsignedInt8 highOrderByte = code.getCellValue(pc.inc());
-        UnsignedInt8 lowOrderByte = code.getCellValue(pc.inc().inc());
-        return highOrderByte.toUnsignedInt16().shiftLeft(8).and(lowOrderByte.toUnsignedInt16());
+        UInt8 highOrderByte = code.getCellValue(pc.inc());
+        UInt8 lowOrderByte = code.getCellValue(pc.inc().inc());
+        return highOrderByte.toUInt16().shiftLeft(8).and(lowOrderByte.toUInt16());
     }),
 
     RR((simulator, instructionInfo) -> {
@@ -119,13 +119,13 @@ public enum Instruction {
     }),
 
     JNZ((simulator, instructionInfo) -> {
-        UnsignedInt16 pc = simulator.getPC();
+        UInt16 pc = simulator.getPC();
         InternalData data = simulator.getInternalData();
         ExternalCode code = simulator.getExternalCode();
 
-        pc = pc.add(new UnsignedInt16(instructionInfo.bytes));
-        if (!data.ACC.getValue().equals(UnsignedInt8.ZERO)) {
-            UnsignedInt16 offset = code.getCellValue(pc.inc()).not().inc().toUnsignedInt16();
+        pc = pc.add(new UInt16(instructionInfo.bytes));
+        if (!data.ACC.getValue().equals(UInt8.ZERO)) {
+            UInt16 offset = code.getCellValue(pc.inc()).not().inc().toUInt16();
             pc = pc.add(offset);
         }
 
@@ -137,7 +137,7 @@ public enum Instruction {
     }),
 
     MOV((simulator, instructionInfo) -> {
-        UnsignedInt16 pc = simulator.getPC();
+        UInt16 pc = simulator.getPC();
         InternalData data = simulator.getInternalData();
         ExternalCode code = simulator.getExternalCode();
 
@@ -145,25 +145,25 @@ public enum Instruction {
         if ((opcode & 0xfe) == 0x76) {
 
             Memory.Cell register = getRegister(data, opcode & 0x01);
-            UnsignedInt8 value = code.getCellValue(pc.inc());
+            UInt8 value = code.getCellValue(pc.inc());
             setIndirect(register, value, data);
 
         } else if ((opcode & 0xfe) == 0xf6) {
 
             Memory.Cell register = getRegister(data, opcode & 0x01);
-            UnsignedInt8 value = data.ACC.getValue();
+            UInt8 value = data.ACC.getValue();
             setIndirect(register, value, data);
 
         } else if ((opcode & 0xfe) == 0xa6) {
 
             Memory.Cell register = getRegister(data, opcode & 0x01);
-            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            UInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
             setIndirect(register, value, data);
 
         } else if (opcode == 0x74) {
 
             Memory.Cell destination = data.ACC;
-            UnsignedInt8 value = code.getCellValue(pc.inc());
+            UInt8 value = code.getCellValue(pc.inc());
             destination.setValue(value);
 
         } else if ((opcode & 0xfe) == 0xe6) {
@@ -175,13 +175,13 @@ public enum Instruction {
         } else if (opcode == 0xe5) {
 
             Memory.Cell destination = data.ACC;
-            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            UInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
             destination.setValue(value);
 
         } else if ((opcode & 0xf8) == 0xe8) {
 
             Memory.Cell destination = data.ACC;
-            UnsignedInt8 value = getRegister(data, opcode & 0x07).getValue();
+            UInt8 value = getRegister(data, opcode & 0x07).getValue();
             destination.setValue(value);
 
         } else if (opcode == 0x92) {
@@ -199,13 +199,13 @@ public enum Instruction {
         } else if (opcode == 0x85) {
 
             Memory.Cell destination = data.getCell(code.getCellValue(pc.inc().inc()).toInt());
-            UnsignedInt8 value = data.getCell(code.getCellValue(pc.inc()).toInt()).getValue();
+            UInt8 value = data.getCell(code.getCellValue(pc.inc()).toInt()).getValue();
             destination.setValue(value);
 
         } else if (opcode == 0x75) {
 
             Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
-            UnsignedInt8 value = code.getCellValue(pc.inc().inc());
+            UInt8 value = code.getCellValue(pc.inc().inc());
             destination.setValue(value);
 
         } else if ((opcode & 0xfe) == 0x86) {
@@ -217,13 +217,13 @@ public enum Instruction {
         } else if (opcode == 0xf5) {
 
             Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
-            UnsignedInt8 value = data.ACC.getValue();
+            UInt8 value = data.ACC.getValue();
             destination.setValue(value);
 
         } else if ((opcode & 0xfe) == 0x88) {
 
             Memory.Cell destination = data.getCell(code.getCellValue(pc.inc()).toInt());
-            UnsignedInt8 value = getRegister(data, opcode & 0x01).getValue();
+            UInt8 value = getRegister(data, opcode & 0x01).getValue();
             destination.setValue(value);
 
         } else if (opcode == 0x90) {
@@ -234,24 +234,24 @@ public enum Instruction {
         } else if ((opcode & 0xf8) == 0x78) {
 
             Memory.Cell destination = getRegister(data, opcode & 0x07);
-            UnsignedInt8 value = code.getCellValue(pc.inc());
+            UInt8 value = code.getCellValue(pc.inc());
             destination.setValue(value);
 
         } else if ((opcode & 0xf8) == 0xf8) {
 
             Memory.Cell destination = getRegister(data, opcode & 0x07);
-            UnsignedInt8 value = data.ACC.getValue();
+            UInt8 value = data.ACC.getValue();
             destination.setValue(value);
 
         } else if ((opcode & 0xf8) == 0xa8) {
 
             Memory.Cell destination = getRegister(data, opcode & 0x07);
-            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            UInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
             destination.setValue(value);
 
         }
 
-        return pc.add(new UnsignedInt16(instructionInfo.bytes));
+        return pc.add(new UInt16(instructionInfo.bytes));
     }),
 
     SJMP((simulator, instructionInfo) -> {
@@ -267,34 +267,34 @@ public enum Instruction {
     }),
 
     SUBB((simulator, instructionInfo) -> {
-        UnsignedInt16 pc = simulator.getPC();
+        UInt16 pc = simulator.getPC();
         InternalData data = simulator.getInternalData();
         ExternalCode code = simulator.getExternalCode();
 
         int opcode = code.getCellValue(pc).toInt();
         if (opcode == 0x94) {
 
-            UnsignedInt8 value = code.getCellValue(pc.inc());
+            UInt8 value = code.getCellValue(pc.inc());
             subtract(data, value);
 
         } else if ((opcode & 0xfe) == 0x96) {
 
-            UnsignedInt8 value = data.getCellValue(getRegister(data, opcode & 0x01).getValue());
+            UInt8 value = data.getCellValue(getRegister(data, opcode & 0x01).getValue());
             subtract(data, value);
 
         } else if (opcode == 0x95) {
 
-            UnsignedInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
+            UInt8 value = data.getCellValue(code.getCellValue(pc.inc()));
             subtract(data, value);
 
         } else if ((opcode & 0xf8) == 0x98) {
 
-            UnsignedInt8 value = getRegister(data, opcode & 0x07).getValue();
+            UInt8 value = getRegister(data, opcode & 0x07).getValue();
             subtract(data, value);
 
         }
 
-        return pc.add(new UnsignedInt16(instructionInfo.bytes));
+        return pc.add(new UInt16(instructionInfo.bytes));
     }),
 
     MUL((simulator, instructionInfo) -> {
@@ -314,14 +314,14 @@ public enum Instruction {
     }),
 
     CLR((simulator, instructionInfo) -> {
-        UnsignedInt16 pc = simulator.getPC();
+        UInt16 pc = simulator.getPC();
         InternalData data = simulator.getInternalData();
         ExternalCode code = simulator.getExternalCode();
 
         int opcode = code.getCellValue(pc).toInt();
         if (opcode == 0xe4) {
 
-            data.ACC.setValue(UnsignedInt8.ZERO);
+            data.ACC.setValue(UInt8.ZERO);
 
         } else if (opcode == 0xc2) {
 
@@ -334,7 +334,7 @@ public enum Instruction {
 
         }
 
-        return pc.add(new UnsignedInt16(instructionInfo.bytes));
+        return pc.add(new UInt16(instructionInfo.bytes));
     }),
 
     SWAP((simulator, instructionInfo) -> {
@@ -673,7 +673,7 @@ public enum Instruction {
         }
     }
 
-    public UnsignedInt16 execute(Simulator simulator) {
+    public UInt16 execute(Simulator simulator) {
         return operation.execute(simulator, instructionInfo);
     }
 
@@ -681,9 +681,9 @@ public enum Instruction {
         this.instructionInfo = instructionInfo;
     }
 
-    private static void subtract(InternalData data, UnsignedInt8 value) {
+    private static void subtract(InternalData data, UInt8 value) {
         value = data.bitMap.CY.getValue() ? value.inc() : value;
-        UnsignedInt8 result = data.ACC.getValue().subtract(value);
+        UInt8 result = data.ACC.getValue().subtract(value);
 
         data.ACC.setValue(result);
 
@@ -699,8 +699,8 @@ public enum Instruction {
 //        }
 
         // set AC flag
-        UnsignedInt8 accumulatorLowNibble = data.ACC.getValue().and(UnsignedInt8.MASK_LOW_NIBBLE);
-        UnsignedInt8 valueLowNibble = value.and(UnsignedInt8.MASK_LOW_NIBBLE);
+        UInt8 accumulatorLowNibble = data.ACC.getValue().and(UInt8.MASK_LOW_NIBBLE);
+        UInt8 valueLowNibble = value.and(UInt8.MASK_LOW_NIBBLE);
         data.bitMap.AC.setValue(accumulatorLowNibble.compareTo(valueLowNibble) < 0);
     }
 
@@ -708,7 +708,7 @@ public enum Instruction {
         destination.setValue(data.getCellValue(register.getValue()));
     }
 
-    private static void setIndirect(Memory.Cell register, UnsignedInt8 value, InternalData data) {
+    private static void setIndirect(Memory.Cell register, UInt8 value, InternalData data) {
         data.setCellValue(register.getValue(), value);
     }
 
@@ -721,7 +721,7 @@ public enum Instruction {
     }
 
     private interface Operation {
-        UnsignedInt16 execute(Simulator simulator, InstructionInfo instructionInfo);
+        UInt16 execute(Simulator simulator, InstructionInfo instructionInfo);
     }
 
     private static final class InstructionInfo {

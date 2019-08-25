@@ -5,8 +5,8 @@ import simulator.instruction.Instruction;
 import simulator.memory.ExternalCode;
 import simulator.memory.ExternalData;
 import simulator.memory.InternalData;
-import simulator.memory.datatype.UnsignedInt16;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt16;
+import simulator.memory.datatype.UInt8;
 import simulator.peripherals.Timer0;
 
 import java.io.File;
@@ -20,7 +20,7 @@ public class Simulator {
     private final ExternalData externalData = new ExternalData();
     private final ExternalCode externalCode = new ExternalCode();
 
-    private UnsignedInt16 programCounter = new UnsignedInt16(0);
+    private UInt16 programCounter = new UInt16(0);
 
     private Timer0 timer0 = new Timer0(internalData);
 
@@ -44,11 +44,11 @@ public class Simulator {
         return externalCode;
     }
 
-    public UnsignedInt16 getPC() {
+    public UInt16 getPC() {
         return programCounter;
     }
 
-    public void setPC(UnsignedInt16 programCounter) {
+    public void setPC(UInt16 programCounter) {
         this.programCounter = programCounter;
     }
 
@@ -56,7 +56,7 @@ public class Simulator {
         FileInputStream stream = new FileInputStream(file);
         Intel8HexParser hexParser = new Intel8HexParser(stream, (address, data) -> {
             for (byte b : data) {
-                externalCode.setCellValue(address++, new UnsignedInt8(b));
+                externalCode.setCellValue(address++, new UInt8(b));
             }
         });
         hexParser.parse();
@@ -69,7 +69,7 @@ public class Simulator {
     }
 
     public void step(ExecutionListener executionListener) {
-        UnsignedInt8 opcode = externalCode.getCellValue(programCounter);
+        UInt8 opcode = externalCode.getCellValue(programCounter);
         Instruction instruction = Instruction.getByOpcode(opcode.toInt());
 
         for (int cycles = 0; cycles < instruction.getCycles(); cycles++) {

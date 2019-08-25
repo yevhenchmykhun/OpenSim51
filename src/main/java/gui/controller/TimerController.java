@@ -10,7 +10,7 @@ import javafx.scene.control.TextField;
 import simulator.Simulator;
 import simulator.memory.InternalData;
 import simulator.memory.Memory;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt8;
 
 public class TimerController implements Updatable {
 
@@ -69,13 +69,13 @@ public class TimerController implements Updatable {
 
         tconTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                id.TCON.setValue(new UnsignedInt8(IntegerUtil.parseInt(tconTextField.getText())));
+                id.TCON.setValue(new UInt8(IntegerUtil.parseInt(tconTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });
         tmodTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                id.TMOD.setValue(new UnsignedInt8(IntegerUtil.parseInt(tmodTextField.getText())));
+                id.TMOD.setValue(new UInt8(IntegerUtil.parseInt(tmodTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });
@@ -106,13 +106,13 @@ public class TimerController implements Updatable {
     private void initializeView(Memory.Cell th, Memory.Cell tl, Memory.Bit tPin, Memory.Bit tf, Memory.Bit tr, Memory.Bit gate, Memory.Bit interrupt) {
         thTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                th.setValue(new UnsignedInt8(IntegerUtil.parseInt(thTextField.getText())));
+                th.setValue(new UInt8(IntegerUtil.parseInt(thTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });
         tlTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                tl.setValue(new UnsignedInt8(IntegerUtil.parseInt(tlTextField.getText())));
+                tl.setValue(new UInt8(IntegerUtil.parseInt(tlTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });

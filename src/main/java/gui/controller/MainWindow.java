@@ -46,8 +46,8 @@ import org.reactfx.Subscription;
 import simulator.ExecutionListener;
 import simulator.Simulator;
 import simulator.memory.Memory;
-import simulator.memory.datatype.UnsignedInt16;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt16;
+import simulator.memory.datatype.UInt8;
 
 import java.io.File;
 import java.io.IOException;
@@ -267,7 +267,7 @@ public class MainWindow {
                     lineInfos.add(new LineInfo(ctx.getStart().getLine() - 1, locationCounter));
 
                     for (Integer machineCode : machineCodes) {
-                        simulator.getExternalCode().setCellValue(locationCounter, new UnsignedInt8(machineCode));
+                        simulator.getExternalCode().setCellValue(locationCounter, new UInt8(machineCode));
                         locationCounter = locationCounter.inc();
                     }
                 }, new BaseErrorListener() {
@@ -307,7 +307,7 @@ public class MainWindow {
             private boolean running = true;
 
             @Override
-            public void process(UnsignedInt16 programCounter) {
+            public void process(UInt16 programCounter) {
                 int line = -1;
                 for (LineInfo lineInfo : lineInfos) {
                     if (lineInfo.getAssociatedLocationCounter().equals(programCounter)) {

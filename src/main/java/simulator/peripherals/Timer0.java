@@ -1,7 +1,7 @@
 package simulator.peripherals;
 
 import simulator.memory.InternalData;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt8;
 
 public class Timer0 {
 
@@ -39,11 +39,11 @@ public class Timer0 {
             boolean previousT0 = t0;
             updateT0();
 
-            UnsignedInt8 th0 = internalData.TH0.getValue();
-            UnsignedInt8 tl0 = internalData.TL0.getValue();
+            UInt8 th0 = internalData.TH0.getValue();
+            UInt8 tl0 = internalData.TL0.getValue();
 
-            UnsignedInt8 newTh0 = th0;
-            UnsignedInt8 newTl0 = tl0;
+            UInt8 newTh0 = th0;
+            UInt8 newTl0 = tl0;
 
             boolean tf0 = false;
             boolean tf1 = false;
@@ -75,7 +75,7 @@ public class Timer0 {
                             newTl0 = th0;
                             tf0 = true;
                         } else {
-                            newTl0 = UnsignedInt8.ZERO;
+                            newTl0 = UInt8.ZERO;
                             newTh0 = th0.inc();
                             if (th0.isOverflowOccurred()) {
                                 tf1 = true;

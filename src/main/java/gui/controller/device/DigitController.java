@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt8;
 
 public class DigitController {
 
@@ -32,7 +32,7 @@ public class DigitController {
     @FXML
     private Circle dpLed;
 
-    public void setValue(UnsignedInt8 value) {
+    public void setValue(UInt8 value) {
         bLed.setFill(Color.RED);
         cLed.setFill(Color.RED);
         eLed.setFill(Color.RED);

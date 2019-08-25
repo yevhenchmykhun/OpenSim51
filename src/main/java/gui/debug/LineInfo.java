@@ -1,12 +1,12 @@
 package gui.debug;
 
-import simulator.memory.datatype.UnsignedInt16;
+import simulator.memory.datatype.UInt16;
 
 public class LineInfo {
     private int editorLineNumber;
-    private UnsignedInt16 associatedLocationCounter;
+    private UInt16 associatedLocationCounter;
 
-    public LineInfo(int editorLineNumber, UnsignedInt16 associatedLocationCounter) {
+    public LineInfo(int editorLineNumber, UInt16 associatedLocationCounter) {
         this.editorLineNumber = editorLineNumber;
         this.associatedLocationCounter = associatedLocationCounter;
     }
@@ -15,7 +15,7 @@ public class LineInfo {
         return editorLineNumber;
     }
 
-    public UnsignedInt16 getAssociatedLocationCounter() {
+    public UInt16 getAssociatedLocationCounter() {
         return associatedLocationCounter;
     }
 }

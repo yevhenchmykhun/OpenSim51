@@ -4,7 +4,7 @@ import assembler.Instruction;
 import assembler.Operand;
 import assembler.antlr.Asm8051Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
-import simulator.memory.datatype.UnsignedInt16;
+import simulator.memory.datatype.UInt16;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class Asm8051PassTwoVisitorNew extends Asm8051CommonVisitor {
 
-    private final Map<String, UnsignedInt16> symbolTable;
+    private final Map<String, UInt16> symbolTable;
     private final TranslationListener translationListener;
-    private UnsignedInt16 locationCounter;
+    private UInt16 locationCounter;
 
-    public Asm8051PassTwoVisitorNew(HashMap<String, UnsignedInt16> symbolTable, TranslationListener translationListener) {
+    public Asm8051PassTwoVisitorNew(HashMap<String, UInt16> symbolTable, TranslationListener translationListener) {
         this.symbolTable = symbolTable;
         this.translationListener = translationListener;
-        locationCounter = UnsignedInt16.ZERO;
+        locationCounter = UInt16.ZERO;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Asm8051PassTwoVisitorNew extends Asm8051CommonVisitor {
         List<Integer> machineCodes = instruction.toMachineCodes(operands);
         translationListener.processInstruction(ctx, locationCounter, machineCodes);
 
-        locationCounter = locationCounter.add(new UnsignedInt16(machineCodes.size()));
+        locationCounter = locationCounter.add(new UInt16(machineCodes.size()));
 
         return 0;
     }

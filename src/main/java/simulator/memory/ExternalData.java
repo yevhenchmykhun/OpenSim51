@@ -1,7 +1,7 @@
 package simulator.memory;
 
-import simulator.memory.datatype.UnsignedInt16;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt16;
+import simulator.memory.datatype.UInt8;
 
 public class ExternalData extends Memory {
 
@@ -11,11 +11,11 @@ public class ExternalData extends Memory {
         super(MEMORY_SIZE);
     }
 
-    public UnsignedInt8 getCellValue(UnsignedInt16 address) {
+    public UInt8 getCellValue(UInt16 address) {
         return super.getCellValue(address.toInt());
     }
 
-    public void setCellValue(UnsignedInt16 address, UnsignedInt8 value) {
+    public void setCellValue(UInt16 address, UInt8 value) {
         super.setCellValue(address.toInt(), value);
     }
 

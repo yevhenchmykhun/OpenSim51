@@ -1,6 +1,6 @@
 package simulator.memory;
 
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt8;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,13 +8,13 @@ import java.util.Map;
 public abstract class Memory {
 
     private int memorySize;
-    private Map<Integer, UnsignedInt8> rawMemory;
+    private Map<Integer, UInt8> rawMemory;
 
     protected Memory(int memorySize) {
         this(memorySize, new HashMap<>());
     }
 
-    private Memory(int memorySize, Map<Integer, UnsignedInt8> rawMemory) {
+    private Memory(int memorySize, Map<Integer, UInt8> rawMemory) {
         this.memorySize = memorySize;
         this.rawMemory = rawMemory;
     }
@@ -23,18 +23,18 @@ public abstract class Memory {
         return new Cell(address);
     }
 
-    public UnsignedInt8 getCellValue(int address) {
+    public UInt8 getCellValue(int address) {
         checkRange(0, memorySize - 1, address);
 
         if (rawMemory.containsKey(address)) {
             return rawMemory.get(address);
         }
 
-        rawMemory.put(address, new UnsignedInt8(0));
+        rawMemory.put(address, new UInt8(0));
         return rawMemory.get(address);
     }
 
-    public void setCellValue(int address, UnsignedInt8 value) {
+    public void setCellValue(int address, UInt8 value) {
         checkRange(0, memorySize - 1, address);
 
         rawMemory.put(address, value);
@@ -74,11 +74,11 @@ public abstract class Memory {
             this.address = address;
         }
 
-        public UnsignedInt8 getValue() {
+        public UInt8 getValue() {
             return getCellValue(address);
         }
 
-        public void setValue(UnsignedInt8 value) {
+        public void setValue(UInt8 value) {
             setCellValue(address, value);
         }
 
@@ -93,7 +93,7 @@ public abstract class Memory {
         public boolean getBitValue(int position) {
             checkRange(0, 7, position);
 
-            UnsignedInt8 one = new UnsignedInt8(1);
+            UInt8 one = new UInt8(1);
             return getValue().shiftRight(position).and(one).equals(one);
         }
 

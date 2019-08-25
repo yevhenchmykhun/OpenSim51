@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import simulator.Simulator;
 import simulator.memory.InternalData;
 import simulator.memory.Memory;
-import simulator.memory.datatype.UnsignedInt16;
-import simulator.memory.datatype.UnsignedInt8;
+import simulator.memory.datatype.UInt16;
+import simulator.memory.datatype.UInt8;
 
 public class RegistersController implements Updatable {
 
@@ -131,9 +131,9 @@ public class RegistersController implements Updatable {
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
                     return PREFIX_HEX + IntegerUtil.toString(simulator.getPC().toInt(), RADIX_HEX, 4);
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
-                    UnsignedInt8 dph = simulator.getInternalData().DPH.getValue();
-                    UnsignedInt8 dpl = simulator.getInternalData().DPL.getValue();
-                    UnsignedInt16 dptr = dph.toUnsignedInt16().shiftLeft(8).or(dpl.toUnsignedInt16());
+                    UInt8 dph = simulator.getInternalData().DPH.getValue();
+                    UInt8 dpl = simulator.getInternalData().DPL.getValue();
+                    UInt16 dptr = dph.toUInt16().shiftLeft(8).or(dpl.toUInt16());
                     return PREFIX_HEX + IntegerUtil.toString(dptr.toInt(), RADIX_HEX, 4);
                 }
             }
@@ -144,7 +144,7 @@ public class RegistersController implements Updatable {
         void setValue(String value) {
             if (this.value instanceof Memory.Cell) {
                 if (IntegerUtil.isValid(value)) {
-                    ((Memory.Cell) this.value).setValue(new UnsignedInt8(IntegerUtil.parseInt(value)));
+                    ((Memory.Cell) this.value).setValue(new UInt8(IntegerUtil.parseInt(value)));
                 }
             } else if (this.value instanceof Memory.Bit) {
                 if (StringUtils.isNotBlank(value) && value.matches("[01]")) {
@@ -157,10 +157,10 @@ public class RegistersController implements Updatable {
 
                 int parsedValue = IntegerUtil.parseInt(value);
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
-                    simulator.setPC(new UnsignedInt16(parsedValue));
+                    simulator.setPC(new UInt16(parsedValue));
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
-                    simulator.getInternalData().DPL.setValue(new UnsignedInt8(parsedValue & 0xff));
-                    simulator.getInternalData().DPH.setValue(new UnsignedInt8((parsedValue >> 8) & 0xff));
+                    simulator.getInternalData().DPL.setValue(new UInt8(parsedValue & 0xff));
+                    simulator.getInternalData().DPH.setValue(new UInt8((parsedValue >> 8) & 0xff));
                 }
             }
         }
