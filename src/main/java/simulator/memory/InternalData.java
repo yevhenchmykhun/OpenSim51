@@ -45,6 +45,8 @@ public class InternalData extends Memory {
 
     public final BitMap bitMap = new BitMap();
 
+    public final Stack stack = new Stack();
+
     public InternalData() {
         super(MEMORY_SIZE);
     }
@@ -223,6 +225,18 @@ public class InternalData extends Memory {
 
         private boolean isBitAddress(int address) {
             return address >= 0x0 && address <= 0x7f || (address - (address % 0x8)) % 0x8 == 0;
+        }
+
+    }
+
+    private class Stack {
+
+        public void push(UInt8 value) {
+
+        }
+
+        public UInt8 pop() {
+            return null;
         }
 
     }
