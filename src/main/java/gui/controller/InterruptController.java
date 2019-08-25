@@ -16,7 +16,7 @@ import simulator.memory.Memory;
 import java.util.Arrays;
 import java.util.List;
 
-public class InterruptController implements Updatable {
+public class InterruptController implements Updatable, MainWindowDependant {
 
     private InternalData internalData = Simulator.getInstance().getInternalData();
 
@@ -52,7 +52,7 @@ public class InterruptController implements Updatable {
                 param -> new SimpleStringProperty(param.getValue().getIntSource())
         );
         vectorColumn.setCellValueFactory(param -> {
-                    String vector = IntegerUtil.toString(param.getValue().getVector(), 16, 4);
+                    String vector = IntegerUtil.toStringWithPrefix(param.getValue().getVector(), 16, 4);
                     return new SimpleStringProperty(vector.toUpperCase() + "H");
                 }
         );

@@ -12,7 +12,7 @@ import simulator.memory.InternalData;
 import simulator.memory.Memory;
 import simulator.memory.datatype.UInt8;
 
-public class TimerController implements Updatable {
+public class TimerController implements Updatable, MainWindowDependant {
 
     @FXML
     private Label thLabel;
@@ -141,8 +141,8 @@ public class TimerController implements Updatable {
 
     @Override
     public void update() {
-        tconTextField.setText("0x" + IntegerUtil.toString(id.TCON.getValue().toInt(), 16, 2).toUpperCase());
-        tmodTextField.setText("0x" + IntegerUtil.toString(id.TMOD.getValue().toInt(), 16, 2).toUpperCase());
+        tconTextField.setText(IntegerUtil.toStringWithPrefix(id.TCON.getValue().toInt(), 16, 2).toUpperCase());
+        tmodTextField.setText(IntegerUtil.toStringWithPrefix(id.TMOD.getValue().toInt(), 16, 2).toUpperCase());
 
         switch (timerNumber) {
             case "0":
@@ -155,8 +155,8 @@ public class TimerController implements Updatable {
     }
 
     private void updateView(Memory.Cell th, Memory.Cell tl, Memory.Bit tPin, Memory.Bit tf, Memory.Bit tr, Memory.Bit gate, Memory.Bit interrupt) {
-        thTextField.setText("0x" + IntegerUtil.toString(th.getValue().toInt(), 16, 2));
-        tlTextField.setText("0x" + IntegerUtil.toString(tl.getValue().toInt(), 16, 2));
+        thTextField.setText(IntegerUtil.toStringWithPrefix(th.getValue().toInt(), 16, 2));
+        tlTextField.setText(IntegerUtil.toStringWithPrefix(tl.getValue().toInt(), 16, 2));
         statusTextBox.setText(tr.getValue() ? "Run" : "Stop");
 
         tPinCheckBox.setSelected(tPin.getValue());

@@ -18,9 +18,9 @@
                 <HBox alignment="BOTTOM_CENTER" spacing="5.0">
                     <children>
                         <Label fx:id="portNameLabel" alignment="CENTER_RIGHT" prefWidth="35.0" text="Label" />
-                        <TextField prefWidth="40.0" styleClass="hex_value">
+                        <TextField fx:id="valueTextField" alignment="CENTER_RIGHT" prefWidth="50.0" styleClass="hex_value">
                      <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                      </padding>
                         </TextField>
                         <GridPane HBox.hgrow="NEVER">
@@ -47,18 +47,14 @@
                                         <RowConstraints valignment="CENTER" vgrow="NEVER" />
                                     </rowConstraints>
                                     <children>
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;">
-                                            <GridPane.margin>
-                                                <Insets />
-                                            </GridPane.margin>
-                                        </CheckBox>
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="1" />
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="2" />
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="3" />
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="4" />
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="5" />
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="6" />
-                                        <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="7" />
+                                        <CheckBox fx:id="pin7" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="0" />
+                                        <CheckBox fx:id="pin6" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="1" />
+                                        <CheckBox fx:id="pin5" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="2" />
+                                        <CheckBox fx:id="pin4" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="3" />
+                                        <CheckBox fx:id="pin3" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="4" />
+                                        <CheckBox fx:id="pin2" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="5" />
+                                        <CheckBox fx:id="pin1" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="6" />
+                                        <CheckBox fx:id="pin0" mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="7" />
                                     </children>
                                 </GridPane>
                                 <GridPane>
@@ -76,41 +72,6 @@
                                         <Label text="0" GridPane.columnIndex="2" />
                                     </children>
                                 </GridPane>
-                            </children>
-                        </GridPane>
-                    </children>
-                </HBox>
-                <HBox alignment="BOTTOM_CENTER" spacing="5.0">
-                    <children>
-                        <Label alignment="CENTER_RIGHT" prefWidth="35.0" text="Pins:" />
-                        <TextField prefWidth="40.0" styleClass="hex_value" />
-                        <GridPane alignment="BOTTOM_CENTER" HBox.hgrow="NEVER">
-                            <columnConstraints>
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                                <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints valignment="CENTER" vgrow="NEVER" />
-                            </rowConstraints>
-                            <children>
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
-                                    <GridPane.margin>
-                                        <Insets />
-                                    </GridPane.margin>
-                                </CheckBox>
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="1" />
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="2" />
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="3" />
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="4" />
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="5" />
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="6" />
-                                <CheckBox mnemonicParsing="false" style="-fx-label-padding: 0;" GridPane.columnIndex="7" />
                             </children>
                         </GridPane>
                     </children>

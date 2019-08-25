@@ -1,46 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Polygon?>
 
-<AnchorPane style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.device.DisplayController">
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gui.controller.device.DisplayController"
+            minWidth="-Infinity" prefWidth="65.0">
     <children>
-        <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <GridPane HBox.hgrow="ALWAYS">
-                    <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-                        <RowConstraints maxHeight="272.7999786376953" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <fx:include fx:id="digit0" source="digit.fxml" />
-                        <fx:include fx:id="digit1" source="digit.fxml" GridPane.columnIndex="1" />
-                        <fx:include fx:id="digit2" source="digit.fxml" GridPane.columnIndex="2" />
-                        <fx:include fx:id="digit3" source="digit.fxml" GridPane.columnIndex="3" />
-                        <fx:include fx:id="digit4" source="digit.fxml" GridPane.columnIndex="4" />
-                        <fx:include fx:id="digit5" source="digit.fxml" GridPane.columnIndex="5" />
-                        <fx:include fx:id="digit6" source="digit.fxml" GridPane.columnIndex="6" />
-                        <fx:include fx:id="digit7" source="digit.fxml" GridPane.columnIndex="7" />
-                    </children>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-                </GridPane>
-            </children>
-        </HBox>
+        <Polygon fx:id="aLed" fill="RED" layoutX="45.0" layoutY="-6.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 rotate="90.0" stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Polygon fx:id="bLed" fill="RED" layoutX="68.0" layoutY="17.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Polygon fx:id="cLed" fill="RED" layoutX="68.0" layoutY="63.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Polygon fx:id="dLed" fill="RED" layoutX="45.0" layoutY="86.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 rotate="90.0" stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Polygon fx:id="eLed" fill="RED" layoutX="22.0" layoutY="63.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Polygon fx:id="fLed" fill="RED" layoutX="22.0" layoutY="17.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Polygon fx:id="gLed" fill="RED" layoutX="45.0" layoutY="40.0" points="5, 0, 10, 5, 10, 40, 5, 45, 0, 40, 0, 5"
+                 rotate="90.0" stroke="RED" strokeType="INSIDE" strokeWidth="0.0"/>
+        <Circle fx:id="dpLed" fill="RED" layoutX="78.0" layoutY="114.0" radius="3.0" stroke="RED" strokeType="INSIDE"
+                strokeWidth="0.0"/>
     </children>
 </AnchorPane>

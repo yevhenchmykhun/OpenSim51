@@ -47,7 +47,22 @@ public enum Instruction {
     }),
 
     ACALL((simulator, instructionInfo) -> {
-        return null;
+
+        UInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        UInt16 next = pc.inc().inc();
+
+        data.stack.push(next.toUInt8());
+        data.stack.push(next.shiftRight(0x8).toUInt8());
+
+        UInt8 opcode = code.getCellValue(pc);
+        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).toUInt16().shiftLeft(8);
+        UInt16 lowOrderBits = code.getCellValue(pc.inc()).toUInt16();
+        UInt16 addr11 = highOrderBits.or(lowOrderBits);
+        return pc.and(new UInt16(0xf800)).or(addr11);
+
     }),
 
     LCALL((simulator, instructionInfo) -> {
@@ -59,7 +74,35 @@ public enum Instruction {
     }),
 
     DEC((simulator, instructionInfo) -> {
-        return null;
+        UInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        int opcode = code.getCellValue(pc).toInt();
+        if ((opcode & 0xfe) == 0x16) {
+
+            Memory.Cell register = getRegister(data, opcode & 0x01);
+            UInt8 value = getIndirect(data, register).inc();
+            setIndirect(register, value, data);
+
+        } else if (opcode == 0x14) {
+
+            UInt8 value = data.ACC.getValue().inc();
+            data.ACC.setValue(value);
+
+        } else if (opcode == 0x15) {
+
+            UInt8 value = data.getCellValue(code.getCellValue(pc.inc())).subtract(UInt8.ONE);
+            data.setCellValue(code.getCellValue(pc.inc()), value);
+
+        } else if ((opcode & 0xf8) == 0x18) {
+
+            Memory.Cell register = getRegister(data, opcode & 0x07);
+            register.setValue(register.getValue().inc());
+
+        }
+
+        return pc.add(new UInt16(instructionInfo.bytes));
     }),
 
     JB((simulator, instructionInfo) -> {
@@ -325,8 +368,8 @@ public enum Instruction {
 
         } else if (opcode == 0xc2) {
 
-            Memory.Bit bit = data.bitMap.getBit(code.getCellValue(pc.inc()).toInt());
-            bit.setValue(false);
+            UInt8 bitAddress = code.getCellValue(pc.inc());
+            data.bitMap.setBitValue(bitAddress.toInt(), false);
 
         } else if (opcode == 0xc3) {
 
@@ -350,7 +393,23 @@ public enum Instruction {
     }),
 
     SETB((simulator, instructionInfo) -> {
-        return null;
+        UInt16 pc = simulator.getPC();
+        InternalData data = simulator.getInternalData();
+        ExternalCode code = simulator.getExternalCode();
+
+        int opcode = code.getCellValue(pc).toInt();
+        if (opcode == 0xd2) {
+
+            UInt8 bitValue = code.getCellValue(pc.inc());
+            data.bitMap.setBitValue(bitValue.toInt(), true);
+
+        } else if (opcode == 0xd3) {
+
+            data.bitMap.CY.setValue(true);
+
+        }
+
+        return pc.add(new UInt16(instructionInfo.bytes));
     }),
 
     DA((simulator, instructionInfo) -> {
@@ -358,6 +417,36 @@ public enum Instruction {
     }),
 
     DJNZ((simulator, instructionInfo) -> {
+//        UInt16 pc = simulator.getPC();
+//        InternalData data = simulator.getInternalData();
+//        ExternalCode code = simulator.getExternalCode();
+//
+//        int opcode = code.getCellValue(pc).toInt();
+//        if (opcode == 0xd5) {
+//
+//            pc = pc.inc().inc();
+//
+//            // (direct) = (direct) - 1
+//            UInt8 direct = code.getCellValue(pc.inc());
+//            UInt8 value = data.getCellValue(direct).inc();
+//            data.setCellValue(direct, value);
+//
+////            IF (direct) <> 0
+////              PC = PC + offset
+//            if (value.equals(UInt8.ZERO)) {
+//                UInt8 offset = code.getCellValue(pc.inc().inc());
+//                return pc.add(offset.toUInt16());
+//            }
+//
+//            data.bitMap.setBitValue(bitValue.toInt(), true);
+//
+//        } else if (opcode == 0xd3) {
+//
+//            data.bitMap.CY.setValue(true);
+//
+//        }
+//
+//        return pc.add(new UInt16(instructionInfo.bytes));
         return null;
     }),
 
@@ -706,6 +795,10 @@ public enum Instruction {
 
     private static void setIndirect(Memory.Cell destination, Memory.Cell register, InternalData data) {
         destination.setValue(data.getCellValue(register.getValue()));
+    }
+
+    private static UInt8 getIndirect(InternalData data, Memory.Cell register) {
+        return data.getCellValue(register.getValue());
     }
 
     private static void setIndirect(Memory.Cell register, UInt8 value, InternalData data) {

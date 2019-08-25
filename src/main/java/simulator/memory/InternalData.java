@@ -49,6 +49,8 @@ public class InternalData extends Memory {
 
     public InternalData() {
         super(MEMORY_SIZE);
+
+        P1.setValue(UInt8.MAX_VALUE);
     }
 
     public UInt8 getCellValue(UInt8 address) {
@@ -229,10 +231,12 @@ public class InternalData extends Memory {
 
     }
 
-    private class Stack {
+    public class Stack {
 
         public void push(UInt8 value) {
-
+            UInt8 sp = SP.getValue().inc();
+            SP.setValue(sp);
+            setCellValue(sp, value);
         }
 
         public UInt8 pop() {

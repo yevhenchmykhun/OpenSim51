@@ -66,6 +66,10 @@ public final class UInt16 implements Comparable<UInt16> {
         return toUInt16(value.and(data.value));
     }
 
+    public UInt8 toUInt8() {
+        return new UInt8(toInt());
+    }
+
     private UInt16 toUInt16(BigInteger src) {
         return new UInt16(1, src.abs().intValue());
     }

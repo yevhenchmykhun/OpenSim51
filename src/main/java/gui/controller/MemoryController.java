@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MemoryController implements Updatable {
+public class MemoryController implements Updatable, MainWindowDependant {
 
     private static final String REGEX_ADDRESS_PREFIX = "([dDcCxX]:)";
 
@@ -245,8 +245,8 @@ public class MemoryController implements Updatable {
                 int adjustedAddress = address + 1 - tableRowLength;
                 adjustedAddress = adjustedAddress >= 0 ? adjustedAddress : adjustedAddress + memory.getMemorySize();
 
-                String addressHex = IntegerUtil.toString(adjustedAddress, RADIX_HEX, leadingZeros);
-                String startAddress = getRequestedMemoryType() + ":0x" + addressHex.toUpperCase();
+                String addressHex = IntegerUtil.toStringWithPrefix(adjustedAddress, RADIX_HEX, leadingZeros);
+                String startAddress = getRequestedMemoryType() + ":" + addressHex.toUpperCase();
 
                 tableData.add(new MemoryRow(startAddress, new ArrayList<>(row)));
                 row.clear();

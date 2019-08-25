@@ -1,52 +1,52 @@
 package gui.controller.device;
 
-import gui.controller.MainWindow;
 import javafx.fxml.FXML;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import org.jetbrains.annotations.NotNull;
+import simulator.memory.datatype.UInt8;
 
 public class DisplayController {
 
-    @FXML
-    private DigitController digit0Controller;
+    private static final Color LIT = Color.RED;
+
+    private static final Color NOT_LIT = Color.DARKSLATEGRAY;
 
     @FXML
-    private DigitController digit1Controller;
+    private Polygon aLed;
 
     @FXML
-    private DigitController digit2Controller;
+    private Polygon bLed;
 
     @FXML
-    private DigitController digit3Controller;
+    private Polygon cLed;
 
     @FXML
-    private DigitController digit4Controller;
+    private Polygon dLed;
 
     @FXML
-    private DigitController digit5Controller;
+    private Polygon eLed;
 
     @FXML
-    private DigitController digit6Controller;
+    private Polygon fLed;
 
     @FXML
-    private DigitController digit7Controller;
+    private Polygon gLed;
 
     @FXML
-    public void initialize() {
-        reset();
-        digit0Controller.setValue(null);
+    private Circle dpLed;
+
+    void setValue(@NotNull UInt8 value) {
+        UInt8 not = value.not();
+        aLed.setFill(not.getBitValue(0) ? LIT : NOT_LIT);
+        bLed.setFill(not.getBitValue(1) ? LIT : NOT_LIT);
+        cLed.setFill(not.getBitValue(2) ? LIT : NOT_LIT);
+        dLed.setFill(not.getBitValue(3) ? LIT : NOT_LIT);
+        eLed.setFill(not.getBitValue(4) ? LIT : NOT_LIT);
+        fLed.setFill(not.getBitValue(5) ? LIT : NOT_LIT);
+        gLed.setFill(not.getBitValue(6) ? LIT : NOT_LIT);
+        dpLed.setFill(not.getBitValue(7) ? LIT : NOT_LIT);
     }
 
-    public void reset() {
-        digit0Controller.reset();
-        digit1Controller.reset();
-        digit2Controller.reset();
-        digit3Controller.reset();
-        digit4Controller.reset();
-        digit5Controller.reset();
-        digit6Controller.reset();
-        digit7Controller.reset();
-    }
-
-    public void setMainWindow(MainWindow mainWindow) {
-
-    }
 }

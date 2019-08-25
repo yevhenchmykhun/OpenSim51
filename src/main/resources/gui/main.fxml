@@ -34,11 +34,7 @@
                                 <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" text="Exit" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Delete" />
-                            </items>
-                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit" />
                         <Menu mnemonicParsing="false" text="Peripherals">
                             <items>
                                 <MenuItem fx:id="interruptMenuItem" mnemonicParsing="false" text="Interrupt" />
@@ -84,7 +80,7 @@
                                     <items>
                                         <Button fx:id="translateButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                                     <image>
                                                         <Image url="@../icons/translate.png" />
                                                     </image>
@@ -100,13 +96,9 @@
                                                 <Tooltip text="Translate" />
                                             </tooltip>
                                         </Button>
-                                    </items>
-                                </ToolBar>
-                                <ToolBar>
-                                    <items>
                                         <Button fx:id="resetButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                                     <image>
                                                         <Image url="@../icons/reset.png" />
                                                     </image>
@@ -125,7 +117,7 @@
                                         <Separator orientation="VERTICAL" />
                                         <Button fx:id="runButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                                                     <image>
                                                         <Image url="@../icons/run.png" />
                                                     </image>
@@ -143,7 +135,7 @@
                                         </Button>
                                         <Button fx:id="stopButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                                     <image>
                                                         <Image url="@../icons/stop.png" />
                                                     </image>
@@ -162,7 +154,7 @@
                                         <Separator orientation="VERTICAL" />
                                         <Button fx:id="stepOverButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                                     <image>
                                                         <Image url="@../icons/debug-step-over.png" />
                                                     </image>
@@ -180,7 +172,7 @@
                                         </Button>
                                         <Button fx:id="stepIntoButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                                     <image>
                                                         <Image url="@../icons/debug-step-into.png" />
                                                     </image>
@@ -198,7 +190,7 @@
                                         </Button>
                                         <Button fx:id="stepOutButton" mnemonicParsing="false">
                                             <graphic>
-                                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                                <ImageView opacity="0.8" pickOnBounds="true" preserveRatio="true">
                                                     <image>
                                                         <Image url="@../icons/debug-step-out.png" />
                                                     </image>
@@ -214,7 +206,6 @@
                                                 <Tooltip autoHide="true" text="Step Out" />
                                             </tooltip>
                                         </Button>
-                                        <Separator orientation="VERTICAL" />
                                     </items>
                                 </ToolBar>
                             </children>

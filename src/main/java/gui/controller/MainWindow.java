@@ -2,7 +2,7 @@ package gui.controller;
 
 import assembler.Assembler;
 import assembler.format.SourceCodeFormatter;
-import gui.controller.device.DisplayController;
+import gui.controller.device.DisplayArrayController;
 import gui.debug.LineInfo;
 import gui.editorstyles.BreakpointFactory;
 import gui.editorstyles.DebuggerArrowFactory;
@@ -108,7 +108,7 @@ public class MainWindow {
     private MemoryController memoryController;
 
     @FXML
-    private DisplayController displayController;
+    private DisplayArrayController displayArrayController;
 
     @FXML
     private ScrollPane codeScrollPane;
@@ -127,17 +127,13 @@ public class MainWindow {
 
     private Stage primaryStage;
 
-    private Stage interruptWindow;
-
-    private Stage displayWindow;
-
     private Map<String, Stage> shownPortWindows;
+
+    private Map<String, Stage> shownWindows;
 
     private Map<String, Stage> shownTimerWindows;
 
-    private Map<String, Updatable> loadedControllers;
-
-    private InterruptController interruptController;
+    private Map<String, Object> loadedControllers;
 
     public static Simulator simulator = Simulator.getInstance();
 
@@ -146,6 +142,7 @@ public class MainWindow {
     public MainWindow() {
         shownPortWindows = new HashMap<>();
         shownTimerWindows = new HashMap<>();
+        shownWindows = new HashMap<>();
         loadedControllers = new HashMap<>();
         lineInfos = new ArrayList<>();
     }
@@ -156,7 +153,7 @@ public class MainWindow {
         memoryController.setMainWindow(this);
         memoryController.setMemoryTableContainer(tabPane);
 
-        interruptMenuItem.setOnAction(event -> showInterruptWindow());
+        interruptMenuItem.setOnAction(event -> showWindow("Interrupt System", "interrupt.fxml"));
 
         port0MenuItem.setOnAction(event -> showPortWindow("0", simulator.getInternalData().P0));
         port1MenuItem.setOnAction(event -> showPortWindow("1", simulator.getInternalData().P1));
@@ -166,7 +163,7 @@ public class MainWindow {
         timer0MenuItem.setOnAction(event -> showTimerWindow("0"));
         timer1MenuItem.setOnAction(event -> showTimerWindow("1"));
 
-        displayMenuItem.setOnAction(event -> showDisplayWindow());
+        displayMenuItem.setOnAction(event -> showWindow("Display", "device/displayArray.fxml"));
 
 
         CodeArea editor = new CodeArea();
@@ -380,8 +377,10 @@ public class MainWindow {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("port.fxml"));
             Parent root = loader.load();
             PortController controller = loader.getController();
+            controller.setMainWindow(this);
             controller.setPortNumber(portNumber);
             controller.setPort(port);
+            controller.update();
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add("styles.css");
@@ -428,79 +427,57 @@ public class MainWindow {
         }
     }
 
-    private void showDisplayWindow() {
-        if (displayWindow != null) {
-            displayWindow.requestFocus();
+    private void showWindow(String title, String resource) {
+        if (shownWindows.containsKey(title)) {
+            shownWindows.get(title).requestFocus();
             return;
         }
 
         try {
             Stage stage = new Stage();
-            stage.setTitle("Display");
+            stage.setTitle(title);
             stage.initStyle(StageStyle.UTILITY);
             stage.setResizable(false);
             stage.setAlwaysOnTop(true);
-            stage.setOnCloseRequest(event -> displayWindow = null);
+            stage.setOnCloseRequest(event -> shownWindows.remove(title));
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("device/display.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(resource));
             Parent root = loader.load();
-            displayController = loader.getController();
-            displayController.setMainWindow(this);
+            Object controller = loader.getController();
+
+            loadedControllers.put(title, controller);
+            if (controller instanceof MainWindowDependant) {
+                ((MainWindowDependant) controller).setMainWindow(this);
+            }
+
+            if (controller instanceof Updatable) {
+                ((Updatable) controller).update();
+            }
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add("styles.css");
             stage.setScene(scene);
             stage.show();
 
-            displayWindow = stage;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showInterruptWindow() {
-        if (interruptWindow != null) {
-            interruptWindow.requestFocus();
-            return;
-        }
-
-        try {
-            Stage stage = new Stage();
-            stage.setTitle("Interrupt System");
-            stage.initStyle(StageStyle.UTILITY);
-            stage.setResizable(false);
-            stage.setAlwaysOnTop(true);
-            stage.setOnCloseRequest(event -> interruptWindow = null);
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("interrupt.fxml"));
-            Parent root = loader.load();
-            interruptController = loader.getController();
-            interruptController.setMainWindow(this);
-
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add("styles.css");
-            stage.setScene(scene);
-            stage.show();
-
-            interruptWindow = stage;
+            shownWindows.put(title, stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void updateUserInterface() {
-        if (interruptController != null) {
-            interruptController.update();
-        }
         registersController.update();
         memoryController.update();
 
-        for (Updatable controller : loadedControllers.values()) {
-            controller.update();
+        for (Object controller : loadedControllers.values()) {
+            if (controller instanceof Updatable) {
+                ((Updatable) controller).update();
+            }
         }
     }
 
     public void setStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
+
 }

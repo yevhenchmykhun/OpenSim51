@@ -14,7 +14,7 @@ import simulator.memory.Memory;
 import simulator.memory.datatype.UInt16;
 import simulator.memory.datatype.UInt8;
 
-public class RegistersController implements Updatable {
+public class RegistersController implements Updatable, MainWindowDependant {
 
     private static final String TREE_ITEM_NAME_PC = "pc";
 
@@ -124,17 +124,17 @@ public class RegistersController implements Updatable {
 
         String getValue() {
             if (value instanceof Memory.Cell) {
-                return PREFIX_HEX + IntegerUtil.toString(((Memory.Cell) value).getValue().toInt(), RADIX_HEX, 2);
+                return IntegerUtil.toStringWithPrefix(((Memory.Cell) value).getValue().toInt(), RADIX_HEX, 2);
             } else if (value instanceof Memory.Bit) {
                 return ((Memory.Bit) value).getValue() ? "1" : "0";
             } else if (value == null) {
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
-                    return PREFIX_HEX + IntegerUtil.toString(simulator.getPC().toInt(), RADIX_HEX, 4);
+                    return IntegerUtil.toStringWithPrefix(simulator.getPC().toInt(), RADIX_HEX, 4);
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
                     UInt8 dph = simulator.getInternalData().DPH.getValue();
                     UInt8 dpl = simulator.getInternalData().DPL.getValue();
                     UInt16 dptr = dph.toUInt16().shiftLeft(8).or(dpl.toUInt16());
-                    return PREFIX_HEX + IntegerUtil.toString(dptr.toInt(), RADIX_HEX, 4);
+                    return IntegerUtil.toStringWithPrefix(dptr.toInt(), RADIX_HEX, 4);
                 }
             }
 

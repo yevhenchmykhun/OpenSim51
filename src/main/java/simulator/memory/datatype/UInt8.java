@@ -66,7 +66,7 @@ public final class UInt8 implements Comparable<UInt8> {
     }
 
     public UInt8 not() {
-        return toUInt8(value.not());
+        return this.xor(MAX_VALUE);
     }
 
     public UInt8 xor(UInt8 data) {
@@ -87,6 +87,10 @@ public final class UInt8 implements Comparable<UInt8> {
 
     public UInt16 toUInt16() {
         return new UInt16(toInt());
+    }
+
+    public boolean getBitValue(int position) {
+        return value.testBit(position);
     }
 
     private UInt8 toUInt8(BigInteger src) {

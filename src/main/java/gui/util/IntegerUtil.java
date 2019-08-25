@@ -15,7 +15,7 @@ public final class IntegerUtil {
 
     public static int parseInt(String value) {
         if (StringUtils.isBlank(value) || !value.matches(REGEX_HEX_OCT_DEC_INTEGER)) {
-            return -1;
+            throw new IllegalArgumentException("unable to parse input");
         }
 
         if (value.startsWith("0x") || value.startsWith("0X")) {
@@ -28,16 +28,38 @@ public final class IntegerUtil {
     }
 
     public static String toString(int value, int radix, int leadingZeros) {
+        String result;
         switch (radix) {
             case 16:
-                return String.format("%0" + leadingZeros + "x", value);
+                result = String.format("%0" + leadingZeros + "x", value);
+                break;
             case 8:
-                return String.format("%0" + leadingZeros + "o", value);
+                result = String.format("%0" + leadingZeros + "o", value);
+                break;
             case 10:
-                return String.format("%0" + leadingZeros + "i", value);
+                result = String.format("%0" + leadingZeros + "i", value);
+                break;
+            default:
+                throw new IllegalArgumentException("unknown radix");
         }
 
-        return "";
+        return result;
+    }
+
+    public static String toStringWithPrefix(int value, int radix, int leadingZeros) {
+        String result = toString(value, radix, leadingZeros);
+        switch (radix) {
+            case 16:
+                result = "0x" + result;
+                break;
+            case 8:
+                result = "0" + result;
+                break;
+            default:
+                throw new IllegalArgumentException("unknown radix");
+        }
+
+        return result;
     }
 
 }
