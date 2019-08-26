@@ -1,6 +1,5 @@
 package simulator.memory.datatype;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
 public final class UInt8 implements Comparable<UInt8> {
@@ -12,97 +11,93 @@ public final class UInt8 implements Comparable<UInt8> {
     public static final UInt8 MASK_HIGH_NIBBLE = new UInt8(0xf0);
     public static final UInt8 MASK_LOW_NIBBLE = new UInt8(0x0f);
 
-    private BigInteger value;
+    private int value;
     private boolean overflow;
 
-    public UInt8(int magnitude) {
-        this(1, magnitude);
+    public UInt8(int value) {
+        this.value = value & 0xff;
     }
 
-    public UInt8(UInt8 data) {
-        this(data.value.signum(), data.value.byteValue());
-    }
-
-    private UInt8(int sign, int magnitude) {
-        value = new BigInteger(sign, new byte[]{(byte) magnitude});
-    }
-
-    public int toInt() {
-        return value.intValue() & 0x000000ff;
+    public UInt8(UInt8 value) {
+        this(value.value);
     }
 
     public UInt8 inc() {
         return add(ONE);
     }
 
-    public UInt8 setBit(int position) {
-        return toUInt8(value.setBit(position));
-    }
-
-    public UInt8 clearBit(int position) {
-        return toUInt8(value.clearBit(position));
-    }
-
     public UInt8 add(UInt8 data) {
-        BigInteger result = value.add(data.value);
-        overflow = result.compareTo(BigInteger.valueOf(MAX_VALUE.toInt())) > 0;
+        int result = value + data.value;
+        overflow = result > 0xff;
 
         return toUInt8(result);
     }
 
     public UInt8 subtract(UInt8 data) {
-        BigInteger result = value.subtract(data.value);
-        overflow = result.compareTo(BigInteger.valueOf(ZERO.toInt())) < 0;
+        int result = value - data.value;
+        overflow = result < 0;
 
         return toUInt8(result);
     }
 
     public UInt8 shiftLeft(int n) {
-        return toUInt8(value.shiftLeft(n));
+        return toUInt8(value << n);
     }
 
     public UInt8 shiftRight(int n) {
-        return toUInt8(value.shiftRight(n));
+        return toUInt8(value >> n);
     }
 
     public UInt8 not() {
-        return this.xor(MAX_VALUE);
+        return toUInt8(value ^ 0xff);
     }
 
     public UInt8 xor(UInt8 data) {
-        return toUInt8(value.xor(data.value));
+        return toUInt8(value ^ data.value);
     }
 
     public UInt8 or(UInt8 data) {
-        return toUInt8(value.or(data.value));
+        return toUInt8(value | data.value);
     }
 
     public UInt8 and(UInt8 data) {
-        return toUInt8(value.and(data.value));
+        return toUInt8(value & data.value);
+    }
+
+    public UInt8 setBit(int position) {
+        return toUInt8(value | (0x1 << position));
+    }
+
+    public UInt8 clearBit(int position) {
+        return toUInt8(value & ~(0x1 << position));
+    }
+
+    public boolean getBitValue(int position) {
+        return (value & (0x1 << position)) == 1;
     }
 
     public boolean isOverflowOccurred() {
         return overflow;
     }
 
+    public int toInt() {
+        return value;
+    }
+
     public UInt16 toUInt16() {
         return new UInt16(toInt());
     }
 
-    public boolean getBitValue(int position) {
-        return value.testBit(position);
-    }
-
-    private UInt8 toUInt8(BigInteger src) {
-        return new UInt8(src.abs().byteValue());
+    private UInt8 toUInt8(int value) {
+        return new UInt8(value);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UInt8 that = (UInt8) o;
-        return Objects.equals(value, that.value);
+        UInt8 uInt8 = (UInt8) o;
+        return value == uInt8.value;
     }
 
     @Override
@@ -112,12 +107,13 @@ public final class UInt8 implements Comparable<UInt8> {
 
     @Override
     public int compareTo(UInt8 o) {
-        return value.compareTo(o.value);
+        return Integer.compare(this.value, o.value);
     }
 
     @Override
     public String toString() {
-        String hex = Integer.toHexString(value.byteValue());
+        String hex = Integer.toHexString(value);
         return hex.length() > 2 ? hex.substring(hex.length() - 2) : hex;
     }
+
 }
