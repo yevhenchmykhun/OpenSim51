@@ -1,6 +1,5 @@
 package simulator.memory.datatype;
 
-import java.math.BigInteger;
 import java.util.Objects;
 
 public final class UInt16 implements Comparable<UInt16> {
@@ -9,25 +8,17 @@ public final class UInt16 implements Comparable<UInt16> {
     public static final UInt16 ONE = new UInt16(0x0001);
     public static final UInt16 MAX_VALUE = new UInt16(0xffff);
 
-    private BigInteger value;
+    public static final UInt16 MASK_HIGH_BYTE = new UInt16(0xff00);
+    public static final UInt16 MASK_LOW_BYTE = new UInt16(0x00ff);
 
-    public UInt16(int magnitude) {
-        this(1, magnitude);
+    private int value;
+
+    public UInt16(int value) {
+        this.value = value & 0xffff;
     }
 
-    public UInt16(UInt16 data) {
-        this(data.value.signum(), data.value.intValue());
-    }
-
-    private UInt16(int sign, int magnitude) {
-        byte[] bytes = new byte[2];
-        bytes[0] = (byte) ((magnitude & 0xff00L) >> 8);
-        bytes[1] = (byte) ((magnitude & 0xffL));
-        value = new BigInteger(sign, bytes);
-    }
-
-    public int toInt() {
-        return value.intValue() & 0x0000ffff;
+    public UInt16(UInt16 value) {
+        this(value.value);
     }
 
     public UInt16 inc() {
@@ -35,51 +26,55 @@ public final class UInt16 implements Comparable<UInt16> {
     }
 
     public UInt16 add(UInt16 data) {
-        return toUInt16(data.value.add(value));
+        return toUInt16(data.value + value);
     }
 
     public UInt16 subtract(UInt16 data) {
-        return toUInt16(value.subtract(data.value));
+        return toUInt16(value - data.value);
     }
 
     public UInt16 shiftLeft(int n) {
-        return toUInt16(value.shiftLeft(n));
+        return toUInt16(value << n);
     }
 
     public UInt16 shiftRight(int n) {
-        return toUInt16(value.shiftRight(n));
+        return toUInt16(value >> n);
     }
 
     public UInt16 not() {
-        return toUInt16(value.not());
+        return toUInt16(value ^ 0xffff);
     }
 
     public UInt16 xor(UInt16 data) {
-        return toUInt16(value.xor(data.value));
+        return toUInt16(value ^ data.value);
     }
 
     public UInt16 or(UInt16 data) {
-        return toUInt16(value.or(data.value));
+        return toUInt16(value | data.value);
     }
 
     public UInt16 and(UInt16 data) {
-        return toUInt16(value.and(data.value));
+        return toUInt16(value & data.value);
+    }
+
+    public int toInt() {
+        return value;
     }
 
     public UInt8 toUInt8() {
         return new UInt8(toInt());
     }
 
-    private UInt16 toUInt16(BigInteger src) {
-        return new UInt16(1, src.abs().intValue());
+    private UInt16 toUInt16(int value) {
+        return new UInt16(value);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UInt16 that = (UInt16) o;
-        return Objects.equals(value, that.value);
+        UInt16 uInt16 = (UInt16) o;
+        return value == uInt16.value;
     }
 
     @Override
@@ -89,12 +84,12 @@ public final class UInt16 implements Comparable<UInt16> {
 
     @Override
     public int compareTo(UInt16 o) {
-        return value.compareTo(o.value);
+        return Integer.compare(this.value, o.value);
     }
 
     @Override
     public String toString() {
-        String hex = Integer.toHexString(value.intValue());
+        String hex = Integer.toHexString(value);
         return hex.length() > 4 ? hex.substring(hex.length() - 4) : hex;
     }
 
