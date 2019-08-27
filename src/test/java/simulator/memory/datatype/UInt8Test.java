@@ -128,6 +128,14 @@ public class UInt8Test {
     public void getBitValue() {
         assertTrue(UInt8.ONE.getBitValue(0));
         assertFalse(UInt8.ONE.getBitValue(1));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(0));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(1));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(2));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(3));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(4));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(5));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(6));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(7));
         assertFalse(UInt8.MAX_VALUE.getBitValue(8));
     }
 

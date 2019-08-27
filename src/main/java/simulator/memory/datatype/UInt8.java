@@ -73,7 +73,7 @@ public final class UInt8 implements Comparable<UInt8> {
     }
 
     public boolean getBitValue(int position) {
-        return (value & (0x1 << position)) == 1;
+        return ((value >> position) & 0x1) == 0x1;
     }
 
     public boolean isOverflowOccurred() {
