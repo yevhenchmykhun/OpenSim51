@@ -36,14 +36,14 @@ public class DisplayArrayController implements Updatable {
 
     @FXML
     public void initialize() {
-        display0Controller.setValue(UInt8.ZERO);
-        display1Controller.setValue(UInt8.ZERO);
-        display2Controller.setValue(UInt8.ZERO);
-        display3Controller.setValue(UInt8.ZERO);
-        display4Controller.setValue(UInt8.ZERO);
-        display5Controller.setValue(UInt8.ZERO);
-        display6Controller.setValue(UInt8.ZERO);
-        display7Controller.setValue(UInt8.ZERO);
+        display0Controller.setValue(UInt8.MAX_VALUE);
+        display1Controller.setValue(UInt8.MAX_VALUE);
+        display2Controller.setValue(UInt8.MAX_VALUE);
+        display3Controller.setValue(UInt8.MAX_VALUE);
+        display4Controller.setValue(UInt8.MAX_VALUE);
+        display5Controller.setValue(UInt8.MAX_VALUE);
+        display6Controller.setValue(UInt8.MAX_VALUE);
+        display7Controller.setValue(UInt8.MAX_VALUE);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DisplayArrayController implements Updatable {
 
         UInt8 value = internalData.P1.getValue();
         for (int i = 0; i < displays.length; i++) {
-            displays[i].setValue(i == displayIndex ? value : UInt8.ZERO);
+            displays[i].setValue(i == displayIndex ? value : UInt8.MAX_VALUE);
         }
     }
 
