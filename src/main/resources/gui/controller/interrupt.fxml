@@ -17,12 +17,12 @@
          <children>
             <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="intSourceColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="105.0" text="Int Source" />
-                <TableColumn fx:id="vectorColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="75.0" text="Vector" />
-                  <TableColumn fx:id="modeColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="55.0" text="Mode" />
-                  <TableColumn fx:id="reqColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="45.0" text="Req" />
-                  <TableColumn fx:id="enaColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="45.0" text="Ena" />
-                  <TableColumn fx:id="priColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="45.0" text="Pri" />
+                <TableColumn fx:id="intSourceColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="105.0" sortable="false" text="Int Source" />
+                <TableColumn fx:id="vectorColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="75.0" sortable="false" text="Vector" />
+                  <TableColumn fx:id="modeColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="55.0" sortable="false" text="Mode" />
+                  <TableColumn fx:id="reqColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="45.0" sortable="false" text="Req" />
+                  <TableColumn fx:id="enaColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="45.0" sortable="false" text="Ena" />
+                  <TableColumn fx:id="priColumn" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="45.0" sortable="false" text="Pri" />
               </columns>
             </TableView>
             <GridPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="35.0">
