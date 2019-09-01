@@ -6,12 +6,12 @@ import simulator.memory.datatype.UInt8;
 public class Timer0 {
 
     private InternalData internalData;
-    private InternalData.BitMap bitMap;
+    private InternalData.BitField bitField;
     private boolean t0;
 
     public Timer0(InternalData internalData) {
         this.internalData = internalData;
-        this.bitMap = internalData.bitMap;
+        this.bitField = internalData.bitField;
     }
 
     public int getMode() {
@@ -19,7 +19,7 @@ public class Timer0 {
     }
 
     public boolean isRunning() {
-        return bitMap.TR0.getValue();
+        return bitField.TR0.getValue();
     }
 
     private boolean isCounter() {
@@ -31,8 +31,8 @@ public class Timer0 {
     }
 
     public void step() {
-        boolean tr0 = bitMap.TR0.getValue();
-        boolean gate = bitMap.GATE0.getValue();
+        boolean tr0 = bitField.TR0.getValue();
+        boolean gate = bitField.GATE0.getValue();
         boolean int0 = internalData.P3.getBitValue(2);
 
         if (tr0 && (!gate || int0)) {
@@ -89,11 +89,11 @@ public class Timer0 {
             internalData.TL0.setValue(newTl0);
 
             if (tf0) {
-                bitMap.TF0.setValue(tf0);
+                bitField.TF0.setValue(tf0);
             }
 
             if (tf1) {
-                bitMap.TF1.setValue(tf1);
+                bitField.TF1.setValue(tf1);
             }
         }
     }

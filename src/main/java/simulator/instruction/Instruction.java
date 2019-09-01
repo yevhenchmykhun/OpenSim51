@@ -229,14 +229,14 @@ public enum Instruction {
 
         } else if (opcode == 0x92) {
 
-            Memory.Bit destination = data.bitMap.getBit(code.getCellValue(pc.inc()).toInt());
-            boolean value = data.bitMap.CY.getValue();
+            InternalData.Bit destination = data.bitField.getBit(code.getCellValue(pc.inc()).toInt());
+            boolean value = data.bitField.CY.getValue();
             destination.setValue(value);
 
         } else if (opcode == 0xa2) {
 
-            Memory.Bit destination = data.bitMap.CY;
-            boolean value = data.bitMap.getBit(code.getCellValue(pc.inc()).toInt()).getValue();
+            InternalData.Bit destination = data.bitField.CY;
+            boolean value = data.bitField.getBit(code.getCellValue(pc.inc()).toInt()).getValue();
             destination.setValue(value);
 
         } else if (opcode == 0x85) {
@@ -369,11 +369,11 @@ public enum Instruction {
         } else if (opcode == 0xc2) {
 
             UInt8 bitAddress = code.getCellValue(pc.inc());
-            data.bitMap.setBitValue(bitAddress.toInt(), false);
+            data.bitField.setBitValue(bitAddress.toInt(), false);
 
         } else if (opcode == 0xc3) {
 
-            data.bitMap.CY.setValue(false);
+            data.bitField.CY.setValue(false);
 
         }
 
@@ -401,11 +401,11 @@ public enum Instruction {
         if (opcode == 0xd2) {
 
             UInt8 bitValue = code.getCellValue(pc.inc());
-            data.bitMap.setBitValue(bitValue.toInt(), true);
+            data.bitField.setBitValue(bitValue.toInt(), true);
 
         } else if (opcode == 0xd3) {
 
-            data.bitMap.CY.setValue(true);
+            data.bitField.CY.setValue(true);
 
         }
 
@@ -771,13 +771,13 @@ public enum Instruction {
     }
 
     private static void subtract(InternalData data, UInt8 value) {
-        value = data.bitMap.CY.getValue() ? value.inc() : value;
+        value = data.bitField.CY.getValue() ? value.inc() : value;
         UInt8 result = data.ACC.getValue().subtract(value);
 
         data.ACC.setValue(result);
 
         // set C flag
-        data.bitMap.CY.setValue(result.isOverflowOccurred());
+        data.bitField.CY.setValue(result.isOverflowOccurred());
 
         // set OV flag
 //        int signedResult = ram.toSignedNumber(a) - ram.toSignedNumber(data);
@@ -790,7 +790,7 @@ public enum Instruction {
         // set AC flag
         UInt8 accumulatorLowNibble = data.ACC.getValue().and(UInt8.MASK_LOW_NIBBLE);
         UInt8 valueLowNibble = value.and(UInt8.MASK_LOW_NIBBLE);
-        data.bitMap.AC.setValue(accumulatorLowNibble.compareTo(valueLowNibble) < 0);
+        data.bitField.AC.setValue(accumulatorLowNibble.compareTo(valueLowNibble) < 0);
     }
 
     private static void setIndirect(Memory.Cell destination, Memory.Cell register, InternalData data) {

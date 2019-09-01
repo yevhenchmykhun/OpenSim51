@@ -2,7 +2,7 @@ package simulator.memory.datatype;
 
 import java.util.Objects;
 
-public final class UInt16 implements Comparable<UInt16> {
+public final class UInt16 implements UInt<UInt16> {
 
     public static final UInt16 ZERO = new UInt16(0x0000);
     public static final UInt16 ONE = new UInt16(0x0001);

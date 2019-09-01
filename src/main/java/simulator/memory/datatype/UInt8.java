@@ -2,7 +2,7 @@ package simulator.memory.datatype;
 
 import java.util.Objects;
 
-public final class UInt8 implements Comparable<UInt8> {
+public final class UInt8 implements UInt<UInt8> {
 
     public static final UInt8 ZERO = new UInt8(0x00);
     public static final UInt8 ONE = new UInt8(0x01);
@@ -22,10 +22,12 @@ public final class UInt8 implements Comparable<UInt8> {
         this(value.value);
     }
 
+    @Override
     public UInt8 inc() {
         return add(ONE);
     }
 
+    @Override
     public UInt8 add(UInt8 data) {
         int result = value + data.value;
         overflow = result > 0xff;
@@ -33,6 +35,7 @@ public final class UInt8 implements Comparable<UInt8> {
         return toUInt8(result);
     }
 
+    @Override
     public UInt8 subtract(UInt8 data) {
         int result = value - data.value;
         overflow = result < 0;
@@ -40,26 +43,32 @@ public final class UInt8 implements Comparable<UInt8> {
         return toUInt8(result);
     }
 
+    @Override
     public UInt8 shiftLeft(int n) {
         return toUInt8(value << n);
     }
 
+    @Override
     public UInt8 shiftRight(int n) {
         return toUInt8(value >> n);
     }
 
+    @Override
     public UInt8 not() {
         return toUInt8(value ^ 0xff);
     }
 
+    @Override
     public UInt8 xor(UInt8 data) {
         return toUInt8(value ^ data.value);
     }
 
+    @Override
     public UInt8 or(UInt8 data) {
         return toUInt8(value | data.value);
     }
 
+    @Override
     public UInt8 and(UInt8 data) {
         return toUInt8(value & data.value);
     }
@@ -80,6 +89,7 @@ public final class UInt8 implements Comparable<UInt8> {
         return overflow;
     }
 
+    @Override
     public int toInt() {
         return value;
     }

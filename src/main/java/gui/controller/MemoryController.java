@@ -224,7 +224,7 @@ public class MemoryController implements Updatable, MainWindowDependant {
         do {
 
             // reset address when it is out of the memory size
-            if (address == memory.getMemorySize()) {
+            if (address == memory.getSize()) {
                 address = -1;
                 continue;
             }
@@ -239,11 +239,11 @@ public class MemoryController implements Updatable, MainWindowDependant {
             if (((address + 1) % tableRowLength) - (requestedAddress % tableRowLength) == 0) {
 
                 // calculate the number of leading zeros taking into account the size of the memory
-                int leadingZeros = (int) (Math.log(memory.getMemorySize()) / Math.log(RADIX_HEX));
+                int leadingZeros = (int) (Math.log(memory.getSize()) / Math.log(RADIX_HEX));
 
                 // build start address of a row taking into account offset
                 int adjustedAddress = address + 1 - tableRowLength;
-                adjustedAddress = adjustedAddress >= 0 ? adjustedAddress : adjustedAddress + memory.getMemorySize();
+                adjustedAddress = adjustedAddress >= 0 ? adjustedAddress : adjustedAddress + memory.getSize();
 
                 String addressHex = IntegerUtil.toStringWithPrefix(adjustedAddress, RADIX_HEX, leadingZeros);
                 String startAddress = getRequestedMemoryType() + ":" + addressHex.toUpperCase();

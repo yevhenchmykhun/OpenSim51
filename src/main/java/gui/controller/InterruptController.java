@@ -1,7 +1,7 @@
 package gui.controller;
 
 import gui.util.IntegerUtil;
-import javafx.beans.property.*;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,62 +11,46 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import simulator.Simulator;
 import simulator.memory.InternalData;
-import simulator.memory.Memory;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class InterruptController implements Updatable, MainWindowDependant {
 
-    private InternalData internalData = Simulator.getInstance().getInternalData();
-
     @FXML
     public TableView<Interrupt> tableView;
-
     @FXML
     public TableColumn<Interrupt, String> intSourceColumn;
-
     @FXML
     public TableColumn<Interrupt, String> vectorColumn;
-
     @FXML
     public TableColumn<Interrupt, String> modeColumn;
-
     @FXML
     public TableColumn<Interrupt, String> reqColumn;
-
     @FXML
     public TableColumn<Interrupt, String> enaColumn;
-
     @FXML
     public TableColumn<Interrupt, String> priColumn;
-
     @FXML
     public GridPane flagsGridPane;
-
+    private InternalData internalData = Simulator.getInstance().getInternalData();
     private MainWindow mainWindow;
 
     @FXML
     public void initialize() {
         intSourceColumn.setCellValueFactory(
-                param -> new SimpleStringProperty(param.getValue().getIntSource())
-        );
+                param -> new SimpleStringProperty(param.getValue().getIntSource()));
         vectorColumn.setCellValueFactory(param -> {
-                    String vector = IntegerUtil.toStringWithPrefix(param.getValue().getVector(), 16, 4);
-                    return new SimpleStringProperty(vector.toUpperCase() + "H");
-                }
-        );
+            String vector = IntegerUtil.toStringWithPrefix(param.getValue().getVector(), 16, 4);
+            return new SimpleStringProperty(vector.toUpperCase() + "H");
+        });
         modeColumn.setCellValueFactory(param -> {
-                    Memory.Bit mode = param.getValue().getMode();
-                    return new SimpleStringProperty(mode == null ? "" : mode.getValue() ? "1" : "0");
-                }
-        );
-        reqColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getReq().getValue() ? "1" : "0")
-        );
-        enaColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getEna().getValue() ? "1" : "0")
-        );
-        priColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getPri() == 1 ? "1" : "0")
-        );
+            InternalData.Bit mode = param.getValue().getMode();
+            return new SimpleStringProperty(mode == null ? "" : mode.getValue() ? "1" : "0");
+        });
+        reqColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getReq().getValue() ? "1" : "0"));
+        enaColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getEna().getValue() ? "1" : "0"));
+        priColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getPri() == 1 ? "1" : "0"));
 
         tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue != null) {
@@ -91,7 +75,7 @@ public class InterruptController implements Updatable, MainWindowDependant {
 
     @Override
     public void update() {
-        InternalData.BitMap bm = internalData.bitMap;
+        InternalData.BitField bm = internalData.bitField;
 
         ObservableList<Interrupt> list = FXCollections.observableArrayList(
                 new Interrupt("P3.2/Int0", 0x03, bm.IT0, bm.IE0, bm.EX0, 0,
@@ -117,7 +101,7 @@ public class InterruptController implements Updatable, MainWindowDependant {
         this.mainWindow = mainWindow;
     }
 
-    private CheckBox createCheckBox(String label, Memory.Bit bit) {
+    private CheckBox createCheckBox(String label, InternalData.Bit bit) {
         CheckBox checkBox = new CheckBox(label);
         checkBox.setSelected(bit.getValue());
         checkBox.setOnAction(event -> {
@@ -131,14 +115,14 @@ public class InterruptController implements Updatable, MainWindowDependant {
     private class Interrupt {
         private String intSource;
         private int vector;
-        private Memory.Bit mode;
-        private Memory.Bit req;
-        private Memory.Bit ena;
+        private InternalData.Bit mode;
+        private InternalData.Bit req;
+        private InternalData.Bit ena;
         private int pri;
 
         private List<CheckBox> checkBoxes;
 
-        Interrupt(String intSource, int vector, Memory.Bit mode, Memory.Bit req, Memory.Bit ena, int pri, List<CheckBox> checkBoxes) {
+        Interrupt(String intSource, int vector, InternalData.Bit mode, InternalData.Bit req, InternalData.Bit ena, int pri, List<CheckBox> checkBoxes) {
             this.intSource = intSource;
             this.vector = vector;
             this.mode = mode;
@@ -156,15 +140,15 @@ public class InterruptController implements Updatable, MainWindowDependant {
             return vector;
         }
 
-        Memory.Bit getMode() {
+        InternalData.Bit getMode() {
             return mode;
         }
 
-        Memory.Bit getReq() {
+        InternalData.Bit getReq() {
             return req;
         }
 
-        Memory.Bit getEna() {
+        InternalData.Bit getEna() {
             return ena;
         }
 

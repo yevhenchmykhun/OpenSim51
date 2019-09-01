@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import org.jetbrains.annotations.NotNull;
-import simulator.memory.Memory;
+import simulator.memory.InternalData;
 import simulator.memory.datatype.UInt8;
 
 public class PortController implements Updatable, MainWindowDependant {
@@ -43,7 +43,7 @@ public class PortController implements Updatable, MainWindowDependant {
     @FXML
     private CheckBox pin7;
 
-    private Memory.BitAddressableCell port;
+    private InternalData.BitAddressableCell port;
 
     private MainWindow mainWindow;
 
@@ -90,7 +90,7 @@ public class PortController implements Updatable, MainWindowDependant {
         portNameLabel.setText("P" + portNumber + ":");
     }
 
-    public void setPort(Memory.BitAddressableCell port) {
+    public void setPort(InternalData.BitAddressableCell port) {
         this.port = port;
     }
 

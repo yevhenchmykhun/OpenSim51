@@ -43,7 +43,7 @@ public class InternalData extends Memory {
     public final BitAddressableCell IP = new BitAddressableCell(0xb8);
     public final BitAddressableCell PSW = new BitAddressableCell(0xd0);
 
-    public final BitMap bitMap = new BitMap();
+    public final BitField bitField = new BitField();
 
     public final Stack stack = new Stack();
 
@@ -61,7 +61,23 @@ public class InternalData extends Memory {
         setCellValue(address.toInt(), value);
     }
 
-    public class BitMap {
+    public interface Bit {
+
+        boolean getValue();
+
+        void setValue(boolean value);
+
+        default void setBit() {
+            setValue(true);
+        }
+
+        default void clearBit() {
+            setValue(false);
+        }
+
+    }
+
+    public class BitField {
 
         // Power Control bits
         public final Bit IDL = new NamedBit(PCON, 0);
@@ -134,9 +150,48 @@ public class InternalData extends Memory {
         }
     }
 
+    public class BitAddressableCell extends Cell {
+
+        BitAddressableCell(int address) {
+            super(address);
+        }
+
+        public boolean getBitValue(int position) {
+            checkRange(7, position);
+
+            UInt8 one = new UInt8(1);
+            return getValue().shiftRight(position).and(one).equals(one);
+        }
+
+        public void setBitValue(int position, boolean value) {
+            checkRange(7, position);
+
+            if (value) {
+                setValue(getValue().setBit(position));
+            } else {
+                setValue(getValue().clearBit(position));
+            }
+        }
+
+    }
+
+    public class Stack {
+
+        public void push(UInt8 value) {
+            UInt8 sp = SP.getValue().inc();
+            SP.setValue(sp);
+            setCellValue(sp, value);
+        }
+
+        public UInt8 pop() {
+            return null;
+        }
+
+    }
+
     private class RegisterCell extends Cell {
 
-        private RegisterCell(int address) {
+        RegisterCell(int address) {
             super(address);
         }
 
@@ -153,13 +208,15 @@ public class InternalData extends Memory {
         }
 
         private void determineRegisterBank() {
-            if (!bitMap.RS1.getValue() && !bitMap.RS0.getValue()) {
+            boolean rs1 = bitField.RS1.getValue();
+            boolean rs0 = bitField.RS0.getValue();
+            if (!rs1 && !rs0) {
                 address = scale(address, 0x0);
-            } else if (!bitMap.RS1.getValue() && bitMap.RS0.getValue()) {
+            } else if (!rs1) {
                 address = scale(address, 0x8);
-            } else if (bitMap.RS1.getValue() && !bitMap.RS0.getValue()) {
+            } else if (!rs0) {
                 address = scale(address, 0x10);
-            } else if (bitMap.RS1.getValue() && bitMap.RS0.getValue()) {
+            } else {
                 address = scale(address, 0x18);
             }
         }
@@ -175,7 +232,7 @@ public class InternalData extends Memory {
         private final BitAddressableCell cell;
         private final int position;
 
-        private NamedBit(BitAddressableCell cell, int position) {
+        NamedBit(BitAddressableCell cell, int position) {
             this.cell = cell;
             this.position = position;
         }
@@ -196,7 +253,7 @@ public class InternalData extends Memory {
 
         private final int bitAddress;
 
-        protected UnnamedBit(int address) {
+        UnnamedBit(int address) {
             if (!isBitAddress(address)) {
                 throw new IllegalArgumentException("Value is out of range");
             }
@@ -227,20 +284,6 @@ public class InternalData extends Memory {
 
         private boolean isBitAddress(int address) {
             return address >= 0x0 && address <= 0x7f || (address - (address % 0x8)) % 0x8 == 0;
-        }
-
-    }
-
-    public class Stack {
-
-        public void push(UInt8 value) {
-            UInt8 sp = SP.getValue().inc();
-            SP.setValue(sp);
-            setCellValue(sp, value);
-        }
-
-        public UInt8 pop() {
-            return null;
         }
 
     }

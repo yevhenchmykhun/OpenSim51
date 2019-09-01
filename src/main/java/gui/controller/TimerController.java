@@ -57,7 +57,7 @@ public class TimerController implements Updatable, MainWindowDependant {
     private CheckBox intCheckBox;
 
     private InternalData id = Simulator.getInstance().getInternalData();
-    private InternalData.BitMap bm = id.bitMap;
+    private InternalData.BitField bm = id.bitField;
 
     private String timerNumber;
     private MainWindow mainWindow;
@@ -103,7 +103,7 @@ public class TimerController implements Updatable, MainWindowDependant {
         update();
     }
 
-    private void initializeView(Memory.Cell th, Memory.Cell tl, Memory.Bit tPin, Memory.Bit tf, Memory.Bit tr, Memory.Bit gate, Memory.Bit interrupt) {
+    private void initializeView(InternalData.Cell th, InternalData.Cell tl, InternalData.Bit tPin, InternalData.Bit tf, InternalData.Bit tr, InternalData.Bit gate, InternalData.Bit interrupt) {
         thTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 th.setValue(new UInt8(IntegerUtil.parseInt(thTextField.getText())));
@@ -154,7 +154,7 @@ public class TimerController implements Updatable, MainWindowDependant {
         }
     }
 
-    private void updateView(Memory.Cell th, Memory.Cell tl, Memory.Bit tPin, Memory.Bit tf, Memory.Bit tr, Memory.Bit gate, Memory.Bit interrupt) {
+    private void updateView(Memory.Cell th, Memory.Cell tl, InternalData.Bit tPin, InternalData.Bit tf, InternalData.Bit tr, InternalData.Bit gate, InternalData.Bit interrupt) {
         thTextField.setText(IntegerUtil.toStringWithPrefix(th.getValue().toInt(), 16, 2));
         tlTextField.setText(IntegerUtil.toStringWithPrefix(tl.getValue().toInt(), 16, 2));
         statusTextBox.setText(tr.getValue() ? "Run" : "Stop");

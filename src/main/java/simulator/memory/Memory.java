@@ -7,70 +7,48 @@ import java.util.Map;
 
 public abstract class Memory {
 
-    private int memorySize;
+    private int size;
     private Map<Integer, UInt8> rawMemory;
 
-    protected Memory(int memorySize) {
-        this(memorySize, new HashMap<>());
+    protected Memory(int size) {
+        this(size, new HashMap<>());
     }
 
-    private Memory(int memorySize, Map<Integer, UInt8> rawMemory) {
-        this.memorySize = memorySize;
+    private Memory(int size, Map<Integer, UInt8> rawMemory) {
+        this.size = size;
         this.rawMemory = rawMemory;
+    }
+
+    public UInt8 getCellValue(int address) {
+        checkRange(size - 1, address);
+
+        return rawMemory.getOrDefault(address, UInt8.ZERO);
+    }
+
+    public void setCellValue(int address, UInt8 value) {
+        checkRange(size - 1, address);
+        rawMemory.put(address, value);
     }
 
     public Memory.Cell getCell(int address) {
         return new Cell(address);
     }
 
-    public UInt8 getCellValue(int address) {
-        checkRange(0, memorySize - 1, address);
-
-        if (rawMemory.containsKey(address)) {
-            return rawMemory.get(address);
-        }
-
-        rawMemory.put(address, new UInt8(0));
-        return rawMemory.get(address);
+    public int getSize() {
+        return size;
     }
 
-    public void setCellValue(int address, UInt8 value) {
-        checkRange(0, memorySize - 1, address);
-
-        rawMemory.put(address, value);
-    }
-
-    protected void checkRange(int lowerBound, int upperBound, int value) {
-        if (value < lowerBound || value > upperBound) {
+    void checkRange(int upperBound, int value) {
+        if (value < 0 || value > upperBound) {
             throw new IllegalArgumentException("Value is out of range");
         }
-    }
-
-    public int getMemorySize() {
-        return memorySize;
-    }
-
-    public interface Bit {
-
-        boolean getValue();
-
-        void setValue(boolean value);
-
-        default void setBit() {
-            setValue(true);
-        }
-
-        default void clearBit() {
-            setValue(false);
-        }
-
     }
 
     public class Cell {
 
         protected int address;
 
-        protected Cell(int address) {
+        Cell(int address) {
             this.address = address;
         }
 
@@ -80,31 +58,6 @@ public abstract class Memory {
 
         public void setValue(UInt8 value) {
             setCellValue(address, value);
-        }
-
-    }
-
-    public class BitAddressableCell extends Cell {
-
-        protected BitAddressableCell(int address) {
-            super(address);
-        }
-
-        public boolean getBitValue(int position) {
-            checkRange(0, 7, position);
-
-            UInt8 one = new UInt8(1);
-            return getValue().shiftRight(position).and(one).equals(one);
-        }
-
-        public void setBitValue(int position, boolean value) {
-            checkRange(0, 7, position);
-
-            if (value) {
-                setValue(getValue().setBit(position));
-            } else {
-                setValue(getValue().clearBit(position));
-            }
         }
 
     }

@@ -79,14 +79,14 @@ public class RegistersController implements Updatable, MainWindowDependant {
         sys.getChildren().add(dptr);
 
         TreeItem<TreeTableViewEntry> psw = new TreeItem<>(new TreeTableViewEntry("psw", id.PSW));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("p", id.bitMap.P)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ud", id.bitMap.UD)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ov", id.bitMap.OV)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs0", id.bitMap.RS0)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs1", id.bitMap.RS1)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("f0", id.bitMap.F0)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ac", id.bitMap.AC)));
-        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("cy", id.bitMap.CY)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("p", id.bitField.P)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ud", id.bitField.UD)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ov", id.bitField.OV)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs0", id.bitField.RS0)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("rs1", id.bitField.RS1)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("f0", id.bitField.F0)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("ac", id.bitField.AC)));
+        psw.getChildren().add(new TreeItem<>(new TreeTableViewEntry("cy", id.bitField.CY)));
 
         sys.getChildren().add(psw);
         sys.setExpanded(true);
@@ -125,8 +125,8 @@ public class RegistersController implements Updatable, MainWindowDependant {
         String getValue() {
             if (value instanceof Memory.Cell) {
                 return IntegerUtil.toStringWithPrefix(((Memory.Cell) value).getValue().toInt(), RADIX_HEX, 2);
-            } else if (value instanceof Memory.Bit) {
-                return ((Memory.Bit) value).getValue() ? "1" : "0";
+            } else if (value instanceof InternalData.Bit) {
+                return ((InternalData.Bit) value).getValue() ? "1" : "0";
             } else if (value == null) {
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
                     return IntegerUtil.toStringWithPrefix(simulator.getPC().toInt(), RADIX_HEX, 4);
@@ -146,9 +146,9 @@ public class RegistersController implements Updatable, MainWindowDependant {
                 if (IntegerUtil.isValid(value)) {
                     ((Memory.Cell) this.value).setValue(new UInt8(IntegerUtil.parseInt(value)));
                 }
-            } else if (this.value instanceof Memory.Bit) {
+            } else if (this.value instanceof InternalData.Bit) {
                 if (StringUtils.isNotBlank(value) && value.matches("[01]")) {
-                    ((Memory.Bit) this.value).setValue(Integer.parseInt(value) != 0);
+                    ((InternalData.Bit) this.value).setValue(Integer.parseInt(value) != 0);
                 }
             } else if (this.value == null) {
                 if (!IntegerUtil.isValid(value)) {

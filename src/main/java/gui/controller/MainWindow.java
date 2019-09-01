@@ -20,17 +20,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -45,7 +36,7 @@ import org.fxmisc.richtext.LineNumberFactory;
 import org.reactfx.Subscription;
 import simulator.ExecutionListener;
 import simulator.Simulator;
-import simulator.memory.Memory;
+import simulator.memory.InternalData;
 import simulator.memory.datatype.UInt16;
 import simulator.memory.datatype.UInt8;
 
@@ -360,7 +351,7 @@ public class MainWindow {
         return "";
     }
 
-    private void showPortWindow(String portNumber, Memory.BitAddressableCell port) {
+    private void showPortWindow(String portNumber, InternalData.BitAddressableCell port) {
         if (shownPortWindows.containsKey(portNumber)) {
             shownPortWindows.get(portNumber).requestFocus();
             return;
