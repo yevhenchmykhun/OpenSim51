@@ -7,7 +7,7 @@ import simulator.memory.ExternalData;
 import simulator.memory.InternalData;
 import simulator.memory.datatype.UInt16;
 import simulator.memory.datatype.UInt8;
-import simulator.peripherals.Timer0;
+import simulator.sys.Timer0;
 
 import java.io.File;
 import java.io.FileInputStream;

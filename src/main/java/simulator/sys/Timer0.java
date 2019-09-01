@@ -1,4 +1,4 @@
-package simulator.peripherals;
+package simulator.sys;
 
 import simulator.memory.InternalData;
 import simulator.memory.datatype.UInt8;
