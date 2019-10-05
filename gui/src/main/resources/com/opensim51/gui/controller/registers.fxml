@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opensim51.gui.controller.RegistersController">
+    <children>
+        <TreeTableView fx:id="registersView" editable="true" prefWidth="175.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <columns>
+                <TreeTableColumn fx:id="registerColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="100.0" sortable="false" styleClass="registers_tree_column" text="Register" />
+                <TreeTableColumn fx:id="valueColumn" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="75.0" sortable="false" styleClass="registers_tree_column" text="Value" />
+            </columns>
+        </TreeTableView>
+    </children>
+</AnchorPane>

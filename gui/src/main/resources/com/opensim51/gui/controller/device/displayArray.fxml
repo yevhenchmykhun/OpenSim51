@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.opensim51.gui.controller.device.DisplayArrayController">
+    <children>
+        <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-10.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <GridPane HBox.hgrow="ALWAYS">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="272.7999786376953" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <fx:include fx:id="display0" source="display.fxml" GridPane.columnIndex="0" />
+                        <fx:include fx:id="display1" source="display.fxml" GridPane.columnIndex="1" />
+                        <fx:include fx:id="display2" source="display.fxml" GridPane.columnIndex="2" />
+                        <fx:include fx:id="display3" source="display.fxml" GridPane.columnIndex="3" />
+                        <fx:include fx:id="display4" source="display.fxml" GridPane.columnIndex="4" />
+                        <fx:include fx:id="display5" source="display.fxml" GridPane.columnIndex="5" />
+                        <fx:include fx:id="display6" source="display.fxml" GridPane.columnIndex="6" />
+                        <fx:include fx:id="display7" source="display.fxml" GridPane.columnIndex="7" />
+                    </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+                </GridPane>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>
