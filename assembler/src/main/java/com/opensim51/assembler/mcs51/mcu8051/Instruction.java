@@ -11,27 +11,27 @@ import java.util.Map;
 
 public enum Instruction {
 
-    NOP(operands -> {
+    NOP((locationCounter, operands) -> {
         return Collections.singletonList(0x00);
     }, null),
 
-    AJMP(operands -> {
+    AJMP((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         int address = operand.getValue();
         return Arrays.asList(((address & 0x700) >> 3) | 0x01, address & 0xff);
     }, null),
 
-    LJMP(operands -> {
+    LJMP((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         int address = operand.getValue();
         return Arrays.asList(0x02, (address >> 8) & 0xff, address & 0xff);
     }, null),
 
-    RR(operands -> {
+    RR((locationCounter, operands) -> {
         return Collections.singletonList(0x03);
     }, null),
 
-    INC(operands -> {
+    INC((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         switch (operand.getType()) {
 
@@ -63,29 +63,29 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JBC(operands -> {
+    JBC((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         return Arrays.asList(0x10, firstOperand.getValue(), secondOperand.getValue());
     }, null),
 
-    ACALL(operands -> {
+    ACALL((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         int address = operand.getValue();
         return Arrays.asList(((address & 0x700) >> 3) | 0x11, address & 0xff);
     }, null),
 
-    LCALL(operands -> {
+    LCALL((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         int address = operand.getValue();
         return Arrays.asList(0x12, (address >> 8) & 0xff, address & 0xff);
     }, null),
 
-    RRC(operands -> {
+    RRC((locationCounter, operands) -> {
         return Collections.singletonList(0x13);
     }, null),
 
-    DEC(operands -> {
+    DEC((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         switch (operand.getType()) {
 
@@ -113,21 +113,21 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JB(operands -> {
+    JB((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         return Arrays.asList(0x20, firstOperand.getValue(), secondOperand.getValue());
     }, null),
 
-    RET(operands -> {
+    RET((locationCounter, operands) -> {
         return Collections.singletonList(0x22);
     }, null),
 
-    RL(operands -> {
+    RL((locationCounter, operands) -> {
         return Collections.singletonList(0x23);
     }, null),
 
-    ADD(operands -> {
+    ADD((locationCounter, operands) -> {
         Operand secondOperand = operands.get(1);
         switch (secondOperand.getType()) {
 
@@ -156,21 +156,21 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JNB(operands -> {
+    JNB((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         return Arrays.asList(0x30, firstOperand.getValue(), secondOperand.getValue());
     }, null),
 
-    RETI(operands -> {
+    RETI((locationCounter, operands) -> {
         return Collections.singletonList(0x32);
     }, null),
 
-    RLC(operands -> {
+    RLC((locationCounter, operands) -> {
         return Collections.singletonList(0x33);
     }, null),
 
-    ADDC(operands -> {
+    ADDC((locationCounter, operands) -> {
         Operand secondOperand = operands.get(1);
         switch (secondOperand.getType()) {
 
@@ -199,12 +199,12 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JC(operands -> {
+    JC((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0x40, operand.getValue());
     }, null),
 
-    ORL(operands -> {
+    ORL((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         switch (firstOperand.getType()) {
@@ -266,12 +266,12 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JNC(operands -> {
+    JNC((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0x50, operand.getValue());
     }, null),
 
-    ANL(operands -> {
+    ANL((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         switch (firstOperand.getType()) {
@@ -333,12 +333,12 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JZ(operands -> {
+    JZ((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0x60, operand.getValue());
     }, null),
 
-    XRL(operands -> {
+    XRL((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         switch (firstOperand.getType()) {
@@ -385,16 +385,16 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    JNZ(operands -> {
+    JNZ((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0x70, operand.getValue());
     }, null),
 
-    JMP(operands -> {
+    JMP((locationCounter, operands) -> {
         return Collections.singletonList(0x73);
     }, null),
 
-    MOV(operands -> {
+    MOV((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         switch (firstOperand.getType()) {
@@ -501,12 +501,12 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    SJMP(operands -> {
+    SJMP((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0x80, operand.getValue());
     }, null),
 
-    MOVC(operands -> {
+    MOVC((locationCounter, operands) -> {
         Operand secondOperand = operands.get(1);
         switch (secondOperand.getType()) {
 
@@ -522,11 +522,11 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    DIV(operands -> {
+    DIV((locationCounter, operands) -> {
         return Collections.singletonList(0x84);
     }, null),
 
-    SUBB(operands -> {
+    SUBB((locationCounter, operands) -> {
         Operand secondOperand = operands.get(1);
         switch (secondOperand.getType()) {
 
@@ -555,11 +555,11 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    MUL(operands -> {
+    MUL((locationCounter, operands) -> {
         return Collections.singletonList(0xa4);
     }, null),
 
-    CPL(operands -> {
+    CPL((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         switch (firstOperand.getType()) {
 
@@ -581,7 +581,7 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    CJNE(operands -> {
+    CJNE((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         Operand thirdOperand = operands.get(2);
@@ -622,12 +622,12 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    PUSH(operands -> {
+    PUSH((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0xc0, operand.getValue());
     }, null),
 
-    CLR(operands -> {
+    CLR((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         switch (firstOperand.getType()) {
 
@@ -649,11 +649,11 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    SWAP(operands -> {
+    SWAP((locationCounter, operands) -> {
         return Collections.singletonList(0xc4);
     }, null),
 
-    XCH(operands -> {
+    XCH((locationCounter, operands) -> {
         Operand secondOperand = operands.get(1);
         switch (secondOperand.getType()) {
 
@@ -677,12 +677,12 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    POP(operands -> {
+    POP((locationCounter, operands) -> {
         Operand operand = operands.get(0);
         return Arrays.asList(0xd0, operand.getValue());
     }, null),
 
-    SETB(operands -> {
+    SETB((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         switch (firstOperand.getType()) {
 
@@ -700,25 +700,25 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    DA(operands -> {
+    DA((locationCounter, operands) -> {
         return Collections.singletonList(0xd4);
     }, null),
 
-    DJNZ(operands -> {
+    DJNZ((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         switch (firstOperand.getType()) {
 
             case DIRECT: {
                 int direct = firstOperand.getValue();
-                int address = secondOperand.getValue();
-                return Arrays.asList(0xd5, direct, address);
+                int offset = secondOperand.getValue() - (locationCounter + 3);
+                return Arrays.asList(0xd5, direct, offset);
             }
 
             case REGISTER: {
                 int registerNumber = firstOperand.getValue();
-                int address = secondOperand.getValue();
-                return Arrays.asList(0xd8 | registerNumber, address);
+                int offset = secondOperand.getValue() - (locationCounter + 2);
+                return Arrays.asList(0xd8 | registerNumber, offset);
             }
 
         }
@@ -726,13 +726,13 @@ public enum Instruction {
         return new ArrayList<>();
     }, null),
 
-    XCHD(operands -> {
+    XCHD((locationCounter, operands) -> {
         Operand secondOperand = operands.get(1);
         int registerNumber = secondOperand.getValue();
         return Collections.singletonList(0xd6 | registerNumber);
     }, null),
 
-    MOVX(operands -> {
+    MOVX((locationCounter, operands) -> {
         Operand firstOperand = operands.get(0);
         Operand secondOperand = operands.get(1);
         switch (firstOperand.getType()) {
@@ -1049,8 +1049,8 @@ public enum Instruction {
         return INSTRUCTION_INFO_BY_OPCODE.get(opcode).bytes;
     }
 
-    public List<Integer> toMachineCodes(List<Operand> operands) {
-        return assemblyInstructionTranslator.transform(operands);
+    public List<Integer> toMachineCodes(Integer locationCounter, List<Operand> operands) {
+        return assemblyInstructionTranslator.transform(locationCounter, operands);
     }
 
     public List<String> toAssemblyInstruction(List<Integer> machineCodes) {
@@ -1058,7 +1058,7 @@ public enum Instruction {
     }
 
     private interface AssemblyInstructionTranslator {
-        List<Integer> transform(List<Operand> operands);
+        List<Integer> transform(Integer locationCounter, List<Operand> operands);
     }
 
     private interface MachineCodesTranslator {
