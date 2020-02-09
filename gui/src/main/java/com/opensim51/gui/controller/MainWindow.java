@@ -2,7 +2,6 @@ package com.opensim51.gui.controller;
 
 
 import com.opensim51.assembler.Assembler;
-import com.opensim51.assembler.ErrorListener;
 import com.opensim51.assembler.mcs51.mcu8051.Mcu8051Assembler;
 import com.opensim51.gui.controller.device.DisplayArrayController;
 import com.opensim51.gui.debug.LineInfo;
@@ -10,6 +9,11 @@ import com.opensim51.gui.editorstyles.BreakpointFactory;
 import com.opensim51.gui.editorstyles.DebuggerArrowFactory;
 import com.opensim51.gui.editorstyles.SelectedLineArrowFactory;
 import com.opensim51.gui.editorstyles.TokensHighlighting;
+import com.opensim51.simulator.ExecutionListener;
+import com.opensim51.simulator.Simulator;
+import com.opensim51.simulator.memory.InternalData;
+import com.opensim51.simulator.memory.datatype.UInt16;
+import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,17 +26,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -40,11 +35,6 @@ import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.reactfx.Subscription;
-import com.opensim51.simulator.ExecutionListener;
-import com.opensim51.simulator.Simulator;
-import com.opensim51.simulator.memory.InternalData;
-import com.opensim51.simulator.memory.datatype.UInt16;
-import com.opensim51.simulator.memory.datatype.UInt8;
 
 import java.io.IOException;
 import java.net.URI;
@@ -257,16 +247,15 @@ public class MainWindow {
             try {
                 Assembler mcu8051Assembler = new Mcu8051Assembler();
                 mcu8051Assembler.assemble(editor.getText(), (line, locationCounter, machineCodes) -> {
-//                    lineInfos.add(new LineInfo(ctx.getStart().getLine() - 1, locationCounter));
-//                    lineInfos.add(new LineInfo(line, locationCounter));
+                    lineInfos.add(new LineInfo(line - 1, new UInt16(locationCounter)));
 
                     for (Integer machineCode : machineCodes) {
                         simulator.getExternalCode().setCellValue(locationCounter, new UInt8(machineCode));
                         locationCounter++;
                     }
-                }, (ErrorListener) (line, charPositionInLine, message) -> {
+                }, (line, charPositionInLine, message) -> {
                     statusBarTextField.setText(line + ":" + charPositionInLine + " " + message);
-                    throw new RuntimeException();
+                    throw new RuntimeException("translation canceled due to an error");
                 });
 
                 if (!lineInfos.isEmpty()) {

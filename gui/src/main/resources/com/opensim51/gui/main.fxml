@@ -223,14 +223,14 @@
                     <right>
                         <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
                             <tabs>
-                                <Tab closable="false" text="Call Stack">
-                                    <content>
-                                        <TreeView />
-                                    </content>
-                                </Tab>
                                 <Tab closable="false" text="Memory">
                                     <content>
                                         <fx:include fx:id="memory" source="controller/memory.fxml" />
+                                    </content>
+                                </Tab>
+                                <Tab closable="false" text="Call Stack">
+                                    <content>
+                                        <TreeView />
                                     </content>
                                 </Tab>
                             </tabs>
