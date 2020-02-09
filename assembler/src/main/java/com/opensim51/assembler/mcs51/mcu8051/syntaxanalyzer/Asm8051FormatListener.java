@@ -1,7 +1,7 @@
 package com.opensim51.assembler.mcs51.mcu8051.syntaxanalyzer;
 
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051BaseListener;
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Parser;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051BaseListener;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Parser;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;

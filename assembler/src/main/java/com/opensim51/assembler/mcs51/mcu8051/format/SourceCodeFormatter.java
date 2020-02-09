@@ -1,7 +1,7 @@
 package com.opensim51.assembler.mcs51.mcu8051.format;
 
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Lexer;
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Parser;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Lexer;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Parser;
 import com.opensim51.assembler.mcs51.mcu8051.syntaxanalyzer.Asm8051FormatListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;

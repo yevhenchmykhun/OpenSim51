@@ -1,10 +1,10 @@
 package com.opensim51.assembler.mcs51.mcu8051.syntaxanalyzer;
 
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051BaseVisitor;
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Parser;
-import org.antlr.v4.runtime.tree.ParseTree;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051BaseVisitor;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Parser;
 import com.opensim51.assembler.mcs51.mcu8051.types.Operand;
 import com.opensim51.assembler.mcs51.mcu8051.types.OperandType;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;

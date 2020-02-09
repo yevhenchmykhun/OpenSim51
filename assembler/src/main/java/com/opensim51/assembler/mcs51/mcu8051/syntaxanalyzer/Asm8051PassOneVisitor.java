@@ -1,19 +1,19 @@
 package com.opensim51.assembler.mcs51.mcu8051.syntaxanalyzer;
 
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Parser;
 import com.opensim51.assembler.mcs51.mcu8051.Instruction;
 import com.opensim51.assembler.mcs51.mcu8051.types.Operand;
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Parser;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.List;
 import java.util.Map;
 
-public class Asm8051PassOneVisitorNew extends Asm8051CommonVisitor {
+public class Asm8051PassOneVisitor extends Asm8051CommonVisitor {
 
     private final Map<String, Integer> symbolTable;
     private Integer locationCounter;
 
-    public Asm8051PassOneVisitorNew(Map<String, Integer> symbolTable) {
+    public Asm8051PassOneVisitor(Map<String, Integer> symbolTable) {
         this.symbolTable = symbolTable;
         locationCounter = 0;
     }
@@ -51,7 +51,7 @@ public class Asm8051PassOneVisitorNew extends Asm8051CommonVisitor {
         Instruction instruction = Instruction.getByMnemonic(mnemonic.toUpperCase());
         List<Operand> operands = processOperands(child, null);
 
-        return instruction.toMachineCodes(operands).size();
+        return instruction.toMachineCodes(locationCounter, operands).size();
     }
 
 }

@@ -1,8 +1,8 @@
 package com.opensim51.assembler.mcs51.mcu8051.syntaxanalyzer;
 
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Lexer;
+import com.opensim51.assembler.mcs51.mcu8051.Asm8051Parser;
 import com.opensim51.assembler.mcs51.mcu8051.types.Operand;
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Lexer;
-import com.opensim51.assembler.mcs51.mcu8051.antlr.Asm8051Parser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class Asm8051PassOneVisitorNewTest {
+public class Asm8051PassOneVisitorTest {
 
     private PrintWriter printWriter;
 
@@ -39,9 +39,9 @@ public class Asm8051PassOneVisitorNewTest {
         printWriter.close();
     }
 
-    private class Asm8051PassOneVisitorNewMock extends Asm8051PassOneVisitorNew {
+    private class Asm8051PassOneVisitorMock extends Asm8051PassOneVisitor {
 
-        Asm8051PassOneVisitorNewMock(Map<String, Integer> symbolTable) {
+        Asm8051PassOneVisitorMock(Map<String, Integer> symbolTable) {
             super(symbolTable);
         }
 
@@ -76,7 +76,7 @@ public class Asm8051PassOneVisitorNewTest {
                 printWriter.println(line);
 
                 HashMap<String, Integer> symbolTable = new HashMap<>();
-                Asm8051PassOneVisitorNewMock passOneVisitor = new Asm8051PassOneVisitorNewMock(symbolTable);
+                Asm8051PassOneVisitorMock passOneVisitor = new Asm8051PassOneVisitorMock(symbolTable);
                 passOneVisitor.visit(tree);
             });
         } catch (URISyntaxException | IOException e) {
