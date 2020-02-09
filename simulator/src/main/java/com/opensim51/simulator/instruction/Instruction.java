@@ -18,8 +18,8 @@ public enum Instruction {
         ExternalCode code = memoryGroup.getExternalCode();
 
         UInt8 opcode = code.getCellValue(pc);
-        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).toUInt16().shiftLeft(8);
-        UInt16 lowOrderBits = code.getCellValue(pc.inc()).toUInt16();
+        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).x16().shl(8);
+        UInt16 lowOrderBits = code.getCellValue(pc.inc()).x16();
         UInt16 addr11 = highOrderBits.or(lowOrderBits);
         return pc.and(new UInt16(0xf800)).or(addr11);
     }),
@@ -29,7 +29,7 @@ public enum Instruction {
 
         UInt8 highOrderByte = code.getCellValue(pc.inc());
         UInt8 lowOrderByte = code.getCellValue(pc.inc().inc());
-        return highOrderByte.toUInt16().shiftLeft(8).and(lowOrderByte.toUInt16());
+        return highOrderByte.x16().shl(8).and(lowOrderByte.x16());
     }),
 
     RR((pc, memoryGroup, instructionInfo) -> {
@@ -50,19 +50,28 @@ public enum Instruction {
 
         UInt16 next = pc.inc().inc();
 
-        data.stack.push(next.toUInt8());
-        data.stack.push(next.shiftRight(0x8).toUInt8());
+        data.stack.push(next);
 
         UInt8 opcode = code.getCellValue(pc);
-        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).toUInt16().shiftLeft(8);
-        UInt16 lowOrderBits = code.getCellValue(pc.inc()).toUInt16();
+        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).x16().shl(8);
+        UInt16 lowOrderBits = code.getCellValue(pc.inc()).x16();
         UInt16 addr11 = highOrderBits.or(lowOrderBits);
-        return pc.and(new UInt16(0xf800)).or(addr11);
 
+        return pc.and(new UInt16(0xf800)).or(addr11);
     }),
 
     LCALL((pc, memoryGroup, instructionInfo) -> {
-        return null;
+        InternalData data = memoryGroup.getInternalData();
+        ExternalCode code = memoryGroup.getExternalCode();
+
+        UInt16 next = pc.add(new UInt16(instructionInfo.bytes));
+
+        data.stack.push(next);
+
+        UInt16 highByte = code.getCellValue(pc.inc()).x16();
+        UInt16 lowByte = code.getCellValue(pc.inc().inc()).x16();
+
+        return highByte.shl(0x8).add(lowByte);
     }),
 
     RRC((pc, memoryGroup, instructionInfo) -> {
@@ -87,7 +96,7 @@ public enum Instruction {
 
         } else if (opcode == 0x15) {
 
-            UInt8 value = data.getCellValue(code.getCellValue(pc.inc())).subtract(UInt8.ONE);
+            UInt8 value = data.getCellValue(code.getCellValue(pc.inc())).sub(UInt8.ONE);
             data.setCellValue(code.getCellValue(pc.inc()), value);
 
         } else if ((opcode & 0xf8) == 0x18) {
@@ -105,7 +114,12 @@ public enum Instruction {
     }),
 
     RET((pc, memoryGroup, instructionInfo) -> {
-        return null;
+        InternalData data = memoryGroup.getInternalData();
+
+        UInt8 highByte = data.stack.pop();
+        UInt8 lowByte = data.stack.pop();
+
+        return highByte.x16().shl(8).or(lowByte.x16());
     }),
 
     RL((pc, memoryGroup, instructionInfo) -> {
@@ -162,7 +176,7 @@ public enum Instruction {
 
         pc = pc.add(new UInt16(instructionInfo.bytes));
         if (!data.ACC.getValue().equals(UInt8.ZERO)) {
-            UInt16 offset = code.getCellValue(pc.inc()).not().inc().toUInt16();
+            UInt16 offset = code.getCellValue(pc.inc()).not().inc().x16();
             pc = pc.add(offset);
         }
 
@@ -407,37 +421,38 @@ public enum Instruction {
     }),
 
     DJNZ((pc, memoryGroup, instructionInfo) -> {
-//        UInt16 pc = simulator.getPC();
-//        InternalData data = simulator.getInternalData();
-//        ExternalCode code = simulator.getExternalCode();
-//
-//        int opcode = code.getCellValue(pc).toInt();
-//        if (opcode == 0xd5) {
-//
-//            pc = pc.inc().inc();
-//
-//            // (direct) = (direct) - 1
-//            UInt8 direct = code.getCellValue(pc.inc());
-//            UInt8 value = data.getCellValue(direct).inc();
-//            data.setCellValue(direct, value);
-//
-////            IF (direct) <> 0
-////              PC = PC + offset
-//            if (value.equals(UInt8.ZERO)) {
-//                UInt8 offset = code.getCellValue(pc.inc().inc());
-//                return pc.add(offset.toUInt16());
-//            }
-//
-//            data.bitMap.setBitValue(bitValue.toInt(), true);
-//
-//        } else if (opcode == 0xd3) {
-//
-//            data.bitMap.CY.setValue(true);
-//
-//        }
-//
-//        return pc.add(new UInt16(instructionInfo.bytes));
-        return null;
+        InternalData data = memoryGroup.getInternalData();
+        ExternalCode code = memoryGroup.getExternalCode();
+
+        UInt16 next = pc.add(new UInt16(instructionInfo.bytes));
+
+        int opcode = code.getCellValue(pc).toInt();
+        if (opcode == 0xd5) {
+
+            UInt8 direct = code.getCellValue(pc.inc());
+            UInt8 value = data.getCellValue(direct);
+            UInt8 newValue = value.sub(UInt8.ONE);
+            data.setCellValue(direct, newValue);
+
+            if (!newValue.equals(UInt8.ZERO)) {
+                UInt8 offset = code.getCellValue(pc.inc().inc());
+                next = next.add(offset.x16());
+            }
+
+        } else if ((opcode & 0xf8) == 0xd8) {
+
+            Memory.Cell register = getRegister(data, opcode & 0x07);
+            UInt8 newValue = register.getValue().sub(UInt8.ONE);
+            register.setValue(newValue);
+
+            if (!newValue.equals(UInt8.ZERO)) {
+                UInt8 offset = code.getCellValue(pc.inc());
+                next = next.add(offset.sx16());
+            }
+
+        }
+
+        return next;
     }),
 
     XCHD((pc, memoryGroup, instructionInfo) -> {
@@ -766,19 +781,19 @@ public enum Instruction {
 
     private static void subtract(InternalData data, UInt8 value) {
         value = data.bitField.CY.getValue() ? value.inc() : value;
-        UInt8 result = data.ACC.getValue().subtract(value);
+        UInt8 result = data.ACC.getValue().sub(value);
 
         data.ACC.setValue(result);
 
         // set C flag
-        data.bitField.CY.setValue(result.isOverflowOccurred());
+        data.bitField.CY.setValue(result.isOverflowed());
 
         // set OV flag
 //        int signedResult = ram.toSignedNumber(a) - ram.toSignedNumber(data);
 //        if (signedResult <= 127 && signedResult >= -128) {
-//            data.bitMap.OV.setBit();
+//            data.bitMap.OV.stb();
 //        } else {
-//            ram.setBit(210);
+//            ram.stb(210);
 //        }
 
         // set AC flag

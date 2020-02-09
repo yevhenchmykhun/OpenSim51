@@ -168,16 +168,16 @@ public class InternalData extends Memory {
             checkRange(7, position);
 
             UInt8 one = new UInt8(1);
-            return getValue().shiftRight(position).and(one).equals(one);
+            return getValue().shr(position).and(one).equals(one);
         }
 
         public void setBitValue(int position, boolean value) {
             checkRange(7, position);
 
             if (value) {
-                setValue(getValue().setBit(position));
+                setValue(getValue().stb(position));
             } else {
-                setValue(getValue().clearBit(position));
+                setValue(getValue().clb(position));
             }
         }
 
@@ -199,14 +199,14 @@ public class InternalData extends Memory {
             UInt8 sp = SP.getValue().inc();
             setCellValue(sp, value.toUInt8());
             sp = sp.inc();
-            setCellValue(sp, value.shiftRight(8).toUInt8());
+            setCellValue(sp, value.shr(8).toUInt8());
             SP.setValue(sp);
         }
 
         public UInt8 pop() {
             UInt8 sp = SP.getValue();
             UInt8 value = getCellValue(sp);
-            SP.setValue(sp.subtract(UInt8.ONE));
+            SP.setValue(sp.sub(UInt8.ONE));
             return value;
         }
 

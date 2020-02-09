@@ -29,15 +29,15 @@ public final class UInt16 implements UInt<UInt16> {
         return toUInt16(data.value + value);
     }
 
-    public UInt16 subtract(UInt16 data) {
+    public UInt16 sub(UInt16 data) {
         return toUInt16(value - data.value);
     }
 
-    public UInt16 shiftLeft(int n) {
+    public UInt16 shl(int n) {
         return toUInt16(value << n);
     }
 
-    public UInt16 shiftRight(int n) {
+    public UInt16 shr(int n) {
         return toUInt16(value >> n);
     }
 

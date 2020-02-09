@@ -50,7 +50,7 @@ public class Timer0 {
 
             if (getMode() == 3) {
                 newTh0 = th0.inc();
-                if (th0.isOverflowOccurred()) {
+                if (th0.isOverflowed()) {
                     tf1 = true;
                 }
             }
@@ -58,7 +58,7 @@ public class Timer0 {
             if (!isCounter() || previousT0 && !t0) {
                 if (getMode() == 3) {
                     newTl0 = tl0.inc();
-                    if (tl0.isOverflowOccurred()) {
+                    if (tl0.isOverflowed()) {
                         tf0 = true;
                     }
                 } else {
@@ -77,7 +77,7 @@ public class Timer0 {
                         } else {
                             newTl0 = UInt8.ZERO;
                             newTh0 = th0.inc();
-                            if (th0.isOverflowOccurred()) {
+                            if (th0.isOverflowed()) {
                                 tf1 = true;
                             }
                         }

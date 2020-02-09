@@ -11,15 +11,32 @@ public final class UInt8 implements UInt<UInt8> {
     public static final UInt8 MASK_HIGH_NIBBLE = new UInt8(0xf0);
     public static final UInt8 MASK_LOW_NIBBLE = new UInt8(0x0f);
 
-    private int value;
-    private boolean overflow;
+    private static final UInt8[] cache = new UInt8[256];
 
-    public UInt8(int value) {
-        this.value = value & 0xff;
+    static {
+        cache[0] = ZERO;
+        cache[1] = ONE;
+        cache[255] = MAX_VALUE;
+
+        for (int i = 2; i < 255; i++) {
+            cache[i] = new UInt8(i);
+        }
     }
 
-    public UInt8(UInt8 value) {
-        this(value.value);
+    private final int value;
+    private final boolean overflowed;
+
+    public UInt8(int value) {
+        this(value & 0xff, false);
+    }
+
+    private UInt8(int value, boolean overflowed) {
+        this.value = value;
+        this.overflowed = overflowed;
+    }
+
+    public UInt8 valueOf(int value) {
+        return cache[value & 0xff];
     }
 
     @Override
@@ -27,40 +44,38 @@ public final class UInt8 implements UInt<UInt8> {
         return add(ONE);
     }
 
+
     @Override
     public UInt8 add(UInt8 data) {
         int result = value + data.value;
-        overflow = result > 0xff;
-
-        return toUInt8(result);
+        return toUInt8(result, result > 0xff);
     }
 
     @Override
-    public UInt8 subtract(UInt8 data) {
+    public UInt8 sub(UInt8 data) {
         int result = value - data.value;
-        overflow = result < 0;
-
-        return toUInt8(result);
+        return toUInt8(result, result < 0);
     }
 
+
     @Override
-    public UInt8 shiftLeft(int n) {
+    public UInt8 shl(int n) {
         return toUInt8(value << n);
     }
 
     @Override
-    public UInt8 shiftRight(int n) {
+    public UInt8 shr(int n) {
         return toUInt8(value >> n);
     }
 
-    @Override
-    public UInt8 not() {
-        return toUInt8(value ^ 0xff);
+    public UInt8 sar(int n) {
+        return toUInt8((value & 0x80) == 0x80 ? (value >> n) | 0x80 : value >> n);
     }
 
+
     @Override
-    public UInt8 xor(UInt8 data) {
-        return toUInt8(value ^ data.value);
+    public UInt8 and(UInt8 data) {
+        return toUInt8(value & data.value);
     }
 
     @Override
@@ -69,37 +84,68 @@ public final class UInt8 implements UInt<UInt8> {
     }
 
     @Override
-    public UInt8 and(UInt8 data) {
-        return toUInt8(value & data.value);
-    }
-
-    public UInt8 setBit(int position) {
-        return toUInt8(value | (0x1 << position));
-    }
-
-    public UInt8 clearBit(int position) {
-        return toUInt8(value & ~(0x1 << position));
-    }
-
-    public boolean getBitValue(int position) {
-        return ((value >> position) & 0x1) == 0x1;
-    }
-
-    public boolean isOverflowOccurred() {
-        return overflow;
+    public UInt8 xor(UInt8 data) {
+        return toUInt8(value ^ data.value);
     }
 
     @Override
-    public int toInt() {
-        return value;
+    public UInt8 not() {
+        return toUInt8(value ^ 0xff);
     }
 
-    public UInt16 toUInt16() {
+
+    public UInt8 stb(int position) {
+        return toUInt8(value | (0x1 << position));
+    }
+
+    public UInt8 clb(int position) {
+        return toUInt8(value & ~(0x1 << position));
+    }
+
+    public boolean bt(int position) {
+        return ((value >> position) & 0x1) == 0x1;
+    }
+
+    public boolean isOverflowed() {
+        return overflowed;
+    }
+
+    public UInt16 x16() {
         return new UInt16(toInt());
+    }
+
+    public UInt16 sx16() {
+        int i = toInt();
+        return new UInt16((i & 0x80) == 0x80 ? i | 0xff00 : i);
+    }
+
+    public boolean lt(UInt8 value) {
+        return compareTo(value) < 0;
+    }
+
+    public boolean gt(UInt8 value) {
+        return compareTo(value) > 0;
+    }
+
+    public boolean le(UInt8 value) {
+        return compareTo(value) <= 0;
+    }
+
+    public boolean ge(UInt8 value) {
+        return compareTo(value) >= 0;
     }
 
     private UInt8 toUInt8(int value) {
         return new UInt8(value);
+    }
+
+    private UInt8 toUInt8(int value, boolean overflowed) {
+        return new UInt8(value, overflowed);
+    }
+
+    @Override
+    public int toInt() {
+        return value & 0xff;
     }
 
     @Override
@@ -107,7 +153,7 @@ public final class UInt8 implements UInt<UInt8> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UInt8 uInt8 = (UInt8) o;
-        return value == uInt8.value;
+        return (value & 0xff) == (uInt8.value & 0xff);
     }
 
     @Override

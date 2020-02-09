@@ -27,28 +27,28 @@ public class UInt16Test {
     @Test
     public void subtract() {
         UInt16 zero = UInt16.ZERO;
-        assertEquals(zero.subtract(UInt16.ONE), UInt16.MAX_VALUE);
+        assertEquals(zero.sub(UInt16.ONE), UInt16.MAX_VALUE);
 
         UInt16 maxValue = UInt16.MAX_VALUE;
-        assertEquals(maxValue.subtract(UInt16.ONE), new UInt16(0xfffe));
+        assertEquals(maxValue.sub(UInt16.ONE), new UInt16(0xfffe));
     }
 
     @Test
     public void shiftLeft() {
         UInt16 maxValue = UInt16.MAX_VALUE;
-        assertEquals(maxValue.shiftLeft(0), maxValue);
-        assertEquals(maxValue.shiftLeft(1), new UInt16(0xfffe));
-        assertEquals(maxValue.shiftLeft(15), new UInt16(0x8000));
-        assertEquals(maxValue.shiftLeft(16), UInt16.ZERO);
+        assertEquals(maxValue.shl(0), maxValue);
+        assertEquals(maxValue.shl(1), new UInt16(0xfffe));
+        assertEquals(maxValue.shl(15), new UInt16(0x8000));
+        assertEquals(maxValue.shl(16), UInt16.ZERO);
     }
 
     @Test
     public void shiftRight() {
         UInt16 maxValue = UInt16.MAX_VALUE;
-        assertEquals(maxValue.shiftRight(0), maxValue);
-        assertEquals(maxValue.shiftRight(1), new UInt16(0x7fff));
-        assertEquals(maxValue.shiftRight(15), UInt16.ONE);
-        assertEquals(maxValue.shiftRight(16), UInt16.ZERO);
+        assertEquals(maxValue.shr(0), maxValue);
+        assertEquals(maxValue.shr(1), new UInt16(0x7fff));
+        assertEquals(maxValue.shr(15), UInt16.ONE);
+        assertEquals(maxValue.shr(16), UInt16.ZERO);
     }
 
     @Test

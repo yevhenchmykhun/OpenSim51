@@ -6,11 +6,11 @@ public interface UInt<T extends UInt> extends Comparable<T> {
 
     T add(T data);
 
-    T subtract(T data);
+    T sub(T data);
 
-    T shiftLeft(int n);
+    T shl(int n);
 
-    T shiftRight(int n);
+    T shr(int n);
 
     T not();
 

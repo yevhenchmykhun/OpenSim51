@@ -27,28 +27,30 @@ public class UInt8Test {
     @Test
     public void subtract() {
         UInt8 zero = UInt8.ZERO;
-        assertEquals(zero.subtract(UInt8.ONE), UInt8.MAX_VALUE);
+        assertEquals(zero.sub(UInt8.ONE), UInt8.MAX_VALUE);
 
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.subtract(UInt8.ONE), new UInt8(0xfe));
+        assertEquals(maxValue.sub(UInt8.ONE), new UInt8(0xfe));
+
+        assertEquals(new UInt8(0xfe).sub(new UInt8(0xff)), new UInt8(0xff));
     }
 
     @Test
     public void shiftLeft() {
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.shiftLeft(0), maxValue);
-        assertEquals(maxValue.shiftLeft(1), new UInt8(0xfe));
-        assertEquals(maxValue.shiftLeft(7), new UInt8(0x80));
-        assertEquals(maxValue.shiftLeft(8), UInt8.ZERO);
+        assertEquals(maxValue.shl(0), maxValue);
+        assertEquals(maxValue.shl(1), new UInt8(0xfe));
+        assertEquals(maxValue.shl(7), new UInt8(0x80));
+        assertEquals(maxValue.shl(8), UInt8.ZERO);
     }
 
     @Test
     public void shiftRight() {
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.shiftRight(0), maxValue);
-        assertEquals(maxValue.shiftRight(1), new UInt8(0x7f));
-        assertEquals(maxValue.shiftRight(7), UInt8.ONE);
-        assertEquals(maxValue.shiftRight(8), UInt8.ZERO);
+        assertEquals(maxValue.shr(0), maxValue);
+        assertEquals(maxValue.sar(1), new UInt8(0xff));
+        assertEquals(maxValue.shr(7), UInt8.ONE);
+        assertEquals(maxValue.shr(8), UInt8.ZERO);
     }
 
     @Test
@@ -111,56 +113,59 @@ public class UInt8Test {
     @Test
     public void setBit() {
         UInt8 zero = UInt8.ZERO;
-        assertEquals(zero.setBit(0), UInt8.ONE);
-        assertEquals(zero.setBit(7), new UInt8(0x80));
-        assertEquals(zero.setBit(8), zero);
+        assertEquals(zero.stb(0), UInt8.ONE);
+        assertEquals(zero.stb(7), new UInt8(0x80));
+        assertEquals(zero.stb(8), zero);
     }
 
     @Test
     public void clearBit() {
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.clearBit(0), new UInt8(0xfe));
-        assertEquals(maxValue.clearBit(7), new UInt8(0x7f));
-        assertEquals(maxValue.clearBit(8), maxValue);
+        assertEquals(maxValue.clb(0), new UInt8(0xfe));
+        assertEquals(maxValue.clb(7), new UInt8(0x7f));
+        assertEquals(maxValue.clb(8), maxValue);
     }
 
     @Test
     public void getBitValue() {
-        assertTrue(UInt8.ONE.getBitValue(0));
-        assertFalse(UInt8.ONE.getBitValue(1));
-        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(0));
-        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(1));
-        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(2));
-        assertTrue(UInt8.MASK_LOW_NIBBLE.getBitValue(3));
-        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(4));
-        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(5));
-        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(6));
-        assertFalse(UInt8.MASK_LOW_NIBBLE.getBitValue(7));
-        assertFalse(UInt8.MAX_VALUE.getBitValue(8));
+        assertTrue(UInt8.ONE.bt(0));
+        assertFalse(UInt8.ONE.bt(1));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.bt(0));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.bt(1));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.bt(2));
+        assertTrue(UInt8.MASK_LOW_NIBBLE.bt(3));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.bt(4));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.bt(5));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.bt(6));
+        assertFalse(UInt8.MASK_LOW_NIBBLE.bt(7));
+        assertFalse(UInt8.MAX_VALUE.bt(8));
     }
 
     @Test
-    public void isOverflowOccurred() {
+    public void isOverflowed() {
         UInt8 maxValue = UInt8.MAX_VALUE;
         UInt8 zero = maxValue.inc();
-        assertTrue(maxValue.isOverflowOccurred());
+        assertTrue(zero.isOverflowed());
 
         UInt8 one = UInt8.ONE;
         maxValue = one.add(new UInt8(0xfe));
-        assertFalse(one.isOverflowOccurred());
+        assertFalse(maxValue.isOverflowed());
 
         one = UInt8.ONE;
         zero = one.add(UInt8.MAX_VALUE);
-        assertTrue(one.isOverflowOccurred());
+        assertTrue(zero.isOverflowed());
     }
 
     @Test
     public void toUInt16() {
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.toUInt16(), new UInt16(0xff));
+        assertEquals(maxValue.x16(), new UInt16(0xff));
 
         UInt8 zero = UInt8.ZERO;
-        assertEquals(zero.toUInt16(), UInt16.ZERO);
+        assertEquals(zero.x16(), UInt16.ZERO);
+
+        UInt8 one = UInt8.ONE;
+        assertEquals(one.x16(), UInt16.ONE);
     }
 
     @Test
