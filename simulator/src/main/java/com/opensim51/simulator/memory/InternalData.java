@@ -185,6 +185,10 @@ public class InternalData extends Memory {
 
     public class Stack {
 
+        private Stack() {
+            SP.setValue(new UInt8(0x08));
+        }
+
         public void push(UInt8 value) {
             UInt8 sp = SP.getValue().inc();
             setCellValue(sp, value);
@@ -200,7 +204,10 @@ public class InternalData extends Memory {
         }
 
         public UInt8 pop() {
-            return null;
+            UInt8 sp = SP.getValue();
+            UInt8 value = getCellValue(sp);
+            SP.setValue(sp.subtract(UInt8.ONE));
+            return value;
         }
 
     }
