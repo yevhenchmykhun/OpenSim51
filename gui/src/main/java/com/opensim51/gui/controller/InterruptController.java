@@ -49,8 +49,8 @@ public class InterruptController implements Updatable, MainWindowDependant {
     public void initialize() {
         intSourceColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getIntSource()));
         vectorColumn.setCellValueFactory(param -> {
-            String vector = IntegerUtil.toStringWithPrefix(param.getValue().getVector(), 16, 4);
-            return new SimpleStringProperty(vector.toUpperCase() + "H");
+            String vector = IntegerUtil.toString(param.getValue().getVector(), 16, 4);
+            return new SimpleStringProperty("0x" + vector.toUpperCase() + "H");
         });
         modeColumn.setCellValueFactory(param -> {
             InternalData.Bit mode = param.getValue().getMode();

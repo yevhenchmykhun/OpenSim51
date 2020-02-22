@@ -110,8 +110,8 @@ public class TimerController implements Updatable, MainWindowDependant {
 
     @Override
     public void update() {
-        tconTextField.setText(IntegerUtil.toStringWithPrefix(id.TCON.getValue().toInt(), 16, 2).toUpperCase());
-        tmodTextField.setText(IntegerUtil.toStringWithPrefix(id.TMOD.getValue().toInt(), 16, 2).toUpperCase());
+        tconTextField.setText(IntegerUtil.toStringWithPrefix(id.TCON.getValue().toInt(), 16, 2));
+        tmodTextField.setText(IntegerUtil.toStringWithPrefix(id.TMOD.getValue().toInt(), 16, 2));
 
         switch (timerNumber) {
             case "0":

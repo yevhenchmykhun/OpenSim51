@@ -207,13 +207,17 @@ public class MemoryController implements Updatable, MainWindowDependant {
 
     private void fillTable(Memory memory, int tableRowLength) {
 
+        int requestedAddress = getRequestedMemoryAddress();
+        if (requestedAddress > memory.getSize()) {
+            return;
+        }
+
         // a list of transformed memory data
         ObservableList<MemoryRow> tableData = FXCollections.observableArrayList();
 
         // a list of the length tableRowLength that contains a part of the memory data in form of HEX strings
         List<String> row = new ArrayList<>();
 
-        int requestedAddress = getRequestedMemoryAddress();
         int address = requestedAddress;
         do {
 
@@ -239,8 +243,8 @@ public class MemoryController implements Updatable, MainWindowDependant {
                 int adjustedAddress = address + 1 - tableRowLength;
                 adjustedAddress = adjustedAddress >= 0 ? adjustedAddress : adjustedAddress + memory.getSize();
 
-                String addressHex = IntegerUtil.toStringWithPrefix(adjustedAddress, RADIX_HEX, leadingZeros);
-                String startAddress = getRequestedMemoryType() + ":" + addressHex.toUpperCase();
+                String addressHex = IntegerUtil.toString(adjustedAddress, RADIX_HEX, leadingZeros);
+                String startAddress = getRequestedMemoryType() + ":0x" + addressHex.toUpperCase();
 
                 tableData.add(new MemoryRow(startAddress, new ArrayList<>(row)));
                 row.clear();
