@@ -30,12 +30,6 @@ public class ProcessingUnit {
         this.programCounter = programCounter;
     }
 
-    public void run(ExecutionListener executionListener) {
-        while (executionListener.isRunning()) {
-            step(executionListener);
-        }
-    }
-
     public void step(ExecutionListener executionListener) {
         UInt8 opcode = memoryGroup.getExternalCode().getCellValue(programCounter);
         Instruction instruction = Instruction.getByOpcode(opcode);
@@ -51,6 +45,7 @@ public class ProcessingUnit {
 
         programCounter = instruction.execute(programCounter, memoryGroup);
         programCounter = interruptSystem.getInterruptServiceRoutine(programCounter);
+
         executionListener.process(programCounter);
     }
 

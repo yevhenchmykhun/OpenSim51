@@ -1,25 +1,19 @@
 package com.opensim51.gui.controller;
 
 import com.opensim51.gui.util.IntegerUtil;
+import com.opensim51.simulator.Simulator;
+import com.opensim51.simulator.memory.Memory;
+import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import org.apache.commons.lang3.StringUtils;
-import com.opensim51.simulator.Simulator;
-import com.opensim51.simulator.memory.Memory;
-import com.opensim51.simulator.memory.datatype.UInt8;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -49,7 +43,7 @@ public class MemoryController implements Updatable, MainWindowDependant {
     @FXML
     private TableView<MemoryRow> memoryTableView;
 
-    private Simulator simulator = Simulator.getInstance();
+    private final Simulator simulator = Simulator.getInstance();
 
     private MainWindow mainWindow;
 
@@ -188,7 +182,7 @@ public class MemoryController implements Updatable, MainWindowDependant {
         this.mainWindow = mainWindow;
     }
 
-    public void setMemoryTableContainer(TabPane memoryTableContainer) {
+    void setMemoryTableContainer(TabPane memoryTableContainer) {
         this.memoryTableContainer = memoryTableContainer;
     }
 
@@ -265,8 +259,8 @@ public class MemoryController implements Updatable, MainWindowDependant {
     }
 
     private class MemoryRow {
-        private String startAddress;
-        private List<String> cellValues;
+        private final String startAddress;
+        private final List<String> cellValues;
 
         MemoryRow(String startAddress, List<String> values) {
             this.startAddress = startAddress;

@@ -1,8 +1,8 @@
 package com.opensim51.gui.controller;
 
-
 import com.opensim51.assembler.Assembler;
 import com.opensim51.assembler.mcs51.mcu8051.Mcu8051Assembler;
+import com.opensim51.assembler.mcs51.mcu8051.format.SourceCodeFormatter;
 import com.opensim51.gui.controller.device.DisplayArrayController;
 import com.opensim51.gui.debug.LineInfo;
 import com.opensim51.gui.editorstyles.BreakpointFactory;
@@ -17,6 +17,8 @@ import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -29,16 +31,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.reactfx.Subscription;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -51,79 +56,59 @@ import java.util.function.IntFunction;
 
 public class MainWindow {
 
+    private final Simulator simulator = Simulator.getInstance();
+    private final Map<String, Stage> shownWindows;
+    private final Map<String, Stage> shownPortWindows;
+    private final Map<String, Stage> shownTimerWindows;
+    private final Map<String, Object> loadedControllers;
+    private final List<LineInfo> lineInfos;
+    @FXML
+    private MenuItem reformatFileMenuItem;
     @FXML
     private MenuItem displayMenuItem;
-
     @FXML
     private Button runButton;
-
+    @FXML
+    private Button stopButton;
     @FXML
     private Button translateButton;
-
     @FXML
-    private Button stepOverButton;
-
+    private Button stepButton;
     @FXML
     private MenuItem interruptMenuItem;
-
     @FXML
     private MenuItem timer0MenuItem;
-
     @FXML
     private MenuItem timer1MenuItem;
-
     @FXML
     private TextField statusBarTextField;
-
     @FXML
     private TabPane tabPane;
-
     @FXML
     private MenuItem burnHexMenuItem;
-
     @FXML
     private MenuItem exitMenuItem;
-
     @FXML
-    private MenuItem registerBanksMenuItem;
-
+    private MenuItem displayExampleMenuItem;
+    @FXML
+    private MenuItem registerBanksExampleMenuItem;
     @FXML
     private RegistersController registersController;
-
     @FXML
     private MemoryController memoryController;
-
     @FXML
     private DisplayArrayController displayArrayController;
-
     @FXML
     private ScrollPane codeScrollPane;
-
     @FXML
     private MenuItem port0MenuItem;
-
     @FXML
     private MenuItem port1MenuItem;
-
     @FXML
     private MenuItem port2MenuItem;
-
     @FXML
     private MenuItem port3MenuItem;
-
     private Stage primaryStage;
-
-    private Map<String, Stage> shownPortWindows;
-
-    private Map<String, Stage> shownWindows;
-
-    private Map<String, Stage> shownTimerWindows;
-
-    private Map<String, Object> loadedControllers;
-
-    public static Simulator simulator = Simulator.getInstance();
-
-    private List<LineInfo> lineInfos;
 
     public MainWindow() {
         shownPortWindows = new HashMap<>();
@@ -151,28 +136,20 @@ public class MainWindow {
 
         displayMenuItem.setOnAction(event -> showWindow("Display", "device/displayArray.fxml"));
 
-
         CodeArea editor = new CodeArea();
         editor.setId("editor");
         editor.getStylesheets().add(getClass().getResource("editor.css").toExternalForm());
 
-        editor.setOnKeyPressed(event -> {
-            KeyCodeCombination combination = new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
-            if (combination.match(event)) {
-                String text = editor.getText();
-                String format = com.opensim51.assembler.mcs51.mcu8051.format.SourceCodeFormatter.format(text);
-                editor.replaceText(format);
-
-                // TODO: richtextfx 0.9.1 has a bug related to selection replacement
-                // String selectedText = editor.getSelectedText();
-                // String format = SourceCodeFormatter.format(selectedText);
-                // editor.replaceSelection(format);
+        reformatFileMenuItem.setOnAction(event -> {
+            String text = editor.getText();
+            if (StringUtils.isNotBlank(text)) {
+                String formattedText = SourceCodeFormatter.format(text);
+                editor.replaceText(formattedText);
             }
         });
 
         ObservableList<Integer> breakpointLineNumbers = FXCollections.observableArrayList();
         SimpleObjectProperty<Integer> debuggedLine = new SimpleObjectProperty<>(-1);
-
 
         IntFunction<Node> breakpointFactory = new BreakpointFactory(breakpointLineNumbers);
         IntFunction<Node> selectedLineArrowFactory = new SelectedLineArrowFactory(editor.currentParagraphProperty());
@@ -208,22 +185,16 @@ public class MainWindow {
             // addEventFilter and removeEventFilter must receive the same instance of EventHandler
             EventHandler<MouseEvent> consume = Event::consume;
 
-            gutter.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-                editor.addEventFilter(MouseEvent.MOUSE_PRESSED, consume);
-            });
-
-            gutter.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-                editor.removeEventFilter(MouseEvent.MOUSE_PRESSED, consume);
-            });
+            gutter.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> editor.addEventFilter(MouseEvent.MOUSE_PRESSED, consume));
+            gutter.addEventHandler(MouseEvent.MOUSE_EXITED, event -> editor.removeEventFilter(MouseEvent.MOUSE_PRESSED, consume));
 
             return gutter;
         };
         editor.setParagraphGraphicFactory(graphicFactory);
 
-        // TODO: recompute syntax highlighting for a line instead of a file
-
         // recompute the syntax highlighting 20 ms after user stops editing area
-        Subscription cleanupWhenNoLongerNeedIt = editor
+        // Subscription cleanupWhenNoLongerNeedIt = editor
+        editor
 
                 // plain changes = ignore style changes that are emitted when syntax highlighting is reapplied
                 // multi plain changes = save computation by not rerunning the code multiple times
@@ -268,64 +239,96 @@ public class MainWindow {
             updateUserInterface();
         });
 
-//        burnHexMenuItem.setOnAction(event -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("Open HEX File");
-//            File file = fileChooser.showOpenDialog(primaryStage);
-//
-//            try {
-//                simulator.burnIntel8HexFile(file);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//            memoryController.update();
-//        });
+        burnHexMenuItem.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Intel HEX File");
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("Intel HEX files (*.hex)", "*.hex");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+            File file = fileChooser.showOpenDialog(primaryStage);
 
-
-        ExecutionListener executionListener = new ExecutionListener() {
-            private boolean running = true;
-
-            @Override
-            public void process(UInt16 programCounter) {
-                int line = -1;
-                for (LineInfo lineInfo : lineInfos) {
-                    if (lineInfo.getAssociatedLocationCounter().equals(programCounter)) {
-                        line = lineInfo.getEditorLineNumber();
-                        running = !breakpointLineNumbers.contains(line);
-                        break;
-                    }
+            try {
+                if (file != null) {
+                    simulator.burnIntel8HexFile(file);
                 }
-                debuggedLine.set(line);
-                editor.showParagraphInViewport(line);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
+            memoryController.update();
+        });
+
+        ExecutionService executionService = new ExecutionService();
+        executionService.setSimulator(simulator);
+
+        runButton.setOnAction(event -> {
+            ExecutionListener executionListener = new ExecutionListener() {
+                private boolean running = true;
+
+                @Override
+                public void process(UInt16 programCounter) {
+                    lineInfos.stream()
+                            .filter(e -> e.getAssociatedLocationCounter().equals(programCounter))
+                            .findFirst()
+                            .ifPresent(e -> {
+                                int lineNumber = e.getEditorLineNumber();
+                                debuggedLine.set(lineNumber);
+                                editor.showParagraphInViewport(lineNumber);
+                                updateUserInterface();
+                                if (breakpointLineNumbers.contains(lineNumber)) {
+                                    running = false;
+                                    executionService.cancel();
+                                }
+                            });
+                }
+
+                @Override
+                public boolean isRunning() {
+                    return running;
+                }
+
+                @Override
+                public void cancelExecution() {
+                    running = false;
+                }
+            };
+
+            executionService.setExecutionListener(executionListener);
+            executionService.setOnCancelled(stateEvent -> executionListener.cancelExecution());
+            executionService.start();
+        });
+
+        stopButton.setOnAction(event -> {
+            executionService.cancel();
+            executionService.reset();
+        });
+
+        stepButton.setOnAction(event -> simulator.step(new ExecutionListener() {
             @Override
-            public void reset() {
-                running = true;
+            public void process(UInt16 programCounter) {
+                lineInfos.stream()
+                        .filter(e -> e.getAssociatedLocationCounter().equals(programCounter))
+                        .findFirst()
+                        .ifPresent(e -> {
+                            int lineNumber = e.getEditorLineNumber();
+                            debuggedLine.set(lineNumber);
+                            editor.showParagraphInViewport(lineNumber);
+                            updateUserInterface();
+                        });
             }
 
             @Override
             public boolean isRunning() {
-                return running;
+                return false;
             }
-        };
 
-        runButton.setOnAction(event -> {
-            simulator.run(executionListener);
-            executionListener.reset();
-            updateUserInterface();
-        });
+            @Override
+            public void cancelExecution() {
+                // NO-OP
+            }
+        }));
 
-
-        stepOverButton.setOnAction(event -> {
-            simulator.step(executionListener);
-            updateUserInterface();
-        });
-
-        registerBanksMenuItem.setOnAction(event -> {
-            editor.replaceText(readFileToString("examples/register_banks.A51", Charset.forName("UTF-8")));
-        });
+        displayExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/display.A51", Charset.forName("UTF-8"))));
+        registerBanksExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/register_banks.A51", Charset.forName("UTF-8"))));
 
         exitMenuItem.setOnAction(event -> primaryStage.close());
     }
@@ -333,7 +336,9 @@ public class MainWindow {
     private String readFileToString(String path, Charset encoding) {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            URI uri = classLoader.getResource(path).toURI();
+            URL resource = classLoader.getResource(path);
+            assert resource != null;
+            URI uri = resource.toURI();
             byte[] bytes = Files.readAllBytes(Paths.get(uri));
             return new String(bytes, encoding);
         } catch (IOException | URISyntaxException e) {
@@ -461,6 +466,31 @@ public class MainWindow {
 
     public void setStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    private static class ExecutionService extends Service<Void> {
+
+        private Simulator simulator;
+
+        private ExecutionListener executionListener;
+
+        void setSimulator(Simulator simulator) {
+            this.simulator = simulator;
+        }
+
+        void setExecutionListener(ExecutionListener executionListener) {
+            this.executionListener = executionListener;
+        }
+
+        protected Task<Void> createTask() {
+            return new Task<Void>() {
+                protected Void call() {
+                    simulator.run(executionListener);
+                    return null;
+                }
+            };
+        }
+
     }
 
 }

@@ -14,7 +14,11 @@
     <packaging>jar</packaging>
 
     <dependencies>
-
+        <dependency>
+            <groupId>opensim51</groupId>
+            <artifactId>misc</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

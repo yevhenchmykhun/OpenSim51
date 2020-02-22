@@ -1,6 +1,11 @@
 package com.opensim51.gui.controller;
 
 import com.opensim51.gui.util.IntegerUtil;
+import com.opensim51.simulator.Simulator;
+import com.opensim51.simulator.memory.InternalData;
+import com.opensim51.simulator.memory.Memory;
+import com.opensim51.simulator.memory.datatype.UInt16;
+import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
@@ -8,11 +13,6 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import org.apache.commons.lang3.StringUtils;
-import com.opensim51.simulator.Simulator;
-import com.opensim51.simulator.memory.InternalData;
-import com.opensim51.simulator.memory.Memory;
-import com.opensim51.simulator.memory.datatype.UInt16;
-import com.opensim51.simulator.memory.datatype.UInt8;
 
 public class RegistersController implements Updatable, MainWindowDependant {
 
@@ -29,7 +29,7 @@ public class RegistersController implements Updatable, MainWindowDependant {
     @FXML
     private TreeTableColumn<TreeTableViewEntry, String> valueColumn;
 
-    private Simulator simulator = Simulator.getInstance();
+    private final Simulator simulator = Simulator.getInstance();
 
     private MainWindow mainWindow;
 
@@ -108,10 +108,9 @@ public class RegistersController implements Updatable, MainWindowDependant {
 
     private class TreeTableViewEntry {
         private static final int RADIX_HEX = 16;
-        private static final String PREFIX_HEX = "0x";
 
-        private String name;
-        private Object value;
+        private final String name;
+        private final Object value;
 
         TreeTableViewEntry(String name, Object value) {
             this.name = name;
@@ -133,7 +132,7 @@ public class RegistersController implements Updatable, MainWindowDependant {
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
                     UInt8 dph = simulator.getInternalData().DPH.getValue();
                     UInt8 dpl = simulator.getInternalData().DPL.getValue();
-                    UInt16 dptr = dph.toUInt16().shiftLeft(8).or(dpl.toUInt16());
+                    UInt16 dptr = dph.x16().shl(8).or(dpl.x16());
                     return IntegerUtil.toStringWithPrefix(dptr.toInt(), RADIX_HEX, 4);
                 }
             }

@@ -56,7 +56,7 @@
                           </rowConstraints>
                            <children>
                               <Label text="Pri.:" />
-                              <TextField maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" GridPane.columnIndex="1" />
+                              <TextField maxWidth="-Infinity" minWidth="-Infinity" prefWidth="35.0" styleClass="hex_value" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </children>

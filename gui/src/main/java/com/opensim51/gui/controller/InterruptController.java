@@ -1,6 +1,8 @@
 package com.opensim51.gui.controller;
 
 import com.opensim51.gui.util.IntegerUtil;
+import com.opensim51.simulator.Simulator;
+import com.opensim51.simulator.memory.InternalData;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,8 +11,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
-import com.opensim51.simulator.Simulator;
-import com.opensim51.simulator.memory.InternalData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,28 +18,36 @@ import java.util.List;
 public class InterruptController implements Updatable, MainWindowDependant {
 
     @FXML
-    public TableView<Interrupt> tableView;
+    private TableView<Interrupt> tableView;
+
     @FXML
-    public TableColumn<Interrupt, String> intSourceColumn;
+    private TableColumn<Interrupt, String> intSourceColumn;
+
     @FXML
-    public TableColumn<Interrupt, String> vectorColumn;
+    private TableColumn<Interrupt, String> vectorColumn;
+
     @FXML
-    public TableColumn<Interrupt, String> modeColumn;
+    private TableColumn<Interrupt, String> modeColumn;
+
     @FXML
-    public TableColumn<Interrupt, String> reqColumn;
+    private TableColumn<Interrupt, String> reqColumn;
+
     @FXML
-    public TableColumn<Interrupt, String> enaColumn;
+    private TableColumn<Interrupt, String> enaColumn;
+
     @FXML
-    public TableColumn<Interrupt, String> priColumn;
+    private TableColumn<Interrupt, String> priColumn;
+
     @FXML
-    public GridPane flagsGridPane;
-    private InternalData internalData = Simulator.getInstance().getInternalData();
+    private GridPane flagsGridPane;
+
+    private final InternalData internalData = Simulator.getInstance().getInternalData();
+
     private MainWindow mainWindow;
 
     @FXML
     public void initialize() {
-        intSourceColumn.setCellValueFactory(
-                param -> new SimpleStringProperty(param.getValue().getIntSource()));
+        intSourceColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getIntSource()));
         vectorColumn.setCellValueFactory(param -> {
             String vector = IntegerUtil.toStringWithPrefix(param.getValue().getVector(), 16, 4);
             return new SimpleStringProperty(vector.toUpperCase() + "H");
@@ -75,21 +83,21 @@ public class InterruptController implements Updatable, MainWindowDependant {
 
     @Override
     public void update() {
-        InternalData.BitField bm = internalData.bitField;
+        InternalData.BitField bf = internalData.bitField;
 
         ObservableList<Interrupt> list = FXCollections.observableArrayList(
-                new Interrupt("P3.2/Int0", 0x03, bm.IT0, bm.IE0, bm.EX0, 0,
-                        Arrays.asList(createCheckBox("IT0", bm.IT0), createCheckBox("IE0", bm.IE0), createCheckBox("EX0", bm.EX0))),
-                new Interrupt("Timer 0", 0x0B, null, bm.TF0, bm.ET0, 0,
-                        Arrays.asList(null, createCheckBox("TF0", bm.TF0), createCheckBox("ET0", bm.ET0))),
-                new Interrupt("P3.3/Int1", 0x13, bm.IT1, bm.IE1, bm.EX1, 0,
-                        Arrays.asList(createCheckBox("IT1", bm.IT1), createCheckBox("IE1", bm.IE1), createCheckBox("EX1", bm.EX1))),
-                new Interrupt("Timer 1", 0x1B, null, bm.TF1, bm.ET1, 0,
-                        Arrays.asList(null, createCheckBox("TF1", bm.TF1), createCheckBox("ET1", bm.ET1))),
-                new Interrupt("Serial Rcv.", 0x23, null, bm.RI, bm.ES, 0,
-                        Arrays.asList(null, createCheckBox("RI", bm.RI), createCheckBox("ES", bm.ES))),
-                new Interrupt("Serial Xmit.", 0x23, null, bm.TI, bm.ES, 0,
-                        Arrays.asList(null, createCheckBox("TI", bm.TI), createCheckBox("ES", bm.ES)))
+                new Interrupt("P3.2/Int0", 0x03, bf.IT0, bf.IE0, bf.EX0,
+                        Arrays.asList(createCheckBox("IT0", bf.IT0), createCheckBox("IE0", bf.IE0), createCheckBox("EX0", bf.EX0))),
+                new Interrupt("Timer 0", 0x0b, null, bf.TF0, bf.ET0,
+                        Arrays.asList(null, createCheckBox("TF0", bf.TF0), createCheckBox("ET0", bf.ET0))),
+                new Interrupt("P3.3/Int1", 0x13, bf.IT1, bf.IE1, bf.EX1,
+                        Arrays.asList(createCheckBox("IT1", bf.IT1), createCheckBox("IE1", bf.IE1), createCheckBox("EX1", bf.EX1))),
+                new Interrupt("Timer 1", 0x1b, null, bf.TF1, bf.ET1,
+                        Arrays.asList(null, createCheckBox("TF1", bf.TF1), createCheckBox("ET1", bf.ET1))),
+                new Interrupt("Serial Rcv.", 0x23, null, bf.RI, bf.ES,
+                        Arrays.asList(null, createCheckBox("RI", bf.RI), createCheckBox("ES", bf.ES))),
+                new Interrupt("Serial Xmit.", 0x23, null, bf.TI, bf.ES,
+                        Arrays.asList(null, createCheckBox("TI", bf.TI), createCheckBox("ES", bf.ES)))
         );
 
         int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
@@ -113,22 +121,22 @@ public class InterruptController implements Updatable, MainWindowDependant {
     }
 
     private class Interrupt {
-        private String intSource;
-        private int vector;
-        private InternalData.Bit mode;
-        private InternalData.Bit req;
-        private InternalData.Bit ena;
-        private int pri;
+        private final String intSource;
+        private final int vector;
+        private final InternalData.Bit mode;
+        private final InternalData.Bit req;
+        private final InternalData.Bit ena;
+        private final int pri;
 
-        private List<CheckBox> checkBoxes;
+        private final List<CheckBox> checkBoxes;
 
-        Interrupt(String intSource, int vector, InternalData.Bit mode, InternalData.Bit req, InternalData.Bit ena, int pri, List<CheckBox> checkBoxes) {
+        Interrupt(String intSource, int vector, InternalData.Bit mode, InternalData.Bit req, InternalData.Bit ena, List<CheckBox> checkBoxes) {
             this.intSource = intSource;
             this.vector = vector;
             this.mode = mode;
             this.req = req;
             this.ena = ena;
-            this.pri = pri;
+            this.pri = 0;
             this.checkBoxes = checkBoxes;
         }
 
@@ -160,4 +168,5 @@ public class InterruptController implements Updatable, MainWindowDependant {
             return checkBoxes;
         }
     }
+
 }

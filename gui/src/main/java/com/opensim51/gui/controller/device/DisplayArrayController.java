@@ -1,14 +1,12 @@
 package com.opensim51.gui.controller.device;
 
 import com.opensim51.gui.controller.Updatable;
-import javafx.fxml.FXML;
 import com.opensim51.simulator.Simulator;
 import com.opensim51.simulator.memory.InternalData;
 import com.opensim51.simulator.memory.datatype.UInt8;
+import javafx.fxml.FXML;
 
 public class DisplayArrayController implements Updatable {
-
-    private InternalData internalData = Simulator.getInstance().getInternalData();
 
     @FXML
     private DisplayController display0Controller;
@@ -33,6 +31,8 @@ public class DisplayArrayController implements Updatable {
 
     @FXML
     private DisplayController display7Controller;
+
+    private final InternalData internalData = Simulator.getInstance().getInternalData();
 
     @FXML
     public void initialize() {
@@ -61,8 +61,8 @@ public class DisplayArrayController implements Updatable {
 
         // bits P3.5, P3.4, and P3.3 contain the number of the active display
         UInt8 p3 = internalData.P3.getValue();
-        UInt8 mask = new UInt8(0x7).shiftLeft(0x3);
-        int displayIndex = p3.and(mask).shiftRight(0x3).toInt();
+        UInt8 mask = new UInt8(0x07).shl(3);
+        int displayIndex = p3.and(mask).shr(3).toInt();
 
         UInt8 value = internalData.P1.getValue();
         for (int i = 0; i < displays.length; i++) {

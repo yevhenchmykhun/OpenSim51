@@ -1,6 +1,8 @@
 package com.opensim51.gui.controller;
 
 import com.opensim51.gui.util.IntegerUtil;
+import com.opensim51.simulator.memory.InternalData;
+import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
@@ -8,8 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import org.jetbrains.annotations.NotNull;
-import com.opensim51.simulator.memory.InternalData;
-import com.opensim51.simulator.memory.datatype.UInt8;
 
 public class PortController implements Updatable, MainWindowDependant {
 
@@ -86,11 +86,11 @@ public class PortController implements Updatable, MainWindowDependant {
         this.mainWindow = mainWindow;
     }
 
-    public void setPortNumber(String portNumber) {
+    void setPortNumber(String portNumber) {
         portNameLabel.setText("P" + portNumber + ":");
     }
 
-    public void setPort(InternalData.BitAddressableCell port) {
+    void setPort(InternalData.BitAddressableCell port) {
         this.port = port;
     }
 

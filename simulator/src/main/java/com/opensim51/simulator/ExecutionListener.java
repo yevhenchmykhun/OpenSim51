@@ -6,8 +6,8 @@ public interface ExecutionListener {
 
     void process(UInt16 programCounter);
 
-    void reset();
-
     boolean isRunning();
+
+    void cancelExecution();
 
 }

@@ -1,16 +1,19 @@
 package com.opensim51.gui.controller;
 
 import com.opensim51.gui.util.IntegerUtil;
+import com.opensim51.simulator.Simulator;
+import com.opensim51.simulator.memory.InternalData;
+import com.opensim51.simulator.memory.Memory;
+import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import com.opensim51.simulator.Simulator;
-import com.opensim51.simulator.memory.InternalData;
-import com.opensim51.simulator.memory.Memory;
-import com.opensim51.simulator.memory.datatype.UInt8;
+import org.jetbrains.annotations.NotNull;
 
 public class TimerController implements Updatable, MainWindowDependant {
 
@@ -56,14 +59,16 @@ public class TimerController implements Updatable, MainWindowDependant {
     @FXML
     private CheckBox intCheckBox;
 
-    private InternalData id = Simulator.getInstance().getInternalData();
-    private InternalData.BitField bm = id.bitField;
+    private final InternalData id = Simulator.getInstance().getInternalData();
+
+    private final InternalData.BitField bf = id.bitField;
 
     private String timerNumber;
+
     private MainWindow mainWindow;
 
     // should be called manually
-    public void initializeController() {
+    void initializeController() {
         typeChoiceBox.setItems(FXCollections.observableArrayList("Timer", "Counter"));
         typeChoiceBox.getSelectionModel().selectFirst();
 
@@ -91,16 +96,31 @@ public class TimerController implements Updatable, MainWindowDependant {
             case "0":
                 modeChoiceBox.setItems(FXCollections.observableArrayList("0: 13 Bit Timer/Counter", "1: 16 Bit Timer/Counter", "2: 8 Bit auto-reload", "3: Two 8 Bit Timer/Cnt"));
                 modeChoiceBox.getSelectionModel().selectFirst();
-                initializeView(id.TH0, id.TL0, bm.getBit(0xB4), bm.TF0, bm.TR0, bm.GATE0, bm.getBit(0xB2));
+                initializeView(id.TH0, id.TL0, bf.getBit(0xB4), bf.TF0, bf.TR0, bf.GATE0, bf.getBit(0xB2));
                 break;
             case "1":
                 modeChoiceBox.setItems(FXCollections.observableArrayList("0: 13 Bit Timer/Counter", "1: 16 Bit Timer/Counter", "2: 8 Bit auto-reload", "3: Disabled"));
                 modeChoiceBox.getSelectionModel().selectFirst();
-                initializeView(id.TH1, id.TL1, bm.getBit(0xB5), bm.TF1, bm.TR1, bm.GATE1, bm.getBit(0xB3));
+                initializeView(id.TH1, id.TL1, bf.getBit(0xB5), bf.TF1, bf.TR1, bf.GATE1, bf.getBit(0xB3));
                 break;
         }
 
         update();
+    }
+
+    @Override
+    public void update() {
+        tconTextField.setText(IntegerUtil.toStringWithPrefix(id.TCON.getValue().toInt(), 16, 2).toUpperCase());
+        tmodTextField.setText(IntegerUtil.toStringWithPrefix(id.TMOD.getValue().toInt(), 16, 2).toUpperCase());
+
+        switch (timerNumber) {
+            case "0":
+                updateView(id.TH0, id.TL0, bf.getBit(0xB4), bf.TF0, bf.TR0, bf.GATE0, bf.getBit(0xB2));
+                break;
+            case "1":
+                updateView(id.TH1, id.TL1, bf.getBit(0xB5), bf.TF1, bf.TR1, bf.GATE1, bf.getBit(0xB3));
+                break;
+        }
     }
 
     private void initializeView(InternalData.Cell th, InternalData.Cell tl, InternalData.Bit tPin, InternalData.Bit tf, InternalData.Bit tr, InternalData.Bit gate, InternalData.Bit interrupt) {
@@ -117,41 +137,19 @@ public class TimerController implements Updatable, MainWindowDependant {
             }
         });
 
-        tPinCheckBox.setOnAction(event -> {
-            tPin.setValue(tPinCheckBox.isSelected());
-            mainWindow.updateUserInterface();
-        });
-        tfCheckBox.setOnAction(event -> {
-            tf.setValue(tfCheckBox.isSelected());
-            mainWindow.updateUserInterface();
-        });
-        trCheckBox.setOnAction(event -> {
-            tr.setValue(trCheckBox.isSelected());
-            mainWindow.updateUserInterface();
-        });
-        gateCheckBox.setOnAction(event -> {
-            gate.setValue(gateCheckBox.isSelected());
-            mainWindow.updateUserInterface();
-        });
-        intCheckBox.setOnAction(event -> {
-            interrupt.setValue(intCheckBox.isSelected());
-            mainWindow.updateUserInterface();
-        });
+        tPinCheckBox.setOnAction(getActionEventEventHandler(tPin, tPinCheckBox));
+        tfCheckBox.setOnAction(getActionEventEventHandler(tf, tfCheckBox));
+        trCheckBox.setOnAction(getActionEventEventHandler(tr, trCheckBox));
+        gateCheckBox.setOnAction(getActionEventEventHandler(gate, gateCheckBox));
+        intCheckBox.setOnAction(getActionEventEventHandler(interrupt, intCheckBox));
     }
 
-    @Override
-    public void update() {
-        tconTextField.setText(IntegerUtil.toStringWithPrefix(id.TCON.getValue().toInt(), 16, 2).toUpperCase());
-        tmodTextField.setText(IntegerUtil.toStringWithPrefix(id.TMOD.getValue().toInt(), 16, 2).toUpperCase());
-
-        switch (timerNumber) {
-            case "0":
-                updateView(id.TH0, id.TL0, bm.getBit(0xB4), bm.TF0, bm.TR0, bm.GATE0, bm.getBit(0xB2));
-                break;
-            case "1":
-                updateView(id.TH1, id.TL1, bm.getBit(0xB5), bm.TF1, bm.TR1, bm.GATE1, bm.getBit(0xB3));
-                break;
-        }
+    @NotNull
+    private EventHandler<ActionEvent> getActionEventEventHandler(InternalData.Bit tPin, CheckBox tPinCheckBox) {
+        return event -> {
+            tPin.setValue(tPinCheckBox.isSelected());
+            mainWindow.updateUserInterface();
+        };
     }
 
     private void updateView(Memory.Cell th, Memory.Cell tl, InternalData.Bit tPin, InternalData.Bit tf, InternalData.Bit tr, InternalData.Bit gate, InternalData.Bit interrupt) {
@@ -166,11 +164,12 @@ public class TimerController implements Updatable, MainWindowDependant {
         intCheckBox.setSelected(interrupt.getValue());
     }
 
-    public void setTimerNumber(String timerNumber) {
+    void setTimerNumber(String timerNumber) {
         this.timerNumber = timerNumber;
     }
 
     public void setMainWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
     }
+
 }

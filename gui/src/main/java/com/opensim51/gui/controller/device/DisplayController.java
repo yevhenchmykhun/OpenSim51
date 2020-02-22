@@ -1,11 +1,11 @@
 package com.opensim51.gui.controller.device;
 
+import com.opensim51.simulator.memory.datatype.UInt8;
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import org.jetbrains.annotations.NotNull;
-import com.opensim51.simulator.memory.datatype.UInt8;
 
 public class DisplayController {
 
@@ -39,14 +39,14 @@ public class DisplayController {
 
     void setValue(@NotNull UInt8 value) {
         UInt8 not = value.not();
-        aLed.setFill(not.getBitValue(0) ? LIT : NOT_LIT);
-        bLed.setFill(not.getBitValue(1) ? LIT : NOT_LIT);
-        cLed.setFill(not.getBitValue(2) ? LIT : NOT_LIT);
-        dLed.setFill(not.getBitValue(3) ? LIT : NOT_LIT);
-        eLed.setFill(not.getBitValue(4) ? LIT : NOT_LIT);
-        fLed.setFill(not.getBitValue(5) ? LIT : NOT_LIT);
-        gLed.setFill(not.getBitValue(6) ? LIT : NOT_LIT);
-        dpLed.setFill(not.getBitValue(7) ? LIT : NOT_LIT);
+        aLed.setFill(not.bt(0) ? LIT : NOT_LIT);
+        bLed.setFill(not.bt(1) ? LIT : NOT_LIT);
+        cLed.setFill(not.bt(2) ? LIT : NOT_LIT);
+        dLed.setFill(not.bt(3) ? LIT : NOT_LIT);
+        eLed.setFill(not.bt(4) ? LIT : NOT_LIT);
+        fLed.setFill(not.bt(5) ? LIT : NOT_LIT);
+        gLed.setFill(not.bt(6) ? LIT : NOT_LIT);
+        dpLed.setFill(not.bt(7) ? LIT : NOT_LIT);
     }
 
 }
