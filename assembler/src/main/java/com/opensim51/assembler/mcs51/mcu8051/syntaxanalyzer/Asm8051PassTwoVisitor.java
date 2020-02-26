@@ -3,6 +3,7 @@ package com.opensim51.assembler.mcs51.mcu8051.syntaxanalyzer;
 import com.opensim51.assembler.TranslationListener;
 import com.opensim51.assembler.mcs51.mcu8051.Asm8051Parser;
 import com.opensim51.assembler.mcs51.mcu8051.Instruction;
+import com.opensim51.assembler.mcs51.mcu8051.InstructionFactory;
 import com.opensim51.assembler.mcs51.mcu8051.types.Operand;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -26,7 +27,7 @@ public class Asm8051PassTwoVisitor extends Asm8051CommonVisitor {
         ParseTree child = ctx.getChild(0);
         String mnemonic = child.getChild(0).getText();
 
-        Instruction instruction = Instruction.getByMnemonic(mnemonic.toUpperCase());
+        Instruction instruction = InstructionFactory.getByMnemonic(mnemonic.toUpperCase());
         List<Operand> operands = processOperands(child, symbolTable);
         List<Integer> machineCodes = instruction.toMachineCodes(locationCounter, operands);
         translationListener.processInstruction(ctx.getStart().getLine(), locationCounter, machineCodes);
