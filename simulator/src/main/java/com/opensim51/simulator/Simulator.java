@@ -4,7 +4,7 @@ import com.opensim51.misc.intelhexparser.Intel8HexParser;
 import com.opensim51.simulator.memory.ExternalCode;
 import com.opensim51.simulator.memory.ExternalData;
 import com.opensim51.simulator.memory.InternalData;
-import com.opensim51.simulator.memory.MemoryGroup;
+import com.opensim51.simulator.memory.MemoryUnit;
 import com.opensim51.simulator.memory.datatype.UInt16;
 import com.opensim51.simulator.memory.datatype.UInt8;
 import com.opensim51.simulator.sys.ProcessingUnit;
@@ -16,12 +16,12 @@ public class Simulator {
 
     private static Simulator simulator = new Simulator();
 
-    private MemoryGroup memoryGroup;
+    private MemoryUnit memoryUnit;
     private ProcessingUnit processingUnit;
 
-    public Simulator() {
-        memoryGroup = new MemoryGroup();
-        processingUnit = new ProcessingUnit(memoryGroup);
+    private Simulator() {
+        memoryUnit = new MemoryUnit();
+        processingUnit = new ProcessingUnit(memoryUnit);
     }
 
     public static Simulator getInstance() {
@@ -29,15 +29,15 @@ public class Simulator {
     }
 
     public InternalData getInternalData() {
-        return memoryGroup.getInternalData();
+        return memoryUnit.getInternalData();
     }
 
     public ExternalData getExternalData() {
-        return memoryGroup.getExternalData();
+        return memoryUnit.getExternalData();
     }
 
     public ExternalCode getExternalCode() {
-        return memoryGroup.getExternalCode();
+        return memoryUnit.getExternalCode();
     }
 
     public UInt16 getPC() {
@@ -52,7 +52,7 @@ public class Simulator {
         FileInputStream stream = new FileInputStream(file);
         Intel8HexParser hexParser = new Intel8HexParser(stream, (address, data) -> {
             for (byte b : data) {
-                memoryGroup.getExternalCode().setCellValue(address++, new UInt8(b));
+                memoryUnit.getExternalCode().setCellValue(address++, new UInt8(b));
             }
         });
         hexParser.parse();

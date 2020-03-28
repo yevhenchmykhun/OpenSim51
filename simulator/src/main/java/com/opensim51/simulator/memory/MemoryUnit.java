@@ -1,12 +1,12 @@
 package com.opensim51.simulator.memory;
 
-public class MemoryGroup {
+public class MemoryUnit {
 
     private final InternalData internalData;
     private final ExternalData externalData;
     private final ExternalCode externalCode;
 
-    public MemoryGroup() {
+    public MemoryUnit() {
         this.internalData = new InternalData();
         this.externalData = new ExternalData();
         this.externalCode = new ExternalCode();

@@ -7,7 +7,7 @@ import com.opensim51.simulator.memory.ExternalCode;
 import com.opensim51.simulator.memory.ExternalData;
 import com.opensim51.simulator.memory.InternalData;
 
-public class InstructionTest {
+public class InstructionTypeTest {
 
     private Simulator s;
 
@@ -17,7 +17,7 @@ public class InstructionTest {
 
     @Before
     public void setUp() throws Exception {
-        s = new Simulator();
+        s = Simulator.getInstance();
         id = s.getInternalData();
         xd = s.getExternalData();
         xc = s.getExternalCode();
