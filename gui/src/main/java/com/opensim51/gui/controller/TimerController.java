@@ -74,13 +74,13 @@ public class TimerController implements Updatable, MainWindowDependant {
 
         tconTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                id.TCON.setValue(new UInt8(IntegerUtil.parseInt(tconTextField.getText())));
+                id.TCON.setValue(UInt8.valueOf(IntegerUtil.parseInt(tconTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });
         tmodTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                id.TMOD.setValue(new UInt8(IntegerUtil.parseInt(tmodTextField.getText())));
+                id.TMOD.setValue(UInt8.valueOf(IntegerUtil.parseInt(tmodTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });
@@ -126,13 +126,13 @@ public class TimerController implements Updatable, MainWindowDependant {
     private void initializeView(InternalData.Cell th, InternalData.Cell tl, InternalData.Bit tPin, InternalData.Bit tf, InternalData.Bit tr, InternalData.Bit gate, InternalData.Bit interrupt) {
         thTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                th.setValue(new UInt8(IntegerUtil.parseInt(thTextField.getText())));
+                th.setValue(UInt8.valueOf(IntegerUtil.parseInt(thTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });
         tlTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
-                tl.setValue(new UInt8(IntegerUtil.parseInt(tlTextField.getText())));
+                tl.setValue(UInt8.valueOf(IntegerUtil.parseInt(tlTextField.getText())));
                 mainWindow.updateUserInterface();
             }
         });

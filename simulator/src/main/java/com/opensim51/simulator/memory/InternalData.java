@@ -167,7 +167,7 @@ public class InternalData extends Memory {
         public boolean getBitValue(int position) {
             checkRange(7, position);
 
-            UInt8 one = new UInt8(1);
+            UInt8 one = UInt8.valueOf(1);
             return getValue().shr(position).and(one).equals(one);
         }
 
@@ -186,7 +186,7 @@ public class InternalData extends Memory {
     public class Stack {
 
         private Stack() {
-            SP.setValue(new UInt8(0x08));
+            SP.setValue(UInt8.valueOf(0x08));
         }
 
         public void push(UInt8 value) {

@@ -221,7 +221,7 @@ public class MainWindow {
                     lineInfos.add(new LineInfo(line - 1, new UInt16(locationCounter)));
 
                     for (Integer machineCode : machineCodes) {
-                        simulator.getExternalCode().setCellValue(locationCounter, new UInt8(machineCode));
+                        simulator.getExternalCode().setCellValue(locationCounter, UInt8.valueOf(machineCode));
                         locationCounter++;
                     }
                 }, (line, charPositionInLine, message) -> {

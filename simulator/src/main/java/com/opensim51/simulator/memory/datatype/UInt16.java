@@ -62,7 +62,7 @@ public final class UInt16 implements UInt<UInt16> {
     }
 
     public UInt8 toUInt8() {
-        return new UInt8(toInt());
+        return UInt8.valueOf(toInt());
     }
 
     private UInt16 toUInt16(int value) {

@@ -146,7 +146,7 @@ public class MemoryController implements Updatable, MainWindowDependant {
                 MemoryRow memoryRow = event.getRowValue();
                 int startAddress = IntegerUtil.parseInt(memoryRow.getStartAddress().substring(2));
                 int columnIndex = Integer.parseInt(event.getTableColumn().getId());
-                getMemory().setCellValue(startAddress + columnIndex, new UInt8(IntegerUtil.parseInt(text)));
+                getMemory().setCellValue(startAddress + columnIndex, UInt8.valueOf(IntegerUtil.parseInt(text)));
 
                 // update the whole GUI
                 mainWindow.updateUserInterface();

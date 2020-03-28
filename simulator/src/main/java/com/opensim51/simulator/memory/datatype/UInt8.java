@@ -19,95 +19,88 @@ public final class UInt8 implements UInt<UInt8> {
         cache[255] = MAX_VALUE;
 
         for (int i = 2; i < 255; i++) {
-            cache[i] = new UInt8(i);
+            switch (i) {
+                case 15:
+                    cache[i] = MASK_LOW_NIBBLE;
+                    break;
+                case 240:
+                    cache[i] = MASK_HIGH_NIBBLE;
+                    break;
+                default:
+                    cache[i] = new UInt8(i);
+            }
         }
     }
 
     private final int value;
-    private final boolean overflowed;
 
-    public UInt8(int value) {
-        this(value & 0xff, false);
+    private UInt8(int value) {
+        this.value = value & 0xff;
     }
 
-    private UInt8(int value, boolean overflowed) {
-        this.value = value;
-        this.overflowed = overflowed;
-    }
-
-    public UInt8 valueOf(int value) {
+    public static UInt8 valueOf(int value) {
         return cache[value & 0xff];
     }
 
     @Override
     public UInt8 inc() {
-        return add(ONE);
+        return valueOf(value + 1);
     }
-
 
     @Override
     public UInt8 add(UInt8 data) {
-        int result = value + data.value;
-        return toUInt8(result, result > 0xff);
+        return valueOf(value + data.value);
     }
 
     @Override
     public UInt8 sub(UInt8 data) {
-        int result = value - data.value;
-        return toUInt8(result, result < 0);
+        return valueOf(value - data.value);
     }
-
 
     @Override
     public UInt8 shl(int n) {
-        return toUInt8(value << n);
+        return valueOf(value << n);
     }
 
     @Override
     public UInt8 shr(int n) {
-        return toUInt8(value >> n);
+        return valueOf(value >> n);
     }
 
     public UInt8 sar(int n) {
-        return toUInt8((value & 0x80) == 0x80 ? (value >> n) | 0x80 : value >> n);
+        return valueOf((value & 0x80) == 0x80 ? (value >> n) | 0x80 : value >> n);
     }
-
 
     @Override
     public UInt8 and(UInt8 data) {
-        return toUInt8(value & data.value);
+        return valueOf(value & data.value);
     }
 
     @Override
     public UInt8 or(UInt8 data) {
-        return toUInt8(value | data.value);
+        return valueOf(value | data.value);
     }
 
     @Override
     public UInt8 xor(UInt8 data) {
-        return toUInt8(value ^ data.value);
+        return valueOf(value ^ data.value);
     }
 
     @Override
     public UInt8 not() {
-        return toUInt8(value ^ 0xff);
+        return valueOf(value ^ 0xff);
     }
 
-
     public UInt8 stb(int position) {
-        return toUInt8(value | (0x1 << position));
+        return valueOf(value | (0x1 << position));
     }
 
     public UInt8 clb(int position) {
-        return toUInt8(value & ~(0x1 << position));
+        return valueOf(value & ~(0x1 << position));
     }
 
     public boolean bt(int position) {
         return ((value >> position) & 0x1) == 0x1;
-    }
-
-    public boolean isOverflowed() {
-        return overflowed;
     }
 
     public UInt16 x16() {
@@ -135,12 +128,12 @@ public final class UInt8 implements UInt<UInt8> {
         return compareTo(value) >= 0;
     }
 
-    private UInt8 toUInt8(int value) {
-        return new UInt8(value);
+    public boolean isPositiveOverflowable(UInt8 data) {
+        return value + data.value > 0xff;
     }
 
-    private UInt8 toUInt8(int value, boolean overflowed) {
-        return new UInt8(value, overflowed);
+    public boolean isNegativeOverflowable(UInt8 data) {
+        return value - data.value < 0;
     }
 
     @Override
@@ -153,7 +146,7 @@ public final class UInt8 implements UInt<UInt8> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UInt8 uInt8 = (UInt8) o;
-        return (value & 0xff) == (uInt8.value & 0xff);
+        return value == uInt8.value;
     }
 
     @Override
@@ -168,8 +161,7 @@ public final class UInt8 implements UInt<UInt8> {
 
     @Override
     public String toString() {
-        String hex = Integer.toHexString(value);
-        return hex.length() > 2 ? hex.substring(hex.length() - 2) : hex;
+        return Integer.toHexString(value);
     }
 
 }

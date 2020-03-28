@@ -8,12 +8,12 @@ final class InstructionUtils {
 
     static void subtract(InternalData data, UInt8 value) {
         value = data.bitField.CY.getValue() ? value.inc() : value;
-        UInt8 result = data.ACC.getValue().sub(value);
 
-        data.ACC.setValue(result);
+        UInt8 acc = data.ACC.getValue();
+        data.bitField.CY.setValue(acc.isNegativeOverflowable(value));
+        data.ACC.setValue(acc.sub(value));
 
         // set C flag
-        data.bitField.CY.setValue(result.isOverflowed());
 
         // set OV flag
 //        int signedResult = ram.toSignedNumber(a) - ram.toSignedNumber(data);

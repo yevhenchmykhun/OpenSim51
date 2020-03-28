@@ -61,7 +61,7 @@ public class DisplayArrayController implements Updatable {
 
         // bits P3.5, P3.4, and P3.3 contain the number of the active display
         UInt8 p3 = internalData.P3.getValue();
-        UInt8 mask = new UInt8(0x07).shl(3);
+        UInt8 mask = UInt8.valueOf(0x07).shl(3);
         int displayIndex = p3.and(mask).shr(3).toInt();
 
         UInt8 value = internalData.P1.getValue();

@@ -30,17 +30,17 @@ public class UInt8Test {
         assertEquals(zero.sub(UInt8.ONE), UInt8.MAX_VALUE);
 
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.sub(UInt8.ONE), new UInt8(0xfe));
+        assertEquals(maxValue.sub(UInt8.ONE), UInt8.valueOf(0xfe));
 
-        assertEquals(new UInt8(0xfe).sub(new UInt8(0xff)), new UInt8(0xff));
+        assertEquals(UInt8.valueOf(0xfe).sub(maxValue), maxValue);
     }
 
     @Test
     public void shiftLeft() {
         UInt8 maxValue = UInt8.MAX_VALUE;
         assertEquals(maxValue.shl(0), maxValue);
-        assertEquals(maxValue.shl(1), new UInt8(0xfe));
-        assertEquals(maxValue.shl(7), new UInt8(0x80));
+        assertEquals(maxValue.shl(1), UInt8.valueOf(0xfe));
+        assertEquals(maxValue.shl(7), UInt8.valueOf(0x80));
         assertEquals(maxValue.shl(8), UInt8.ZERO);
     }
 
@@ -48,7 +48,7 @@ public class UInt8Test {
     public void shiftRight() {
         UInt8 maxValue = UInt8.MAX_VALUE;
         assertEquals(maxValue.shr(0), maxValue);
-        assertEquals(maxValue.sar(1), new UInt8(0xff));
+        assertEquals(maxValue.sar(1), UInt8.valueOf(0xff));
         assertEquals(maxValue.shr(7), UInt8.ONE);
         assertEquals(maxValue.shr(8), UInt8.ZERO);
     }
@@ -77,7 +77,7 @@ public class UInt8Test {
 
         UInt8 one = UInt8.ONE;
         assertEquals(one.xor(UInt8.ONE), UInt8.ZERO);
-        assertEquals(one.xor(UInt8.MAX_VALUE), new UInt8(0xfe));
+        assertEquals(one.xor(UInt8.MAX_VALUE), UInt8.valueOf(0xfe));
     }
 
     @Test
@@ -114,15 +114,15 @@ public class UInt8Test {
     public void setBit() {
         UInt8 zero = UInt8.ZERO;
         assertEquals(zero.stb(0), UInt8.ONE);
-        assertEquals(zero.stb(7), new UInt8(0x80));
+        assertEquals(zero.stb(7), UInt8.valueOf(0x80));
         assertEquals(zero.stb(8), zero);
     }
 
     @Test
     public void clearBit() {
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.clb(0), new UInt8(0xfe));
-        assertEquals(maxValue.clb(7), new UInt8(0x7f));
+        assertEquals(maxValue.clb(0), UInt8.valueOf(0xfe));
+        assertEquals(maxValue.clb(7), UInt8.valueOf(0x7f));
         assertEquals(maxValue.clb(8), maxValue);
     }
 
@@ -143,17 +143,9 @@ public class UInt8Test {
 
     @Test
     public void isOverflowed() {
-        UInt8 maxValue = UInt8.MAX_VALUE;
-        UInt8 zero = maxValue.inc();
-        assertTrue(zero.isOverflowed());
-
-        UInt8 one = UInt8.ONE;
-        maxValue = one.add(new UInt8(0xfe));
-        assertFalse(maxValue.isOverflowed());
-
-        one = UInt8.ONE;
-        zero = one.add(UInt8.MAX_VALUE);
-        assertTrue(zero.isOverflowed());
+        assertTrue(UInt8.MAX_VALUE.isPositiveOverflowable(UInt8.ONE));
+        assertFalse(UInt8.ONE.isPositiveOverflowable(UInt8.valueOf(0xfe)));
+        assertTrue(UInt8.ONE.isPositiveOverflowable(UInt8.MAX_VALUE));
     }
 
     @Test
@@ -171,14 +163,14 @@ public class UInt8Test {
     @Test
     public void equals() {
         assertEquals(UInt8.ONE, UInt8.ONE);
-        assertEquals(UInt8.ONE, new UInt8(0x1));
+        assertEquals(UInt8.ONE, UInt8.valueOf(0x1));
         assertNotEquals(UInt8.ZERO, UInt8.ONE);
         assertNotEquals(UInt8.ZERO, UInt16.ZERO);
     }
 
     @Test
     public void compareTo() {
-        assertEquals(0, UInt8.ONE.compareTo(new UInt8(0x1)));
+        assertEquals(0, UInt8.ONE.compareTo(UInt8.valueOf(0x1)));
         assertTrue(UInt8.ONE.compareTo(UInt8.ZERO) > 0);
         assertTrue(UInt8.ZERO.compareTo(UInt8.ONE) < 0);
     }

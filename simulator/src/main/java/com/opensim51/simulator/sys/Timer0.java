@@ -50,17 +50,13 @@ public class Timer0 {
 
             if (getMode() == 3) {
                 newTh0 = th0.inc();
-                if (th0.isOverflowed()) {
-                    tf1 = true;
-                }
+                tf1 = th0.isPositiveOverflowable(UInt8.ONE);
             }
 
             if (!isCounter() || previousT0 && !t0) {
                 if (getMode() == 3) {
                     newTl0 = tl0.inc();
-                    if (tl0.isOverflowed()) {
-                        tf0 = true;
-                    }
+                    tf0 = tl0.isPositiveOverflowable(UInt8.ONE);
                 } else {
                     short lowByteOverflowValue;
                     if (getMode() == 0) {
@@ -77,9 +73,7 @@ public class Timer0 {
                         } else {
                             newTl0 = UInt8.ZERO;
                             newTh0 = th0.inc();
-                            if (th0.isOverflowed()) {
-                                tf1 = true;
-                            }
+                            tf1 = th0.isPositiveOverflowable(UInt8.ONE);
                         }
                     }
                 }

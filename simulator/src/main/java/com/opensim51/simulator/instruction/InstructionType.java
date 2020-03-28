@@ -17,7 +17,7 @@ public enum InstructionType {
         ExternalCode code = memoryUnit.getExternalCode();
 
         UInt8 opcode = code.getCellValue(pc);
-        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).x16().shl(8);
+        UInt16 highOrderBits = opcode.and(UInt8.valueOf(0xe0)).x16().shl(8);
         UInt16 lowOrderBits = code.getCellValue(pc.inc()).x16();
         UInt16 addr11 = highOrderBits.or(lowOrderBits);
         return pc.and(new UInt16(0xf800)).or(addr11);
@@ -52,7 +52,7 @@ public enum InstructionType {
         data.stack.push(next);
 
         UInt8 opcode = code.getCellValue(pc);
-        UInt16 highOrderBits = opcode.and(new UInt8(0xe0)).x16().shl(8);
+        UInt16 highOrderBits = opcode.and(UInt8.valueOf(0xe0)).x16().shl(8);
         UInt16 lowOrderBits = code.getCellValue(pc.inc()).x16();
         UInt16 addr11 = highOrderBits.or(lowOrderBits);
 

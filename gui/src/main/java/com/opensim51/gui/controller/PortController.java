@@ -53,7 +53,7 @@ public class PortController implements Updatable, MainWindowDependant {
             if (event.getCode() == KeyCode.ENTER) {
                 String text = valueTextField.getText();
                 if (IntegerUtil.isValid(text)) {
-                    port.setValue(new UInt8(IntegerUtil.parseInt(text)));
+                    port.setValue(UInt8.valueOf(IntegerUtil.parseInt(text)));
                     mainWindow.updateUserInterface();
                 }
             }

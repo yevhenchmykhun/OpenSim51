@@ -143,7 +143,7 @@ public class RegistersController implements Updatable, MainWindowDependant {
         void setValue(String value) {
             if (this.value instanceof Memory.Cell) {
                 if (IntegerUtil.isValid(value)) {
-                    ((Memory.Cell) this.value).setValue(new UInt8(IntegerUtil.parseInt(value)));
+                    ((Memory.Cell) this.value).setValue(UInt8.valueOf(IntegerUtil.parseInt(value)));
                 }
             } else if (this.value instanceof InternalData.Bit) {
                 if (StringUtils.isNotBlank(value) && value.matches("[01]")) {
@@ -158,8 +158,8 @@ public class RegistersController implements Updatable, MainWindowDependant {
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
                     simulator.setPC(new UInt16(parsedValue));
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
-                    simulator.getInternalData().DPL.setValue(new UInt8(parsedValue & 0xff));
-                    simulator.getInternalData().DPH.setValue(new UInt8((parsedValue >> 8) & 0xff));
+                    simulator.getInternalData().DPL.setValue(UInt8.valueOf(parsedValue & 0xff));
+                    simulator.getInternalData().DPH.setValue(UInt8.valueOf((parsedValue >> 8) & 0xff));
                 }
             }
         }

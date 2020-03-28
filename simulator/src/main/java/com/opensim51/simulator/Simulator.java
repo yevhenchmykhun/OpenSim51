@@ -52,7 +52,7 @@ public class Simulator {
         FileInputStream stream = new FileInputStream(file);
         Intel8HexParser hexParser = new Intel8HexParser(stream, (address, data) -> {
             for (byte b : data) {
-                memoryUnit.getExternalCode().setCellValue(address++, new UInt8(b));
+                memoryUnit.getExternalCode().setCellValue(address++, UInt8.valueOf(b));
             }
         });
         hexParser.parse();
