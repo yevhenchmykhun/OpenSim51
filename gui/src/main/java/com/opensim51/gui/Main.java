@@ -2,6 +2,7 @@ package com.opensim51.gui;
 
 import com.opensim51.gui.controller.MainWindow;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("OpenSim51");
         primaryStage.setMaximized(true);
+        primaryStage.setOnHidden(e -> Platform.exit());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
         Parent root = loader.load();
