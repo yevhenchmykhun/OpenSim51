@@ -4,7 +4,6 @@ import com.opensim51.assembler.Assembler;
 import com.opensim51.assembler.mcs51.mcu8051.Mcu8051Assembler;
 import com.opensim51.assembler.mcs51.mcu8051.format.SourceCodeFormatter;
 import com.opensim51.gui.controller.device.DisplayArrayController;
-import com.opensim51.gui.debug.LineInfo;
 import com.opensim51.gui.editorstyles.BreakpointFactory;
 import com.opensim51.gui.editorstyles.DebuggerArrowFactory;
 import com.opensim51.gui.editorstyles.SelectedLineArrowFactory;
@@ -29,7 +28,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -44,24 +44,22 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.IntFunction;
 
 public class MainWindow {
 
     private final Simulator simulator = Simulator.getInstance();
-    private final Map<String, Stage> shownWindows;
-    private final Map<String, Stage> shownPortWindows;
-    private final Map<String, Stage> shownTimerWindows;
-    private final Map<String, Object> loadedControllers;
-    private final List<LineInfo> lineInfos;
+    private final Map<String, Stage> shownWindows = new HashMap<>();
+    private final Map<String, Stage> shownPortWindows = new HashMap<>();
+    private final Map<String, Stage> shownTimerWindows = new HashMap<>();
+    private final Map<String, Object> loadedControllers = new HashMap<>();
+    private final Map<UInt16, Integer> debuggedEditorLines = new HashMap<>();
     @FXML
     private MenuItem reformatFileMenuItem;
     @FXML
@@ -109,14 +107,6 @@ public class MainWindow {
     @FXML
     private MenuItem port3MenuItem;
     private Stage primaryStage;
-
-    public MainWindow() {
-        shownPortWindows = new HashMap<>();
-        shownTimerWindows = new HashMap<>();
-        shownWindows = new HashMap<>();
-        loadedControllers = new HashMap<>();
-        lineInfos = new ArrayList<>();
-    }
 
     @FXML
     public void initialize() {
@@ -218,7 +208,7 @@ public class MainWindow {
             try {
                 Assembler mcu8051Assembler = new Mcu8051Assembler();
                 mcu8051Assembler.assemble(editor.getText(), (line, locationCounter, machineCodes) -> {
-                    lineInfos.add(new LineInfo(line - 1, new UInt16(locationCounter)));
+                    debuggedEditorLines.put(new UInt16(locationCounter), line - 1);
 
                     for (Integer machineCode : machineCodes) {
                         simulator.getExternalCode().setCellValue(locationCounter, UInt8.valueOf(machineCode));
@@ -229,8 +219,10 @@ public class MainWindow {
                     throw new RuntimeException("translation canceled due to an error");
                 });
 
-                if (!lineInfos.isEmpty()) {
-                    debuggedLine.set(lineInfos.get(0).getEditorLineNumber());
+                if (!debuggedEditorLines.isEmpty()) {
+                    debuggedEditorLines.entrySet().stream()
+                            .reduce((a, b) -> a.getKey().compareTo(b.getKey()) <= 0 ? a : b)
+                            .ifPresent(entry -> debuggedLine.set(entry.getValue()));
                 }
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -266,19 +258,16 @@ public class MainWindow {
 
                 @Override
                 public void process(UInt16 programCounter) {
-                    lineInfos.stream()
-                            .filter(e -> e.getAssociatedLocationCounter().equals(programCounter))
-                            .findFirst()
-                            .ifPresent(e -> {
-                                int lineNumber = e.getEditorLineNumber();
-                                debuggedLine.set(lineNumber);
-                                editor.showParagraphInViewport(lineNumber);
-                                updateUserInterface();
-                                if (breakpointLineNumbers.contains(lineNumber)) {
-                                    running = false;
-                                    executionService.cancel();
-                                }
-                            });
+                    if (debuggedEditorLines.containsKey(programCounter)) {
+                        int lineNumber = debuggedEditorLines.get(programCounter);
+                        debuggedLine.set(lineNumber);
+                        editor.showParagraphInViewport(lineNumber);
+                        updateUserInterface();
+                        if (breakpointLineNumbers.contains(lineNumber)) {
+                            running = false;
+                            executionService.cancel();
+                        }
+                    }
                 }
 
                 @Override
@@ -305,15 +294,12 @@ public class MainWindow {
         stepButton.setOnAction(event -> simulator.step(new ExecutionListener() {
             @Override
             public void process(UInt16 programCounter) {
-                lineInfos.stream()
-                        .filter(e -> e.getAssociatedLocationCounter().equals(programCounter))
-                        .findFirst()
-                        .ifPresent(e -> {
-                            int lineNumber = e.getEditorLineNumber();
-                            debuggedLine.set(lineNumber);
-                            editor.showParagraphInViewport(lineNumber);
-                            updateUserInterface();
-                        });
+                if (debuggedEditorLines.containsKey(programCounter)) {
+                    int lineNumber = debuggedEditorLines.get(programCounter);
+                    debuggedLine.set(lineNumber);
+                    editor.showParagraphInViewport(lineNumber);
+                    updateUserInterface();
+                }
             }
 
             @Override
@@ -327,20 +313,20 @@ public class MainWindow {
             }
         }));
 
-        displayExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/display.A51", Charset.forName("UTF-8"))));
-        registerBanksExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/register_banks.A51", Charset.forName("UTF-8"))));
+        displayExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/display.A51")));
+        registerBanksExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/register_banks.A51")));
 
         exitMenuItem.setOnAction(event -> primaryStage.close());
     }
 
-    private String readFileToString(String path, Charset encoding) {
+    private String readFileToString(String path) {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
             URL resource = classLoader.getResource(path);
             assert resource != null;
             URI uri = resource.toURI();
             byte[] bytes = Files.readAllBytes(Paths.get(uri));
-            return new String(bytes, encoding);
+            return new String(bytes, StandardCharsets.UTF_8);
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
