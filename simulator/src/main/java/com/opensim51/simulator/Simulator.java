@@ -40,11 +40,11 @@ public class Simulator {
         return memoryUnit.getExternalCode();
     }
 
-    public UInt16 getPC() {
+    public UInt16 getProgramCounter() {
         return processingUnit.getProgramCounter();
     }
 
-    public void setPC(UInt16 programCounter) {
+    public void setProgramCounter(UInt16 programCounter) {
         processingUnit.setProgramCounter(programCounter);
     }
 
@@ -59,9 +59,7 @@ public class Simulator {
     }
 
     public void run(ExecutionListener executionListener) {
-        while (executionListener.isRunning()) {
-            processingUnit.step(executionListener);
-        }
+        processingUnit.run(executionListener);
     }
 
     public void step(ExecutionListener executionListener) {

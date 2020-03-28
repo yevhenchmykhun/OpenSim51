@@ -50,4 +50,10 @@ public class ProcessingUnit {
         executionListener.process(programCounter);
     }
 
+    public void run(ExecutionListener executionListener) {
+        while (executionListener.isRunning()) {
+            step(executionListener);
+        }
+    }
+
 }

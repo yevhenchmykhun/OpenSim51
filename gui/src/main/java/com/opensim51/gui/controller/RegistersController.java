@@ -128,7 +128,7 @@ public class RegistersController implements Updatable, MainWindowDependant {
                 return ((InternalData.Bit) value).getValue() ? "1" : "0";
             } else if (value == null) {
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
-                    return IntegerUtil.toStringWithPrefix(simulator.getPC().toInt(), RADIX_HEX, 4);
+                    return IntegerUtil.toStringWithPrefix(simulator.getProgramCounter().toInt(), RADIX_HEX, 4);
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
                     UInt8 dph = simulator.getInternalData().DPH.getValue();
                     UInt8 dpl = simulator.getInternalData().DPL.getValue();
@@ -156,7 +156,7 @@ public class RegistersController implements Updatable, MainWindowDependant {
 
                 int parsedValue = IntegerUtil.parseInt(value);
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
-                    simulator.setPC(new UInt16(parsedValue));
+                    simulator.setProgramCounter(new UInt16(parsedValue));
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
                     simulator.getInternalData().DPL.setValue(UInt8.valueOf(parsedValue & 0xff));
                     simulator.getInternalData().DPH.setValue(UInt8.valueOf((parsedValue >> 8) & 0xff));

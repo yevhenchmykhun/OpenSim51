@@ -8,10 +8,10 @@ import org.reactfx.value.Val;
 
 import java.util.function.IntFunction;
 
-public class DebuggerArrowFactory implements IntFunction<Node> {
+public class ExecutionPointArrowFactory implements IntFunction<Node> {
     private final SimpleObjectProperty<Integer> selectedLine;
 
-    public DebuggerArrowFactory(SimpleObjectProperty<Integer> selectedLine) {
+    public ExecutionPointArrowFactory(SimpleObjectProperty<Integer> selectedLine) {
         this.selectedLine = selectedLine;
     }
 

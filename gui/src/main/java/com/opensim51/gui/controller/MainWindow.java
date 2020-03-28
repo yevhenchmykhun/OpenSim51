@@ -5,19 +5,19 @@ import com.opensim51.assembler.mcs51.mcu8051.Mcu8051Assembler;
 import com.opensim51.assembler.mcs51.mcu8051.format.SourceCodeFormatter;
 import com.opensim51.gui.controller.device.DisplayArrayController;
 import com.opensim51.gui.editorstyles.BreakpointFactory;
-import com.opensim51.gui.editorstyles.DebuggerArrowFactory;
+import com.opensim51.gui.editorstyles.ExecutionPointArrowFactory;
 import com.opensim51.gui.editorstyles.SelectedLineArrowFactory;
 import com.opensim51.gui.editorstyles.TokensHighlighting;
 import com.opensim51.simulator.ExecutionListener;
+import com.opensim51.simulator.ExecutionListenerAdapter;
 import com.opensim51.simulator.Simulator;
 import com.opensim51.simulator.memory.InternalData;
 import com.opensim51.simulator.memory.datatype.UInt16;
 import com.opensim51.simulator.memory.datatype.UInt8;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -50,6 +50,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.IntFunction;
 
 public class MainWindow {
@@ -59,7 +60,10 @@ public class MainWindow {
     private final Map<String, Stage> shownPortWindows = new HashMap<>();
     private final Map<String, Stage> shownTimerWindows = new HashMap<>();
     private final Map<String, Object> loadedControllers = new HashMap<>();
-    private final Map<UInt16, Integer> debuggedEditorLines = new HashMap<>();
+    private final Map<UInt16, Integer> executableEditorLines = new HashMap<>();
+    private final SimpleObjectProperty<Integer> executionPointEditorLine = new SimpleObjectProperty<>(-1);
+    private final ObservableList<Integer> breakpointEditorLines = FXCollections.observableArrayList();
+    private final AtomicBoolean uiThreadReadinessFlag = new AtomicBoolean(true);
     @FXML
     private MenuItem reformatFileMenuItem;
     @FXML
@@ -138,12 +142,9 @@ public class MainWindow {
             }
         });
 
-        ObservableList<Integer> breakpointLineNumbers = FXCollections.observableArrayList();
-        SimpleObjectProperty<Integer> debuggedLine = new SimpleObjectProperty<>(-1);
-
-        IntFunction<Node> breakpointFactory = new BreakpointFactory(breakpointLineNumbers);
+        IntFunction<Node> breakpointFactory = new BreakpointFactory(breakpointEditorLines);
         IntFunction<Node> selectedLineArrowFactory = new SelectedLineArrowFactory(editor.currentParagraphProperty());
-        IntFunction<Node> debuggerArrowFactory = new DebuggerArrowFactory(debuggedLine);
+        IntFunction<Node> executionPointArrowFactory = new ExecutionPointArrowFactory(executionPointEditorLine);
         IntFunction<Node> lineNumberFactory = LineNumberFactory.get(editor);
         IntFunction<Node> graphicFactory = line -> {
 
@@ -156,10 +157,10 @@ public class MainWindow {
             breakpointContainer.setOnMouseClicked(event -> {
                 if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 1) {
                     int currentLineNumber = Integer.parseInt(((Label) lineNumberNode).getText().trim()) - 1;
-                    if (breakpointLineNumbers.contains(currentLineNumber)) {
-                        breakpointLineNumbers.remove((Integer) currentLineNumber);
+                    if (breakpointEditorLines.contains(currentLineNumber)) {
+                        breakpointEditorLines.remove((Integer) currentLineNumber);
                     } else {
-                        breakpointLineNumbers.add(currentLineNumber);
+                        breakpointEditorLines.add(currentLineNumber);
                     }
                 }
             });
@@ -167,7 +168,7 @@ public class MainWindow {
             HBox gutter = new HBox(
                     breakpointContainer,
                     selectedLineArrowFactory.apply(line),
-                    debuggerArrowFactory.apply(line),
+                    executionPointArrowFactory.apply(line),
                     lineNumberNode);
 
             gutter.getStyleClass().add("gutter");
@@ -206,23 +207,22 @@ public class MainWindow {
             statusBarTextField.clear();
 
             try {
-                Assembler mcu8051Assembler = new Mcu8051Assembler();
-                mcu8051Assembler.assemble(editor.getText(), (line, locationCounter, machineCodes) -> {
-                    debuggedEditorLines.put(new UInt16(locationCounter), line - 1);
-
+                Assembler assembler = new Mcu8051Assembler();
+                assembler.assemble(editor.getText(), (line, locationCounter, machineCodes) -> {
+                    executableEditorLines.put(new UInt16(locationCounter), line - 1);
                     for (Integer machineCode : machineCodes) {
                         simulator.getExternalCode().setCellValue(locationCounter, UInt8.valueOf(machineCode));
                         locationCounter++;
                     }
                 }, (line, charPositionInLine, message) -> {
                     statusBarTextField.setText(line + ":" + charPositionInLine + " " + message);
-                    throw new RuntimeException("translation canceled due to an error");
+                    throw new IllegalStateException("translation canceled due to a syntax error");
                 });
 
-                if (!debuggedEditorLines.isEmpty()) {
-                    debuggedEditorLines.entrySet().stream()
+                if (!executableEditorLines.isEmpty()) {
+                    executableEditorLines.entrySet().stream()
                             .reduce((a, b) -> a.getKey().compareTo(b.getKey()) <= 0 ? a : b)
-                            .ifPresent(entry -> debuggedLine.set(entry.getValue()));
+                            .ifPresent(entry -> executionPointEditorLine.set(entry.getValue()));
                 }
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -249,40 +249,21 @@ public class MainWindow {
             memoryController.update();
         });
 
-        ExecutionService executionService = new ExecutionService();
-        executionService.setSimulator(simulator);
+        ProgramExecutionService executionService = new ProgramExecutionService();
+        ExecutionListener executionListener = new ExecutionListenerAdapter(true) {
+            @Override
+            public void process(UInt16 programCounter) {
+                if (uiThreadReadinessFlag.getAndSet(false)) {
+                    updateUserInterfaceFromBackgroundThread(programCounter, executionService);
+                }
+            }
+        };
+
+        executionService.setExecutionListener(executionListener);
+        executionService.setOnCancelled(stateEvent -> executionListener.cancel());
 
         runButton.setOnAction(event -> {
-            ExecutionListener executionListener = new ExecutionListener() {
-                private boolean running = true;
-
-                @Override
-                public void process(UInt16 programCounter) {
-                    if (debuggedEditorLines.containsKey(programCounter)) {
-                        int lineNumber = debuggedEditorLines.get(programCounter);
-                        debuggedLine.set(lineNumber);
-                        editor.showParagraphInViewport(lineNumber);
-                        updateUserInterface();
-                        if (breakpointLineNumbers.contains(lineNumber)) {
-                            running = false;
-                            executionService.cancel();
-                        }
-                    }
-                }
-
-                @Override
-                public boolean isRunning() {
-                    return running;
-                }
-
-                @Override
-                public void cancelExecution() {
-                    running = false;
-                }
-            };
-
-            executionService.setExecutionListener(executionListener);
-            executionService.setOnCancelled(stateEvent -> executionListener.cancelExecution());
+            executionListener.reset();
             executionService.start();
         });
 
@@ -291,32 +272,59 @@ public class MainWindow {
             executionService.reset();
         });
 
-        stepButton.setOnAction(event -> simulator.step(new ExecutionListener() {
+        ExecutionListener oneTimeExecutionListener = new ExecutionListenerAdapter(false) {
             @Override
             public void process(UInt16 programCounter) {
-                if (debuggedEditorLines.containsKey(programCounter)) {
-                    int lineNumber = debuggedEditorLines.get(programCounter);
-                    debuggedLine.set(lineNumber);
-                    editor.showParagraphInViewport(lineNumber);
-                    updateUserInterface();
-                }
-            }
 
-            @Override
-            public boolean isRunning() {
-                return false;
-            }
+                // highlight execution point editor line
+                int lineNumber = executableEditorLines.get(programCounter);
+                executionPointEditorLine.set(lineNumber);
 
-            @Override
-            public void cancelExecution() {
-                // NO-OP
+                updateUserInterface();
             }
-        }));
+        };
+
+        stepButton.setOnAction(event -> simulator.step(oneTimeExecutionListener));
 
         displayExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/display.A51")));
         registerBanksExampleMenuItem.setOnAction(event -> editor.replaceText(readFileToString("examples/register_banks.A51")));
 
         exitMenuItem.setOnAction(event -> primaryStage.close());
+    }
+
+    public void updateUserInterfaceFromBackgroundThread(UInt16 programCounter, ProgramExecutionService executionService) {
+        Platform.runLater(() -> {
+
+            // highlight execution point editor line
+            int lineNumber = executableEditorLines.get(programCounter);
+            executionPointEditorLine.set(lineNumber);
+
+            // stop background thread if execution point editor line has a breakpoint
+            if (breakpointEditorLines.contains(lineNumber)) {
+                executionService.cancel();
+                executionService.reset();
+            }
+
+            updateUserInterface();
+
+            // unblock UI updates
+            uiThreadReadinessFlag.set(true);
+        });
+    }
+
+    public void updateUserInterface() {
+        registersController.update();
+        memoryController.update();
+
+        for (Object controller : loadedControllers.values()) {
+            if (controller instanceof Updatable) {
+                ((Updatable) controller).update();
+            }
+        }
+    }
+
+    public void setStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     private String readFileToString(String path) {
@@ -437,46 +445,6 @@ public class MainWindow {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void updateUserInterface() {
-        registersController.update();
-        memoryController.update();
-
-        for (Object controller : loadedControllers.values()) {
-            if (controller instanceof Updatable) {
-                ((Updatable) controller).update();
-            }
-        }
-    }
-
-    public void setStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    private static class ExecutionService extends Service<Void> {
-
-        private Simulator simulator;
-
-        private ExecutionListener executionListener;
-
-        void setSimulator(Simulator simulator) {
-            this.simulator = simulator;
-        }
-
-        void setExecutionListener(ExecutionListener executionListener) {
-            this.executionListener = executionListener;
-        }
-
-        protected Task<Void> createTask() {
-            return new Task<Void>() {
-                protected Void call() {
-                    simulator.run(executionListener);
-                    return null;
-                }
-            };
-        }
-
     }
 
 }

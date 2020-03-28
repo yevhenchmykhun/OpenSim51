@@ -8,6 +8,8 @@ public interface ExecutionListener {
 
     boolean isRunning();
 
-    void cancelExecution();
+    void cancel();
+
+    void reset();
 
 }
