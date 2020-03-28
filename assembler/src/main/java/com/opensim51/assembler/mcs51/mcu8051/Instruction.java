@@ -758,8 +758,8 @@ public enum Instruction {
         return new ArrayList<>();
     }, null);
 
-    private AssemblyInstructionTranslator assemblyInstructionTranslator;
-    private MachineCodesTranslator machineCodesTranslator;
+    private final AssemblyInstructionTranslator assemblyInstructionTranslator;
+    private final MachineCodesTranslator machineCodesTranslator;
 
     Instruction(AssemblyInstructionTranslator assemblyInstructionTranslator, MachineCodesTranslator machineCodesTranslator) {
         this.assemblyInstructionTranslator = assemblyInstructionTranslator;
