@@ -39,6 +39,11 @@ public final class UInt16 implements UInt<UInt16> {
     }
 
     @Override
+    public UInt16 dec() {
+        return valueOf(value - 1);
+    }
+
+    @Override
     public UInt16 add(UInt16 data) {
         return valueOf(value + data.value);
     }

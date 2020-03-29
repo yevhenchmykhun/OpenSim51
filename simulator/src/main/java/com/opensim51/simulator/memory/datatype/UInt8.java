@@ -48,6 +48,11 @@ public final class UInt8 implements UInt<UInt8> {
     }
 
     @Override
+    public UInt8 dec() {
+        return valueOf(value - 1);
+    }
+
+    @Override
     public UInt8 add(UInt8 data) {
         return valueOf(value + data.value);
     }

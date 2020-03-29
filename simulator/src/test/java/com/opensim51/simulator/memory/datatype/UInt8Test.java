@@ -16,6 +16,15 @@ public class UInt8Test {
     }
 
     @Test
+    public void dec() {
+        UInt8 zero = UInt8.ZERO;
+        assertEquals(zero.dec(), UInt8.MAX_VALUE);
+
+        UInt8 maxValue = UInt8.MAX_VALUE;
+        assertEquals(maxValue.dec(), UInt8.valueOf(0xfe));
+    }
+
+    @Test
     public void add() {
         UInt8 zero = UInt8.ZERO;
         assertEquals(zero.add(UInt8.ONE), UInt8.ONE);

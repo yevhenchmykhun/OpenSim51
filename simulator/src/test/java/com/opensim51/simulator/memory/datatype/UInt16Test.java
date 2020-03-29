@@ -16,6 +16,15 @@ public class UInt16Test {
     }
 
     @Test
+    public void dec() {
+        UInt16 zero = UInt16.ZERO;
+        assertEquals(zero.dec(), UInt16.MAX_VALUE);
+
+        UInt16 maxValue = UInt16.MAX_VALUE;
+        assertEquals(maxValue.dec(), UInt16.valueOf(0xfffe));
+    }
+
+    @Test
     public void add() {
         UInt16 zero = UInt16.ZERO;
         assertEquals(zero.add(UInt16.ONE), UInt16.ONE);

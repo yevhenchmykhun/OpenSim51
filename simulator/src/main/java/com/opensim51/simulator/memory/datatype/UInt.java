@@ -4,6 +4,8 @@ public interface UInt<T extends UInt> extends Comparable<T> {
 
     T inc();
 
+    T dec();
+
     T add(T data);
 
     T sub(T data);
