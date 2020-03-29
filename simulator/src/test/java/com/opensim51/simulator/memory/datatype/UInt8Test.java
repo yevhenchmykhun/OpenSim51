@@ -151,7 +151,7 @@ public class UInt8Test {
     @Test
     public void toUInt16() {
         UInt8 maxValue = UInt8.MAX_VALUE;
-        assertEquals(maxValue.x16(), new UInt16(0xff));
+        assertEquals(maxValue.x16(), UInt16.valueOf(0xff));
 
         UInt8 zero = UInt8.ZERO;
         assertEquals(zero.x16(), UInt16.ZERO);

@@ -20,7 +20,7 @@ public enum InstructionType {
         UInt16 highOrderBits = opcode.and(UInt8.valueOf(0xe0)).x16().shl(8);
         UInt16 lowOrderBits = code.getCellValue(pc.inc()).x16();
         UInt16 addr11 = highOrderBits.or(lowOrderBits);
-        return pc.and(new UInt16(0xf800)).or(addr11);
+        return pc.and(UInt16.valueOf(0xf800)).or(addr11);
     }),
 
     LJMP((pc, memoryUnit, bytes) -> {
@@ -56,14 +56,14 @@ public enum InstructionType {
         UInt16 lowOrderBits = code.getCellValue(pc.inc()).x16();
         UInt16 addr11 = highOrderBits.or(lowOrderBits);
 
-        return pc.and(new UInt16(0xf800)).or(addr11);
+        return pc.and(UInt16.valueOf(0xf800)).or(addr11);
     }),
 
     LCALL((pc, memoryUnit, bytes) -> {
         InternalData data = memoryUnit.getInternalData();
         ExternalCode code = memoryUnit.getExternalCode();
 
-        UInt16 next = pc.add(new UInt16(bytes));
+        UInt16 next = pc.add(UInt16.valueOf(bytes));
 
         data.stack.push(next);
 
@@ -105,7 +105,7 @@ public enum InstructionType {
 
         }
 
-        return pc.add(new UInt16(bytes));
+        return pc.add(UInt16.valueOf(bytes));
     }),
 
     JB((pc, memoryUnit, bytes) -> {
@@ -173,7 +173,7 @@ public enum InstructionType {
         InternalData data = memoryUnit.getInternalData();
         ExternalCode code = memoryUnit.getExternalCode();
 
-        pc = pc.add(new UInt16(bytes));
+        pc = pc.add(UInt16.valueOf(bytes));
         if (!data.ACC.getValue().equals(UInt8.ZERO)) {
             UInt16 offset = code.getCellValue(pc.inc()).not().inc().x16();
             pc = pc.add(offset);
@@ -300,7 +300,7 @@ public enum InstructionType {
 
         }
 
-        return pc.add(new UInt16(bytes));
+        return pc.add(UInt16.valueOf(bytes));
     }),
 
     SJMP((pc, memoryUnit, bytes) -> {
@@ -342,7 +342,7 @@ public enum InstructionType {
 
         }
 
-        return pc.add(new UInt16(bytes));
+        return pc.add(UInt16.valueOf(bytes));
     }),
 
     MUL((pc, memoryUnit, bytes) -> {
@@ -381,7 +381,7 @@ public enum InstructionType {
 
         }
 
-        return pc.add(new UInt16(bytes));
+        return pc.add(UInt16.valueOf(bytes));
     }),
 
     SWAP((pc, memoryUnit, bytes) -> {
@@ -412,7 +412,7 @@ public enum InstructionType {
 
         }
 
-        return pc.add(new UInt16(bytes));
+        return pc.add(UInt16.valueOf(bytes));
     }),
 
     DA((pc, memoryUnit, bytes) -> {
@@ -423,7 +423,7 @@ public enum InstructionType {
         InternalData data = memoryUnit.getInternalData();
         ExternalCode code = memoryUnit.getExternalCode();
 
-        UInt16 next = pc.add(new UInt16(bytes));
+        UInt16 next = pc.add(UInt16.valueOf(bytes));
 
         int opcode = code.getCellValue(pc).toInt();
         if (opcode == 0xd5) {

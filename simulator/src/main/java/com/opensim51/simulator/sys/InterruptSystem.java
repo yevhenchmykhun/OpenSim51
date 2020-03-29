@@ -120,7 +120,7 @@ public class InterruptSystem {
     }
 
     private UInt16 getVector(int interruptSource) {
-        return new UInt16(VECTOR[interruptSource + 1]);
+        return UInt16.valueOf(VECTOR[interruptSource + 1]);
     }
 
 }

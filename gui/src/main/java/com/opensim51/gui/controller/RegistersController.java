@@ -156,7 +156,7 @@ public class RegistersController implements Updatable, MainWindowDependant {
 
                 int parsedValue = IntegerUtil.parseInt(value);
                 if (StringUtils.equals(name, TREE_ITEM_NAME_PC)) {
-                    simulator.setProgramCounter(new UInt16(parsedValue));
+                    simulator.setProgramCounter(UInt16.valueOf(parsedValue));
                 } else if (StringUtils.equals(name, TREE_ITEM_NAME_DPTR)) {
                     simulator.getInternalData().DPL.setValue(UInt8.valueOf(parsedValue & 0xff));
                     simulator.getInternalData().DPH.setValue(UInt8.valueOf((parsedValue >> 8) & 0xff));

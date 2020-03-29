@@ -30,15 +30,15 @@ public class UInt16Test {
         assertEquals(zero.sub(UInt16.ONE), UInt16.MAX_VALUE);
 
         UInt16 maxValue = UInt16.MAX_VALUE;
-        assertEquals(maxValue.sub(UInt16.ONE), new UInt16(0xfffe));
+        assertEquals(maxValue.sub(UInt16.ONE), UInt16.valueOf(0xfffe));
     }
 
     @Test
     public void shiftLeft() {
         UInt16 maxValue = UInt16.MAX_VALUE;
         assertEquals(maxValue.shl(0), maxValue);
-        assertEquals(maxValue.shl(1), new UInt16(0xfffe));
-        assertEquals(maxValue.shl(15), new UInt16(0x8000));
+        assertEquals(maxValue.shl(1), UInt16.valueOf(0xfffe));
+        assertEquals(maxValue.shl(15), UInt16.valueOf(0x8000));
         assertEquals(maxValue.shl(16), UInt16.ZERO);
     }
 
@@ -46,7 +46,7 @@ public class UInt16Test {
     public void shiftRight() {
         UInt16 maxValue = UInt16.MAX_VALUE;
         assertEquals(maxValue.shr(0), maxValue);
-        assertEquals(maxValue.shr(1), new UInt16(0x7fff));
+        assertEquals(maxValue.shr(1), UInt16.valueOf(0x7fff));
         assertEquals(maxValue.shr(15), UInt16.ONE);
         assertEquals(maxValue.shr(16), UInt16.ZERO);
     }
@@ -75,7 +75,7 @@ public class UInt16Test {
 
         UInt16 one = UInt16.ONE;
         assertEquals(one.xor(UInt16.ONE), UInt16.ZERO);
-        assertEquals(one.xor(UInt16.MAX_VALUE), new UInt16(0xfffe));
+        assertEquals(one.xor(UInt16.MAX_VALUE), UInt16.valueOf(0xfffe));
     }
 
     @Test
@@ -120,14 +120,14 @@ public class UInt16Test {
     @Test
     public void equals() {
         assertEquals(UInt16.ONE, UInt16.ONE);
-        assertEquals(UInt16.ONE, new UInt16(0x1));
+        assertEquals(UInt16.ONE, UInt16.valueOf(0x1));
         assertNotEquals(UInt16.ZERO, UInt16.ONE);
         assertNotEquals(UInt16.ZERO, UInt8.ZERO);
     }
 
     @Test
     public void compareTo() {
-        assertEquals(0, UInt16.ONE.compareTo(new UInt16(0x1)));
+        assertEquals(0, UInt16.ONE.compareTo(UInt16.valueOf(0x1)));
         assertTrue(UInt16.ONE.compareTo(UInt16.ZERO) > 0);
         assertTrue(UInt16.ZERO.compareTo(UInt16.ONE) < 0);
     }

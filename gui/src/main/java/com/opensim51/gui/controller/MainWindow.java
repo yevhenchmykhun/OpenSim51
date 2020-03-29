@@ -209,7 +209,7 @@ public class MainWindow {
             try {
                 Assembler assembler = new Mcu8051Assembler();
                 assembler.assemble(editor.getText(), (line, locationCounter, machineCodes) -> {
-                    executableEditorLines.put(new UInt16(locationCounter), line - 1);
+                    executableEditorLines.put(UInt16.valueOf(locationCounter), line - 1);
                     for (Integer machineCode : machineCodes) {
                         simulator.getExternalCode().setCellValue(locationCounter, UInt8.valueOf(machineCode));
                         locationCounter++;

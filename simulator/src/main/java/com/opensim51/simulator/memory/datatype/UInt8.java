@@ -104,12 +104,11 @@ public final class UInt8 implements UInt<UInt8> {
     }
 
     public UInt16 x16() {
-        return new UInt16(toInt());
+        return UInt16.valueOf(value);
     }
 
     public UInt16 sx16() {
-        int i = toInt();
-        return new UInt16((i & 0x80) == 0x80 ? i | 0xff00 : i);
+        return UInt16.valueOf((value & 0x80) == 0x80 ? value | 0xff00 : value);
     }
 
     public boolean lt(UInt8 value) {

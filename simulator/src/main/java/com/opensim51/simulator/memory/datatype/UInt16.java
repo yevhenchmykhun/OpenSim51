@@ -11,62 +11,80 @@ public final class UInt16 implements UInt<UInt16> {
     public static final UInt16 MASK_HIGH_BYTE = new UInt16(0xff00);
     public static final UInt16 MASK_LOW_BYTE = new UInt16(0x00ff);
 
-    private int value;
+    private static final UInt16[] cache = new UInt16[256];
 
-    public UInt16(int value) {
+    static {
+        cache[0] = ZERO;
+        cache[1] = ONE;
+        cache[255] = MASK_LOW_BYTE;
+
+        for (int i = 2; i < 255; i++) {
+            cache[i] = new UInt16(i);
+        }
+    }
+
+    private final int value;
+
+    private UInt16(int value) {
         this.value = value & 0xffff;
     }
 
-    public UInt16(UInt16 value) {
-        this(value.value);
+    public static UInt16 valueOf(int value) {
+        return (value & 0xffff) <= 0x00ff ? cache[value & 0x00ff] : new UInt16(value);
     }
 
+    @Override
     public UInt16 inc() {
-        return add(ONE);
+        return valueOf(value + 1);
     }
 
+    @Override
     public UInt16 add(UInt16 data) {
-        return toUInt16(data.value + value);
+        return valueOf(value + data.value);
     }
 
+    @Override
     public UInt16 sub(UInt16 data) {
-        return toUInt16(value - data.value);
+        return valueOf(value - data.value);
     }
 
+    @Override
     public UInt16 shl(int n) {
-        return toUInt16(value << n);
+        return valueOf(value << n);
     }
 
+    @Override
     public UInt16 shr(int n) {
-        return toUInt16(value >> n);
+        return valueOf(value >> n);
     }
 
+    @Override
     public UInt16 not() {
-        return toUInt16(value ^ 0xffff);
+        return valueOf(value ^ 0xffff);
     }
 
+    @Override
     public UInt16 xor(UInt16 data) {
-        return toUInt16(value ^ data.value);
+        return valueOf(value ^ data.value);
     }
 
+    @Override
     public UInt16 or(UInt16 data) {
-        return toUInt16(value | data.value);
+        return valueOf(value | data.value);
     }
 
+    @Override
     public UInt16 and(UInt16 data) {
-        return toUInt16(value & data.value);
+        return valueOf(value & data.value);
     }
 
+    @Override
     public int toInt() {
         return value;
     }
 
     public UInt8 toUInt8() {
-        return UInt8.valueOf(toInt());
-    }
-
-    private UInt16 toUInt16(int value) {
-        return new UInt16(value);
+        return UInt8.valueOf(value);
     }
 
     @Override
@@ -89,8 +107,7 @@ public final class UInt16 implements UInt<UInt16> {
 
     @Override
     public String toString() {
-        String hex = Integer.toHexString(value);
-        return hex.length() > 4 ? hex.substring(hex.length() - 4) : hex;
+        return Integer.toHexString(value);
     }
 
 }
