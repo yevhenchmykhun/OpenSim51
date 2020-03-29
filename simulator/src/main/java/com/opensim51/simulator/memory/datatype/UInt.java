@@ -1,6 +1,6 @@
 package com.opensim51.simulator.memory.datatype;
 
-public interface UInt<T extends UInt> extends Comparable<T> {
+public interface UInt<T extends UInt<T>> extends Comparable<T> {
 
     T inc();
 
